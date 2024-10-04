@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	
+	'userapp',
 ]
 
 MIDDLEWARE = [
@@ -73,24 +75,24 @@ WSGI_APPLICATION = 'userapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("POSTGRES_DB", "mydatabase"),
-#         "USER": os.getenv("POSTGRES_USER", "myuser"),
-#         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "mypassword"),
-#         "HOST": os.getenv("POSTGRES_HOST", "localhost"),  # or "postgres" if using Docker
-#         "PORT": os.getenv("POSTGRES_PORT", "5432"),
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "userapp",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "postgres",  # or "postgres" if using Docker
+        "PORT": "5432",
+    }
+}
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
