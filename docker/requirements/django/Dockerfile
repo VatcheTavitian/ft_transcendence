@@ -22,5 +22,5 @@ ENV PYTHONUNBUFFERED 1
 # Command to run your application
 # CMD ["gunicorn", "--bind", "0.0.0.0:8000", "your_project_name.wsgi:application"]
 # CMD ["python3", "manage.py", "runserver"]
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8001"]
 

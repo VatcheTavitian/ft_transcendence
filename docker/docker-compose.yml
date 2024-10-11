@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      - "8001:8001"
     networks:
       - nwtranscendence
     volumes:
@@ -37,6 +37,26 @@ services:
     depends_on:
       - postgres
     restart: always
+
+  frontend:
+      container_name: frontend
+      build:
+        context: ./requirements/frontend/
+        dockerfile: Dockerfile
+        args:
+          CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+          VALUE: ${VALUE}
+      env_file:
+        - .env
+      ports:
+        - "443:443"
+      networks:
+        - nwtranscendence
+      depends_on:
+        - django
+      volumes:
+        - frontend-volume:/var/www
+      restart: always 
 
 volumes:
   db-volume:
@@ -50,6 +70,12 @@ volumes:
       o: bind
       type: none
       device: /home/vatche/Desktop/ft_transcendence/backend/userapp
+
+  frontend-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/ft_transcendence/frontend/www/html
 
 
 

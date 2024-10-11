@@ -1,4 +1,5 @@
 from django.http import HttpResponse
 
+
 def index(request):
-	return HttpResponse("Hello, world. You're at the userapp index.")
+	return HttpResponse("This is index view")
