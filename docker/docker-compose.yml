@@ -21,10 +21,10 @@ services:
       - db-volume:/var/lib/postgresql/data
     restart: always
 
-  django:
-    container_name: django
+  backend:
+    container_name: backend
     build:
-      context: ./requirements/django/
+      context: ./requirements/backend/
       dockerfile: Dockerfile
     env_file:
       - .env
@@ -33,7 +33,24 @@ services:
     networks:
       - nwtranscendence
     volumes:
-      - django-volume:/app
+      - backend-volume:/app
+    depends_on:
+      - postgres
+    restart: always
+
+  backendmicro:
+    container_name: backendmicro
+    build:
+      context: ./requirements/backendmicro/
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8002:8002"
+    networks:
+      - nwtranscendence
+    volumes:
+      - backendmicro-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -53,9 +70,9 @@ services:
       networks:
         - nwtranscendence
       depends_on:
-        - django
+        - backend
       volumes:
-        - frontend-volume:/var/www
+        - frontend-volume:/var/www/html
       restart: always 
 
 volumes:
@@ -65,18 +82,24 @@ volumes:
       type: none
       device: /home/vatche/Documents/dbforft
 
-  django-volume:
+  backend-volume:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/ft_transcendence/backend/userapp
+      device: /home/vatche/Desktop/TRAN/ft_transcendence/backend/backend
+
+  
+  backendmicro-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/TRAN/ft_transcendence/backendmicro/backendmicro
 
   frontend-volume:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/ft_transcendence/frontend/www/html
-
+      device: /home/vatche/Desktop/TRAN/ft_transcendence/frontend/html
 
 
 networks:

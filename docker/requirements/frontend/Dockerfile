@@ -9,9 +9,12 @@ RUN apk update && \
 COPY ./conf/frontend.conf /etc/nginx/http.d/frontend.conf
 COPY ./tools/script.sh /init_script.sh
 
+
+
 RUN chmod +x /init_script.sh && \
     /init_script.sh && \
-    rm /init_script.sh
+    rm /init_script.sh 
+   
 
 CMD ["nginx", "-g", "daemon off;"]
 
