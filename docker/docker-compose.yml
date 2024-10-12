@@ -72,7 +72,7 @@ services:
       depends_on:
         - backend
       volumes:
-        - frontend-volume:/var/www/html
+        - frontend-volume:/var/www/
       restart: always 
 
 volumes:
@@ -86,20 +86,20 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/TRAN/ft_transcendence/backend/backend
-
+      device: /home/vatche/Desktop/TRAN/ft_transcendence/docker/requirements/backend/srcs/backend/backend
+    
   
   backendmicro-volume:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/TRAN/ft_transcendence/backendmicro/backendmicro
+      device: /home/vatche/Desktop/TRAN/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
 
   frontend-volume:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/TRAN/ft_transcendence/frontend/html
+      device: /home/vatche/Desktop/TRAN/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
 
 
 networks:

@@ -1,0 +1,2 @@
+PGSERVICEFILE=backend/postgresconfig/pg_service.conf
+PGPASSFILE=backend/postgresconfig/.pgpass
