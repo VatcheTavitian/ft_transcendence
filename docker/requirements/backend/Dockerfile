@@ -1,6 +1,10 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
+ARG API_CLIENT_ID
+ARG API_CLIENT_SECRET
+ARG API_REDIRECT_URI
+
 # Set the working directory in the container
 WORKDIR /app
 

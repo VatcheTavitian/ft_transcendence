@@ -26,6 +26,11 @@ services:
     build:
       context: ./requirements/backend/
       dockerfile: Dockerfile
+      args:
+          API_CLIENT_ID: ${API_CLIENT_ID}
+          API_CLIENT_SECRET : ${API_CLIENT_SECRET}
+          API_REDIRECT_URI: ${API_REDIRECT_URI}
+          DB_HOST: ${DB_HOST}
     env_file:
       - .env
     ports:
@@ -86,20 +91,20 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/TRAN/ft_transcendence/docker/requirements/backend/srcs/backend/backend
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
     
   
   backendmicro-volume:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/TRAN/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
 
   frontend-volume:
     driver_opts:
       o: bind
       type: none
-      device: /home/vatche/Desktop/TRAN/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
 
 
 networks:

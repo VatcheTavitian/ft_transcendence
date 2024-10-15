@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'corsheaders',
 	'userapp',
+	'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -155,3 +156,20 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
 ]
+
+AUTHENTICATION_BACKENDS = [
+	'userapp.auth.IntraAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',  
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer', #this will render a view when you visit the api in the browser
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+LOGIN_URL = '/intralogin'

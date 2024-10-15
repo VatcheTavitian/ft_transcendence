@@ -15,9 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from userapp import views
+from userapp.views import index,  intraLoginSuccess, intralogin, get_authenticated_user, intralogout, getUserInfo, loginNonIntra
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index/', views.index, name='index'),
+    path('index/', index, name='index'),
+	path('intralogin/', intralogin, name='intralogin'),
+	path('intraloginsuccess/', intraLoginSuccess.as_view(), name='intraloginsuccess'),
+	path('auth/user/', get_authenticated_user, name='get_authenticated_user'),
+	path('logout/', intralogout, name='logout'),
+	path('getuserinfo/', getUserInfo.as_view(), name='getuserinfo'),
+	path('login/', loginNonIntra.as_view(), name='login')
 ]
