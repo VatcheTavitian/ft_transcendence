@@ -56,10 +56,12 @@ ARG API_REDIRECT_URI
 ARG CERTIFICATE_PATH
 ARG VALUE
 ARG GUNICORN_WD_BACKEND
+ARG PYTHONPATH
+ENV PYTHONPATH=${PYTHONPATH}
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y nginx supervisor openssl && \
+    apt-get install -y nginx supervisor openssl tree && \
     rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container

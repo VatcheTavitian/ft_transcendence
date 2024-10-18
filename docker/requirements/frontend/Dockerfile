@@ -15,6 +15,8 @@ RUN chmod +x /init_script.sh && \
     /init_script.sh && \
     rm /init_script.sh 
    
+# when not using volumes
+COPY srcs/frontend/html /var/www/html 
 
 CMD ["nginx", "-g", "daemon off;"]
 

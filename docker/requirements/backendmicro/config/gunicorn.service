@@ -6,7 +6,8 @@ After=network.target
 User=yourusername
 Group=www-data
 WorkingDirectory=/path/to/${GUNICORN_WD_BACKEND_MICRO}
-ExecStart=/path/to/ft_transcendence/venv/bin/gunicorn --workers 3 --bind unix:/path/to/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro.sock backendmicro.wsgi:application
+ExecStart=/usr/local/bin/gunicorn --workers 3 --bind unix:/app/srcs/backendmicro/backendmicro/backendmicro.sock backendmicro.backendmicro.backendmicro.wsgi:application
+Environment="PYTHONPATH=${PYTHONPATH}"
 
 [Install]
 WantedBy=multi-user.target
