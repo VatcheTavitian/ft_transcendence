@@ -88,3 +88,8 @@ class loginNonIntra(APIView):
 			return JsonResponse({"message": "success"})
 		else:
 			return JsonResponse({"message": "failed"})
+
+class test(APIView):
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		return JsonResponse({"message": "success})"})

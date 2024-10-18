@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from userapp.views import index,  intraLoginSuccess, intralogin, get_authenticated_user, intralogout, getUserInfo, loginNonIntra
+from userapp.views import index,  intraLoginSuccess, intralogin, get_authenticated_user, intralogout, getUserInfo, loginNonIntra , test
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +25,6 @@ urlpatterns = [
 	path('auth/user/', get_authenticated_user, name='get_authenticated_user'),
 	path('logout/', intralogout, name='logout'),
 	path('getuserinfo/', getUserInfo.as_view(), name='getuserinfo'),
-	path('login/', loginNonIntra.as_view(), name='login')
+	path('login/', loginNonIntra.as_view(), name='login'),
+	path('test1/', test.as_view(), name='test'),
 ]

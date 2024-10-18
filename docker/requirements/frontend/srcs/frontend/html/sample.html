@@ -13,9 +13,11 @@
 
     var value; 
 
-fetch("http://localhost:8001/index")
+fetch("https://localhost:8008/getuserinfo")
     .then(response => {
         if (!response.ok) {
+            if (response.status === 401)
+                alert("Unauthorized access! Are you logged in?");
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json(); // Assume response is JSON
@@ -23,6 +25,7 @@ fetch("http://localhost:8001/index")
     .then(data => {
         value = data; // Assign the fetched data to the variable
         console.log(value); // Now you can log the value here
+       
     })
     .catch(error => {
         console.error('Error fetching data:', error);

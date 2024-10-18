@@ -2,4 +2,4 @@ from django.shortcuts import render, HttpResponse
 
 # Create your views here.
 def test(request):
-	return HttpResponse("This is test view")
+	return HttpResponse("This is test view for backend micro")

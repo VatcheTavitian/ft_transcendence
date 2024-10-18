@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=yourusername
+Group=www-data
+WorkingDirectory=/path/to/WorkingDirectory=/path/to/${GUNICORN_WD_BACKEND}
+ExecStart=/path/to/ft_transcendence/venv/bin/gunicorn --workers 3 --bind unix:/path/to/ft_transcendence/docker/requirements/backend/srcs/backend/backend.sock backend.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

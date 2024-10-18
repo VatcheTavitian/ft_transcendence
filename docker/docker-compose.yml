@@ -31,10 +31,13 @@ services:
           API_CLIENT_SECRET : ${API_CLIENT_SECRET}
           API_REDIRECT_URI: ${API_REDIRECT_URI}
           DB_HOST: ${DB_HOST}
+          CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+          VALUE: ${VALUE}
+          GUNICORN_WD_BACKEND: ${GUNICORN_WD_BACKEND}
     env_file:
       - .env
     ports:
-      - "8001:8001"
+      - "8008:8008"
     networks:
       - nwtranscendence
     volumes:
@@ -48,10 +51,14 @@ services:
     build:
       context: ./requirements/backendmicro/
       dockerfile: Dockerfile
+      args:
+        CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+        VALUE: ${VALUE}
+        GUNICORN_WD_BACKEND_MICRO: ${GUNICORN_WD_BACKEND_MICRO}
     env_file:
       - .env
     ports:
-      - "8002:8002"
+      - "8009:8009"
     networks:
       - nwtranscendence
     volumes:
