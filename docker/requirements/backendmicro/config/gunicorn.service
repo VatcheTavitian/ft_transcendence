@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=yourusername
 Group=www-data
-WorkingDirectory=/path/to/${GUNICORN_WD_BACKEND_MICRO}
+WorkingDirectory=/app/srcs
 ExecStart=/usr/local/bin/gunicorn --workers 3 --bind unix:/app/srcs/backendmicro/backendmicro/backendmicro.sock backendmicro.backendmicro.backendmicro.wsgi:application
 Environment="PYTHONPATH=${PYTHONPATH}"
 
