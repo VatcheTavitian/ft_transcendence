@@ -2,6 +2,7 @@ from django.contrib.auth.backends import BaseBackend
 from .models import IntraUser
 
 
+
 class IntraAuthenticationBackend(BaseBackend):
 	def authenticate(self, request, user) -> IntraUser:
 		find_user = IntraUser.objects.get(intra_id=user['id'])
@@ -17,3 +18,9 @@ class IntraAuthenticationBackend(BaseBackend):
 			return IntraUser.objects.get(pk=user_id)
 		except IntraUser.DoesNotExist:
 			return None
+		
+
+# class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+#     def enforce_csrf(self, request):
+#         return  # To not perform the csrf check previously happening

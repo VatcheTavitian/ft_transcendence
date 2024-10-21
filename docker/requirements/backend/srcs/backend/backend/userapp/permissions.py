@@ -12,4 +12,9 @@ class IsAuthenticatedCustom(BasePermission):
             exception.status_code = status.HTTP_401_UNAUTHORIZED
             raise exception
         return True
+    
+class IsNotAuthenticated(BasePermission):
+ 
+    def has_permission(self, request, view):
+        return not request.user or not request.user.is_authenticated
  

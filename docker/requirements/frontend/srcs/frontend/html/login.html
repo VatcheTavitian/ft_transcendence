@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login Page</title>
+</head>
+<body>
+	This is the login page
+
+	<form action="https://localhost:8008/api/login/" method="POST"> 
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username"><br>
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password"><br>
+		<input type="submit" value="Submit">
+	</form>
+
+
+<br>
+<br>
+	Check if user is already logged in
+	<form id ="checkUserForm" action="" method="GET"> 
+		<input type="submit" value="Submit" >
+	</form>
+		<script>
+			document.getElementById('checkUserForm').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Checking if user already logged in...');
+			    fetch('https://localhost:8008/api/login/', {
+			        method: 'GET',
+			        credentials: 'include'  
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+
+
+<br>
+<br>
+
+Logout User
+	<form id ="logoutUserForm" action="" method="GET"> 
+		<input type="submit" value="Submit" >
+		</form>
+
+
+		<script>
+			document.getElementById('logoutUserForm').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Logging out user...');
+			    fetch('https://localhost:8008/api/logout', {
+			        method: 'GET',
+			        credentials: 'include'  
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+
+<br>
+<br>
+
+Get User info
+	<form id ="getUserInfoForm" action="" method="GET"> 
+		<input type="submit" value="Submit" >
+		</form>
+		<script>
+			document.getElementById('getUserInfoForm').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Getting user info...');
+			    fetch('https://localhost:8008/api/getuserinfo', {
+			        method: 'GET',
+			        credentials: 'include',
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+			</script>
+
+<br>
+<br>
+Create new user
+<form id='createNewUser' action="https://localhost:8008/api/register/" method="POST" enctype="multipart/form-data">
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+    
+	<label for="confirm_password">Confirm Password:</label>
+    <input type="password" id="confirm_password" name="confirm_password" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+    
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required><br>
+    
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" required><br>
+    
+    <label for="avatar">Profile Image:</label>
+    <input type="file" id="avatar" name="avatar" accept="image/*"><br>
+    
+    <input type="submit" value="Register">
+</form>
+<script>
+
+
+	document.getElementById('createNewUser').addEventListener('submit', function(event) {
+	event.preventDefault(); 
+	console.log('Updating user info...');
+	const csrftoken = getCookie('csrftoken');
+	fetch('https://localhost:8008/api/register/', {
+		method: 'POST',
+		credentials: 'include', 
+		headers: { 'X-CSRFToken': csrftoken },
+		body: new FormData(document.getElementById('createNewUser'))
+	})
+	.then(response => response.json())
+	.then(data => console.log(data))
+	.catch(error => console.error('Error:', error));
+});
+</script>
+
+<br>
+<br>
+Update existing user
+<form id="updateUserForm" action="" method="POST" enctype="multipart/form-data" >
+
+	<label for="username">Username:</label>
+	<input type="text" id="username" name="username" required value=""><br>
+	
+	<label for="email">Email:</label>
+	<input type="email" id="email" name="email" required><br>
+	
+	<label for="first_name">First Name:</label>
+	<input type="text" id="first_name" name="first_name" required><br>
+	
+	<label for="last_name">Last Name:</label>
+	<input type="text" id="last_name" name="last_name" required><br>
+	
+	<label for="avatar">Profile Image:</label>
+	<input type="file" id="avatar" name="avatar" accept="image/*"><br>
+	
+	<label for="current_photo">Current Profile Image:</label>
+	<img id="current_photo" src="" alt="Current Profile Image"><br>
+
+	
+	<input type="submit" value="Update">
+	</form>
+	<script>
+		const form = document.getElementById('updateUserForm');
+
+		function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+		document.addEventListener('DOMContentLoaded', function() {
+			fetch('https://localhost:8008/api/updateuser/', {
+				method: 'GET',
+				credentials: 'include'  
+			})
+			.then(response => response.json())
+			.then(data => {
+
+				form.querySelector('#username').value = data.user.username;
+				form.querySelector('#email').value = data.user.email;
+				form.querySelector('#first_name').value = data.user.first_name;
+				form.querySelector('#last_name').value = data.user.last_name;
+				form.querySelector('#current_photo').src = "https://localhost:8008" + data.avatar.avatar;
+			})
+			.catch(error => console.error('Error:', error));
+		});
+
+		document.getElementById('updateUserForm').addEventListener('submit', function(event) {
+		    event.preventDefault(); 
+			console.log('Updating user info...');
+			const csrftoken = getCookie('csrftoken');
+		    fetch('https://localhost:8008/api/updateuser/', {
+		        method: 'POST',
+		        credentials: 'include', 
+				headers: { 'X-CSRFToken': csrftoken },
+		        body: new FormData(document.getElementById('updateUserForm'))
+		    })
+		    .then(response => response.json())
+		    .then(data => console.log(data))
+		    .catch(error => console.error('Error:', error));
+		});
+	</script>
+
+<br>
+<br>
+Change Password
+<form id="updatePasswordForm" action="" method="POST" >
+
+	<label for="old_password">Old Password:</label>
+	<input type="password" id="old_password" name="old_password" required><br>
+	
+	<label for="new_password">New Password:</label>
+	<input type="password" id="new_password" name="new_password" required><br>
+	
+	<label for="confirm_password">Confirm Password:</label>
+	<input type="password" id="confirm_password" name="confirm_password" required><br>
+	
+	<input type="submit" value="Change Password">
+	</form>
+	<script>
+		function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+		document.getElementById('updatePasswordForm').addEventListener('submit', function(event) {
+		    event.preventDefault(); 
+			console.log('Changing password...');
+		    fetch('https://localhost:8008/api/updatepassword/', {
+		        method: 'POST',
+		        credentials: 'include', 
+				headers: { 'X-CSRFToken': getCookie('csrftoken') },
+		        body: new FormData(document.getElementById('updatePasswordForm'))
+		    })
+		    .then(response => response.json())
+		    .then(data => console.log(data))
+		    .catch(error => console.error('Error:', error));
+		});
+	</script>
+
+	<br>
+	<br>
+	<form id="passwordResetForm" action="" method="POST" >
+		<label for="email">Email:</label>
+		<input type="email" id="email" name="email" required><br>
+		<input type="submit" value="Reset Password">
+	</form>
+	<script>
+		document.getElementById('passwordResetForm').addEventListener('submit', function(event) {
+		    event.preventDefault(); 
+			console.log('Resetting password...');
+		    fetch('https://localhost:8008/api/resetpassword/', {
+		        method: 'POST',
+		        credentials: 'include', 
+				headers: { 'X-CSRFToken': getCookie('csrftoken') },
+		        body: new FormData(document.getElementById('passwordResetForm'))
+		    })
+		    .then(response => response.json())
+		    .then(data => console.log(data))
+		    .catch(error => console.error('Error:', error));
+		});
+	</script>
+</body>
+
+</html>

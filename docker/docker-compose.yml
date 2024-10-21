@@ -143,8 +143,8 @@ services:
       - "5432:5432"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - db-volume:/var/lib/postgresql/data
+    volumes:
+      - db-volume:/var/lib/postgresql/data
     restart: always
 
   backend:
@@ -161,14 +161,16 @@ services:
           VALUE: ${VALUE}
           GUNICORN_WD_BACKEND: ${GUNICORN_WD_BACKEND}
           PYTHONPATH: ${PYTHONPATHBACKEND}
+          EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+          EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
     env_file:
       - .env
     ports:
       - "8008:8008"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - backend-volume:/app
+    volumes:
+      - backend-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -189,8 +191,8 @@ services:
       - "8009:8009"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - backendmicro-volume:/app
+    volumes:
+      - backendmicro-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -211,35 +213,35 @@ services:
         - nwtranscendence
       depends_on:
         - backend
-      # volumes:
-      #   - frontend-volume:/var/www/html
+      volumes:
+        - frontend-volume:/var/www/html
       restart: always 
 
-# volumes:
-#   db-volume:
-#     driver_opts:
-#       o: bind
-#       type: none
-#       device: /home/vatche/Documents/dbforft
+volumes:
+  db-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Documents/dbforft
 
-#   backend-volume:
-#     driver_opts:
-#       o: bind
-#       type: none
-#       device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
+  backend-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
     
   
-#   backendmicro-volume:
-#     driver_opts:
-#       o: bind
-#       type: none
-#       device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
+  backendmicro-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
 
-#   frontend-volume:
-#     driver_opts:
-#       o: bind
-#       type: none
-#       device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
+  frontend-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
 
 
 networks:

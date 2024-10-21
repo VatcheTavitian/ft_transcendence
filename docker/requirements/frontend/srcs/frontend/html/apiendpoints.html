@@ -12,5 +12,47 @@
 		need to use in your single page application.
 	</h2>
 	
+
+	All responses are in JSON and need to be parsed accordingly.
+
+	Login
+	https://localhost:8008/api/login
+	GET request checks if user is already logged in or not
+	POST request requests username and password and logs in the user if the credentials are correct. Correct login returns user info.
+	
+	
+	Logout
+	https://localhost:8008/api/logout
+	GET or POST request logs out the user and clears the session. No need to pass any data.
+	If you visit the url when not logged in, you will get 401 Unauthorized error.
+
+	Get user info
+	https://localhost:8008/api/getuserinfo
+	GET request returns user info if user is logged in. If not, returns 401 Unauthorized error.
+
+	Create New user
+	https://localhost:8008/api/register
+	POST request creates a new user. Requires username, password, email, and avatar. Returns user info if successful.
+
+	Update existing user
+	https://localhost:8008/api/updateuser
+	POST request updates user info. Requires username, firstname, lastname, email, and avatar. Returns user info if successful.
+
+	Update Password
+	https://localhost:8008/api/updatepassword
+	POST request updates user password. Requires old password and new password. Returns user info if successful.
+
+	Reset Password
+	https://localhost:8008/api/resetpassword
+	POST request resets user password. Requires email. Sends user new password if successful.
+
+
+	Add friend - see online status
+	Get friend list
+	Get game info/display stats such as win or loss
+	Update game history
+	Get match history
+	Get random player (Matchmaking)
+
 </body>
 </html>
