@@ -31,24 +31,46 @@
 	GET request returns user info if user is logged in. If not, returns 401 Unauthorized error.
 
 	Create New user
-	https://localhost:8008/api/register
+	https://localhost:8008/api/register/
 	POST request creates a new user. Requires username, password, email, and avatar. Returns user info if successful.
+	You can't create a new user if you are already logged in.
 
 	Update existing user
-	https://localhost:8008/api/updateuser
+	https://localhost:8008/api/updateuser/
 	POST request updates user info. Requires username, firstname, lastname, email, and avatar. Returns user info if successful.
 
 	Update Password
-	https://localhost:8008/api/updatepassword
+	https://localhost:8008/api/updatepassword/
 	POST request updates user password. Requires old password and new password. Returns user info if successful.
 
 	Reset Password
-	https://localhost:8008/api/resetpassword
+	https://localhost:8008/api/resetpassword/
 	POST request resets user password. Requires email. Sends user new password if successful.
 
+	List all users
+	https://localhost:8008/api/listallusers/
+	GET requests gets list of all users that can be added as a friend
 
-	Add friend - see online status
+	Add friend
+	https://localhost:8008/api/addfriend/
+	POST request adds person to friend list
+
 	Get friend list
+	https://localhost:8008/api/listfriends/
+	GET request gets list of friends for logged in user
+
+	List non friends
+	https://localhost:8008/api/listnonfriends/
+	GET request gets list of non friends for logged in user
+
+	Delete friend
+	https://localhost:8008/api/deletefriend/
+	POST request deletes friend from friend list
+
+	See online status
+	https://localhost:8008/api/getonlinestatus/
+	GET request gets online status of friends
+
 	Get game info/display stats such as win or loss
 	Update game history
 	Get match history

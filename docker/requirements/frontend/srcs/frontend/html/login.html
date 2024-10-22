@@ -185,7 +185,14 @@ Update existing user
 				form.querySelector('#email').value = data.user.email;
 				form.querySelector('#first_name').value = data.user.first_name;
 				form.querySelector('#last_name').value = data.user.last_name;
-				form.querySelector('#current_photo').src = "https://localhost:8008" + data.avatar.avatar;
+				if (data.avatar.avatar.startsWith('/media/https')) {
+            		const avatarUrl = data.avatar.avatar.replace('/media/', '');
+					form.querySelector('#current_photo').src = decodeURIComponent(avatarUrl).replace('https:/', 'https://');
+					console.log(avatarUrl)
+				}
+				else {
+					form.querySelector('#current_photo').src = "https://localhost:8008" + data.avatar.avatar;
+				}
 			})
 			.catch(error => console.error('Error:', error));
 		});
@@ -275,6 +282,125 @@ Change Password
 		    .catch(error => console.error('Error:', error));
 		});
 	</script>
+
+<br>
+<br>
+
+<form id="addFriendForm" action="" method="POST" >
+	<label for="username">Username:</label>
+	<select id="username" name="username" required>
+	<options>
+		
+	</options> <br>
+	<input type="submit" value="Add Friend">
+	</select>
+</form>
+<script>
+	document.addEventListener('DOMContentLoaded', function(event) {
+		fetch('https://localhost:8008/api/listnonfriends/', {
+			method: 'GET',
+			credentials: 'include'  
+		})
+		.then(response => response.json())
+		.then(data => {
+			
+			const select = document.getElementById('addFriendForm').querySelector('select');
+			data.forEach(friend => {
+				const option = document.createElement('option');
+				option.value = friend.username;
+				option.text = friend.username;
+				select.appendChild(option);
+			});
+		})
+		.catch(error => console.error('Error:', error));
+	});
+
+	document.getElementById('addFriendForm').addEventListener('submit', function(event) {
+	    event.preventDefault(); 
+		console.log('Adding friend...');
+	    fetch('https://localhost:8008/api/addfriend/', {
+	        method: 'POST',
+	        credentials: 'include', 
+			headers: { 'X-CSRFToken': getCookie('csrftoken') },
+	        body: new FormData(document.getElementById('addFriendForm'))
+	    })
+	    .then(response => response.json())
+	    .then(data => console.log(data))
+	    .catch(error => console.error('Error:', error));
+	});
+</script>
+<br>
+<br>
+List Friends
+<div id="friends">
+
+</div>
+<script>
+	document.addEventListener('DOMContentLoaded', function(event) {
+		fetch('https://localhost:8008/api/listfriends/', {
+			method: 'GET',
+			credentials: 'include'  
+		})
+		.then(response => response.json())
+		.then(data => {
+			const friends = document.getElementById('friends');
+			console.log(data);
+			// data.forEach(friend => {
+			// 	const friendDiv = document.createElement('li');
+			// 	friendDiv.innerHTML = friend.nonintrafriends;
+			// 	friends.appendChild(friendDiv);
+			// });
+		})
+		.catch(error => console.error('Error:', error));
+	});
+</script>
+
+<br>
+<br>
+Delete Friend
+<form id="deleteFriendForm" action="" method="POST" >
+	<label for="friend">Friend:</label>
+	<select id="friend" name="friend" required>
+	<options>
+		
+	</options> <br>
+	<input type="submit" value="Delete Friend">
+	</select>
+</form>
+<script>
+	document.addEventListener('DOMContentLoaded', function(event) {
+		fetch('https://localhost:8008/api/listfriends/', {
+			method: 'GET',
+			credentials: 'include'  
+		})
+		.then(response => response.json())
+		.then(data => {
+			
+			const select = document.getElementById('deleteFriendForm').querySelector('select');
+			data.forEach(friend => {
+				const option = document.createElement('option');
+				option.value = friend.friend.username;
+				option.text = friend.friend.username;
+				select.appendChild(option);
+			});
+		})
+		.catch(error => console.error('Error:', error));
+	});
+
+	document.getElementById('deleteFriendForm').addEventListener('submit', function(event) {
+	    event.preventDefault(); 
+		console.log('Deleting friend...');
+	    fetch('https://localhost:8008/api/deletefriend/', {
+	        method: 'POST',
+	        credentials: 'include', 
+			headers: { 'X-CSRFToken': getCookie('csrftoken') },
+	        body: new FormData(document.getElementById('deleteFriendForm'))
+	    })
+	    .then(response => response.json())
+	    .then(data => console.log(data))
+	    .catch(error => console.error('Error:', error));
+	});
+</script>
 </body>
 
 </html>

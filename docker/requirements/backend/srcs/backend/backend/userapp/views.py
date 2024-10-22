@@ -10,13 +10,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import IsNotAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import IntraUserSerializer, UserSerializer, AvatarSerializer
+from .serializers import IntraUserSerializer, UserSerializer, AvatarSerializer, FriendSerializer, IntraFriendSerializer
 from .permissions import IsAuthenticatedCustom
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.sessions.models import Session
 from django.contrib.auth.models import User
-from .models import IntraUser, userAvatar
+from .models import IntraUser, userAvatar, userFriend
 from random import randint, randrange
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
@@ -25,6 +25,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework import status
+from django.utils import timezone
+from datetime import timedelta
 
 
 
@@ -43,8 +45,9 @@ def intralogout(request):
     logout(request)
     return redirect('/index')
 
-@login_required(login_url='/intralogin')
+@login_required(login_url='/api/intralogin')
 def get_authenticated_user(request):
+	return HttpResponse("This is get_authenticated_user view")
 	user = request.user
 	return JsonResponse({
 		"id": user.intra_id, 
@@ -55,6 +58,22 @@ def get_authenticated_user(request):
 		"display_name": user.display_name, 
 		"image_url": user.image_url
 		})
+
+# class IntraLoginIncomplete(APIView):
+# 	permission_classes = [AllowAny]
+# 	def get(self, request):
+# 		newdata = {
+# 				"grant_type": "authorization_code",
+# 				"client_id": os.environ.get('API_CLIENT_ID'), 
+# 				"client_secret": os.environ.get('API_CLIENT_SECRET'),
+# 				"redirect_uri": os.environ.get('API_REDIRECT_URI'),
+# 				"code" :	request.GET.get('code'),
+# 			}
+# 		new_user_access_token = requests.post('https://api.intra.42.fr/oauth/token', data=newdata)
+# 		headers = { 'Authorization': 'Bearer ' + new_user_access_token.json()['access_token'] }
+# 		user_info_url = 'https://api.intra.42.fr/v2/me'
+# 		user_info = requests.get(user_info_url, headers=headers)
+# 		return HttpResponse("This is intra login worked")
 
 def get_user_info(code):
 	newdata = {
@@ -70,19 +89,18 @@ def get_user_info(code):
 	user_info = requests.get(user_info_url, headers=headers)
 	return user_info.json()
 
-class intraLoginSuccess(View):
+class IntraLoginComplete(View):
 	def get(self, request):
 		if request.GET.get('code'):
 			code = request.GET.get('code')
 			user_info = get_user_info(code)
 			intra_user = authenticate(request, user=user_info)
 			login(request, intra_user)
-			return redirect('/auth/user')
+			return redirect('https://localhost/login.html')
 		else:
-			return render(request, 'authView.html')
+			return JsonResponse({'error': 'login unable to continue'})
 	def post(self, request):
 		return HttpResponse("This is post request")
-
 
 #get user info from intra
 class getUserInfo(APIView):
@@ -186,12 +204,14 @@ class RegisterNewUser(APIView):
 			while userAvatar.objects.filter(avatar = ('avatars/' + image.name)).exists() == True:
 				image.name = generate_random_filename(username, image.name)
 		username_check = User.objects.filter(username=username)
+		intra_username_check = IntraUser.objects.filter(username=username)
 		email_check = User.objects.filter(email=email)
+		intra_email_check = IntraUser.objects.filter(email=email)
 
 		# Handling duplication
-		if username_check.exists():
+		if username_check.exists() or intra_username_check.exists():
 			return JsonResponse({"error": "username exists"})
-		if email_check.exists():
+		if email_check.exists() or intra_email_check.exists():
 			return JsonResponse({"error": "email exists"})
 		
 		user = User(
@@ -216,10 +236,15 @@ class UpdateUser(APIView):
 
 	def get(self, request):
 		user = request.user
-		user_serialiser = UserSerializer(user, many=False)
-		avatar = userAvatar.objects.get(user=user)
+		if hasattr(user,'intra_id'):
+			user_serialiser = IntraUserSerializer(user, many=False)
+			avatar = userAvatar.objects.get(intra_user=user)
+		else:
+			user_serialiser = UserSerializer(user, many=False)
+			avatar = userAvatar.objects.get(user=user)
 		avatar_serialiser = AvatarSerializer(avatar, many=False)
 		return Response({"user" : user_serialiser.data, "avatar" : avatar_serialiser.data})
+		# return Response({"user" : user_serialiser.data})
 	
 	def post(self, request):
 
@@ -246,7 +271,7 @@ class UpdateUser(APIView):
 		if image != None:
 			avatar = userAvatar.objects.filter(user=user).first()
 			existing_image = avatar.avatar
-			if existing_image != None:
+			if existing_image != None and existing_image != "avatars/default.png":
 				existing_image.delete()
 			image.name = generate_random_filename(username, image.name)
 			avatar.avatar = image
@@ -330,3 +355,95 @@ class ResetPassword(APIView):
 		send_mail(subject, email_body, 'noreply@pingpong', [user.email], fail_silently=False)
 
 		return Response({"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK)
+	
+
+class AddFriend(APIView):
+	permission_classes = [IsAuthenticated]
+	def post(self, request):
+		user = request.user
+		friend_name = request.POST.get('username')
+		friend = User.objects.get(username=friend_name)
+		if userFriend.objects.filter(user=user, friend=friend).exists() == True:
+			return Response({"error": "Friend already exists"})	
+		user_friend = userFriend(user=user, friend=friend)
+		user_friend.save()
+		return Response({"success": "Friend added"})
+	
+
+class ListAllUsers(APIView): # Lists all users except for the user who you logged in as
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		users = User.objects.all().exclude(id=request.user.id)
+		serializer = UserSerializer(users, many=True)
+		return Response(serializer.data)
+	
+# class ListUsersNotAlreadyFriends(APIView):
+# 	permission_classes = [IsAuthenticated]
+# 	def get(self, request):
+# 		users = User.objects.all().exclude(id=request.user.id)
+# 		friends = userFriend.objects.all().filter(user=request.user).values_list('friend', flat=True)
+# 		possible_friends = users.exclude(id__in=friends)
+# 		serializer = UserSerializer(possible_friends, many=True)
+# 		return Response(serializer.data)
+class ListUsersNotAlreadyFriends(APIView):
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		if hasattr(request.user, 'intra_id'):
+			intra_users = IntraUser.objects.all().exclude(username=request.user.username)
+			users = User.objects.all()
+			intra_friends = userFriend.objects.all().filter(intra_user=request.user).values_list('intra_friend', flat=True)
+			friends = userFriend.objects.all().filter(intra_user=request.user).values_list('friend', flat=True)
+			possible_intra_friends = intra_users.exclude(id__in=intra_friends)
+			possible_friends = users.exclude(id__in=friends)
+			# return HttpResponse(possible_friends)
+			intra_serializer = IntraFriendSerializer(possible_intra_friends, many=True)
+			serializer = UserSerializer(possible_friends, many=True)
+			return Response({'intrafriends': intra_serializer.data, 'nonintrafriends':serializer.data})
+
+			
+		# else:
+		# 	users = User.objects.all().exclude(id=request.user.id)
+		# friends = userFriend.objects.all().filter(user=request.user).values_list('friend', flat=True)
+		# possible_friends = users.exclude(id__in=friends)
+		# serializer = UserSerializer(possible_friends, many=True)
+		# return Response(serializer.data)
+	
+	
+class ListFriends(APIView):
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+
+		user = request.user
+		if hasattr(user , 'intra_id'):
+			users = userFriend.objects.all().filter(intra_user=user)
+			other_users = User.objects.all() 
+		# else:
+		# 	users = userFriend.objects.all()
+		# 	other_users = IntraUser.objects.all().filter(user=user)
+
+		intra_serializer = IntraFriendSerializer(other_users, many=True)
+		serializer = FriendSerializer(users, many=True)
+		return Response({'intrafriends': intra_serializer.data, 'nonintrafriends':serializer.data})
+
+class DeleteFriend(APIView):
+	permission_classes = [IsAuthenticated]
+	def post(self, request):
+		user = request.user
+		friend = request.POST.get('friend')
+		friend_object = User.objects.get(username=friend)
+		to_delete = userFriend.objects.all().filter(user=request.user, friend=friend_object)
+		to_delete.delete()
+		return Response({'success': f'{friend} has been deleted from your friends list'})
+
+class GetOnlineStatus(APIView):
+	PermissionClasses = [IsAuthenticated]
+	def get(self, request):
+		users = userFriend.objects.all().filter(user=request.user)
+		status = {}
+		for x in users:
+			if x.friend.last_login > timezone.now() - timedelta(minutes=5):
+				status[x.friend.username] = True
+			else:
+				status[x.friend.username] = False
+		return Response(status)
+

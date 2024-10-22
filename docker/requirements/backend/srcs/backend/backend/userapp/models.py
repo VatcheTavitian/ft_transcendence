@@ -25,4 +25,12 @@ class IntraUser(models.Model):
 class userAvatar(models.Model):
 	id = models.AutoField(primary_key=True)
 	avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+	intra_user = models.OneToOneField(IntraUser, on_delete=models.CASCADE, null=True)
+
+class userFriend(models.Model):
+	id = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='non_intra_user')
+	friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='non_intra_friend')
+	intra_user = models.ForeignKey(IntraUser, on_delete=models.CASCADE, null=True, related_name='intra_user')
+	intra_friend = models.ForeignKey(IntraUser, on_delete=models.CASCADE, null=True,related_name='intra_friend')
