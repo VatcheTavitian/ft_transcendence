@@ -63,7 +63,7 @@ ENV EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y nginx supervisor openssl tree && \
+    apt-get install -y nginx supervisor openssl tree  postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
