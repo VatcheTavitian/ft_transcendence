@@ -188,7 +188,6 @@ Update existing user
 				if (data.avatar.avatar.startsWith('/media/https')) {
             		const avatarUrl = data.avatar.avatar.replace('/media/', '');
 					form.querySelector('#current_photo').src = decodeURIComponent(avatarUrl).replace('https:/', 'https://');
-					console.log(avatarUrl)
 				}
 				else {
 					form.querySelector('#current_photo').src = "https://localhost:8008" + data.avatar.avatar;
@@ -299,17 +298,27 @@ Change Password
 	document.addEventListener('DOMContentLoaded', function(event) {
 		fetch('https://localhost:8008/api/listnonfriends/', {
 			method: 'GET',
-			credentials: 'include'  
+			credentials: 'include',
+			headers: { 'X-CSRFToken': getCookie('csrftoken') },
 		})
 		.then(response => response.json())
 		.then(data => {
-			
 			const select = document.getElementById('addFriendForm').querySelector('select');
-			data.forEach(friend => {
-				const option = document.createElement('option');
-				option.value = friend.username;
-				option.text = friend.username;
-				select.appendChild(option);
+			data.nonintrafriends.forEach(friend => {
+				if (friend && friend.username) {
+					const option = document.createElement('option');
+					option.value = friend.username;
+					option.text = friend.username;
+					select.appendChild(option);
+				}
+			});
+			data.intrafriends.forEach(friend => {
+				if (friend && friend.username) {
+					const option = document.createElement('option');
+					option.value = friend.username;
+					option.text = friend.username;
+					select.appendChild(option);
+				}
 			});
 		})
 		.catch(error => console.error('Error:', error));
@@ -339,17 +348,28 @@ List Friends
 	document.addEventListener('DOMContentLoaded', function(event) {
 		fetch('https://localhost:8008/api/listfriends/', {
 			method: 'GET',
-			credentials: 'include'  
+			credentials: 'include',
+			headers: { 'X-CSRFToken': getCookie('csrftoken') },
 		})
 		.then(response => response.json())
 		.then(data => {
-			const friends = document.getElementById('friends');
-			console.log(data);
-			// data.forEach(friend => {
-			// 	const friendDiv = document.createElement('li');
-			// 	friendDiv.innerHTML = friend.nonintrafriends;
-			// 	friends.appendChild(friendDiv);
-			// });
+			const select = document.getElementById('friends')
+			if (data.nonintrafriends) {
+				data.nonintrafriends.forEach(friend => {
+					const friendDiv = document.createElement('li');
+					if (friend.friend && friend.friend.username) {
+						friendDiv.innerHTML = friend.friend.username;
+						friends.appendChild(friendDiv);
+					}
+				})
+			}
+			data.intrafriends.forEach(intrafriend => {
+				const friendDiv = document.createElement('li');
+				if (intrafriend.intra_friend && intrafriend.intra_friend.username) {
+					friendDiv.innerHTML = intrafriend.intra_friend.username;
+					friends.appendChild(friendDiv);
+				}
+			});
 		})
 		.catch(error => console.error('Error:', error));
 	});
@@ -371,19 +391,44 @@ Delete Friend
 	document.addEventListener('DOMContentLoaded', function(event) {
 		fetch('https://localhost:8008/api/listfriends/', {
 			method: 'GET',
-			credentials: 'include'  
+			credentials: 'include',
+			headers: { 'X-CSRFToken': getCookie('csrftoken') },
 		})
 		.then(response => response.json())
 		.then(data => {
-			
 			const select = document.getElementById('deleteFriendForm').querySelector('select');
-			data.forEach(friend => {
+			if (data.nonintrafriends) {
+				data.nonintrafriends.forEach(friend => {
+					const option = document.createElement('option');
+					if (friend.friend && friend.friend.username) {
+						option.value = friend.friend.username;
+						option.text = friend.friend.username;
+						select.appendChild(option);
+					}
+				})
+			}
+			data.intrafriends.forEach(intrafriend => {
 				const option = document.createElement('option');
-				option.value = friend.friend.username;
-				option.text = friend.friend.username;
-				select.appendChild(option);
+				if (intrafriend.intra_friend && intrafriend.intra_friend.username) {
+					option.value = intrafriend.intra_friend.username;
+					option.text = intrafriend.intra_friend.username;
+					select.appendChild(option);
+				}
 			});
 		})
+
+
+		// .then(data => {
+			
+		// 	const select = document.getElementById('deleteFriendForm').querySelector('select');
+		// 	data.forEach(friend => {
+		// 		const option = document.createElement('option');
+		// 		option.value = friend.friend.username;
+		// 		option.text = friend.friend.username;
+		// 		select.appendChild(option);
+		// 	});
+		// })
+
 		.catch(error => console.error('Error:', error));
 	});
 

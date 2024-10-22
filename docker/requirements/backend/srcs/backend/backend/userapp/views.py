@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.sessions.models import Session
 from django.contrib.auth.models import User
-from .models import IntraUser, userAvatar, userFriend
+from .models import IntraUser, userAvatar, userFriend, lastActive
 from random import randint, randrange
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
@@ -75,6 +75,12 @@ def get_authenticated_user(request):
 # 		user_info = requests.get(user_info_url, headers=headers)
 # 		return HttpResponse("This is intra login worked")
 
+def update_last_active(request):
+	if hasattr(request.user,'intra_id'):
+			lastActive.objects.get(intrauser=request.user).update_last_active()
+	else:
+		lastActive.objects.get(user=request.user).update_last_active()
+
 def get_user_info(code):
 	newdata = {
 				"grant_type": "authorization_code",
@@ -96,6 +102,8 @@ class IntraLoginComplete(View):
 			user_info = get_user_info(code)
 			intra_user = authenticate(request, user=user_info)
 			login(request, intra_user)
+			if (lastActive.objects.filter(intrauser=intra_user).exists() == False):
+				lastActive.objects.create(intrauser=intra_user)
 			return redirect('https://localhost/login.html')
 		else:
 			return JsonResponse({'error': 'login unable to continue'})
@@ -119,6 +127,8 @@ class loginNonIntra(APIView):
 		user = authenticate(request, username=request.data.get('username') , password=request.data.get('password'))
 		if user is not None:
 			login(request, user)
+			if (lastActive.objects.filter(user=user).exists() == False):
+				lastActive.objects.create(user=user)
 			return JsonResponse({"message": "success"})
 		else:
 			return JsonResponse({"message": "failed"})
@@ -151,6 +161,8 @@ class LoginUser(APIView):
 		user = authenticate(request, username=username , password=password)
 		if user is not None:
 			login(request, user)
+			if (lastActive.objects.filter(user=user).exists() == False):
+				lastActive.objects.create(user=user)
 			serialized = UserSerializer(user, many=False)
 			return Response(serialized.data)
 		else:
@@ -168,6 +180,7 @@ class LogoutUser(APIView):
 class GetUserInfo(APIView):
 	permission_classes = [IsAuthenticated]
 	def get(self, request):
+		update_last_active(request)
 		user = request.user
 		if hasattr(user,'intra_id'):
 			serializer = IntraUserSerializer(user, many=False)
@@ -235,6 +248,7 @@ class UpdateUser(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def get(self, request):
+		update_last_active(request)
 		user = request.user
 		if hasattr(user,'intra_id'):
 			user_serialiser = IntraUserSerializer(user, many=False)
@@ -244,10 +258,9 @@ class UpdateUser(APIView):
 			avatar = userAvatar.objects.get(user=user)
 		avatar_serialiser = AvatarSerializer(avatar, many=False)
 		return Response({"user" : user_serialiser.data, "avatar" : avatar_serialiser.data})
-		# return Response({"user" : user_serialiser.data})
 	
 	def post(self, request):
-
+		update_last_active(request)
 		user = request.user
 		username = request.POST.get('username')
 		password = request.POST.get('password')
@@ -287,6 +300,7 @@ class UpdateUser(APIView):
 class UpdatePassword(APIView):
 	permission_classes = [IsAuthenticated]
 	def post(self, request):
+		update_last_active(request)
 		user = request.user
 		old_password = request.POST.get('old_password')
 		new_password = request.POST.get('new_password')
@@ -304,26 +318,26 @@ class UpdatePassword(APIView):
 			return JsonResponse({"error": "Incorrect password"})
 		
 
-class ForgotPassword(APIView):
-	permission_classes = [AllowAny]
-	def post(self, request):
-		user = request.user
-		old_password = request.POST.get('old_password')
-		new_password = request.POST.get('new_password')
-		confirm_password = request.POST.get('confirm_password')
-		if new_password != confirm_password:
-			return JsonResponse({"error": "Passwords do not match"})
-		if user.check_password(old_password):
-			user.set_password(new_password)
-			user.save()
-			if not hasattr(user, 'backend'):
-				user.backend = 'django.contrib.auth.backends.ModelBackend'
-			login(request, user, backend=user.backend)
-			return JsonResponse({"success": "Password changed"})
-		else:
-			return JsonResponse({"error": "Incorrect password"})
+# class ForgotPassword(APIView):
+# 	permission_classes = [AllowAny]
+# 	def post(self, request):
+# 		user = request.user
+# 		old_password = request.POST.get('old_password')
+# 		new_password = request.POST.get('new_password')
+# 		confirm_password = request.POST.get('confirm_password')
+# 		if new_password != confirm_password:
+# 			return JsonResponse({"error": "Passwords do not match"})
+# 		if user.check_password(old_password):
+# 			user.set_password(new_password)
+# 			user.save()
+# 			if not hasattr(user, 'backend'):
+# 				user.backend = 'django.contrib.auth.backends.ModelBackend'
+# 			login(request, user, backend=user.backend)
+# 			return JsonResponse({"success": "Password changed"})
+# 		else:
+# 			return JsonResponse({"error": "Incorrect password"})
 		
-		from django.contrib.auth.views import PasswordResetView
+# 		from django.contrib.auth.views import PasswordResetView
 
 class ResetPassword(APIView):
 	permission_classes = [IsNotAuthenticated]
@@ -357,69 +371,132 @@ class ResetPassword(APIView):
 		return Response({"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK)
 	
 
+# class AddFriend(APIView):
+# 	permission_classes = [IsAuthenticated]
+# 	def post(self, request):
+# 		user = request.user
+# 		friend_name = request.POST.get('username')
+# 		friend = User.objects.get(username=friend_name)
+# 		if userFriend.objects.filter(user=user, friend=friend).exists() == True:
+# 			return Response({"error": "Friend already exists"})	
+# 		user_friend = userFriend(user=user, friend=friend)
+# 		user_friend.save()
+# 		return Response({"success": "Friend added"})
+
 class AddFriend(APIView):
 	permission_classes = [IsAuthenticated]
 	def post(self, request):
+		update_last_active(request)
 		user = request.user
 		friend_name = request.POST.get('username')
-		friend = User.objects.get(username=friend_name)
-		if userFriend.objects.filter(user=user, friend=friend).exists() == True:
-			return Response({"error": "Friend already exists"})	
-		user_friend = userFriend(user=user, friend=friend)
-		user_friend.save()
-		return Response({"success": "Friend added"})
-	
+		if hasattr(user, 'intra_id'):
+			if (User.objects.filter(username=friend_name).exists() == True):
+				friend_object = User.objects.get(username=friend_name)
+				if userFriend.objects.filter(intra_user=user, friend=friend_object).exists():
+					return Response({"error": "Friend already exists"})
+				user_friend = userFriend(intra_user=user, friend=friend_object)
+				user_friend.save()
+			else:
+				friend_object = IntraUser.objects.get(username=friend_name)
+				if userFriend.objects.filter(intra_user=user, intra_friend=friend_object).exists():
+					return Response({"error": "Friend already exists"})
+				user_friend = userFriend(intra_user=user, intra_friend=friend_object)
+				user_friend.save()
+			return Response({"success": "Friend added"})
+		else:
+			if (User.objects.filter(username=friend_name).exists() == True):
+				friend_object = User.objects.get(username=friend_name)
+				if userFriend.objects.filter(user=user, friend=friend_object).exists():
+					return Response({"error": "Friend already exists"})
+				user_friend = userFriend(user=user, friend=friend_object)
+				user_friend.save()
+			else:
+				friend_object = IntraUser.objects.get(username=friend_name)
+				if userFriend.objects.filter(user=user, intra_friend=friend_object).exists():
+					return Response({"error": "Friend already exists"})
+				user_friend = userFriend(user=user, intra_friend=friend_object)
+				user_friend.save()
+			return Response({"success": "Friend added"})
+
 
 class ListAllUsers(APIView): # Lists all users except for the user who you logged in as
 	permission_classes = [IsAuthenticated]
 	def get(self, request):
+		update_last_active(request)
 		users = User.objects.all().exclude(id=request.user.id)
 		serializer = UserSerializer(users, many=True)
 		return Response(serializer.data)
 	
+
 # class ListUsersNotAlreadyFriends(APIView):
 # 	permission_classes = [IsAuthenticated]
 # 	def get(self, request):
-# 		users = User.objects.all().exclude(id=request.user.id)
-# 		friends = userFriend.objects.all().filter(user=request.user).values_list('friend', flat=True)
-# 		possible_friends = users.exclude(id__in=friends)
-# 		serializer = UserSerializer(possible_friends, many=True)
-# 		return Response(serializer.data)
+# 		if hasattr(request.user, 'intra_id'):
+# 			intra_users = IntraUser.objects.all().exclude(id=request.user.id)
+# 			# intra_friends = userFriend.objects.filter(intra_user=request.user)
+# 			# intra_friends_with_intra_friends = intra_friends.values_list('intra_friend_id', flat=True)
+# 			# possible_intra_friends = intra_users.exclude(id__in=intra_friends)
+# 			# intra_serializer = IntraUserSerializer(possible_intra_friends, many=True)
+# 			users = User.objects.all()
+# 			# friends = userFriend.objects.all().filter(intra_user=request.user).values_list('friend', flat=True).exclude(intra_friend_id__isnull=True)
+# 			# possible_friends = users.exclude(id__in=friends)
+# 			# intra_serializer = UserSerializer(possible_intra_friends, many=True)
+# 			# serializer = UserSerializer(possible_friends, many=True)
+# 			serializer = UserSerializer(users, many=True)
+# 			intra_serializer = IntraUserSerializer(intra_users, many=True)
+# 			return Response({'intrafriends': intra_serializer.data, 'nonintrafriends':serializer.data})
+# 		else:
+# 			intra_users = IntraUser.objects.all()
+# 			all_friends = userFriend.objects.filter(user=request.user)
+# 			intra_friends = all_friends.values_list('intra_friend_id', flat=True).exclude(intra_friend_id__isnull=True)
+# 			possible_intra_friends = intra_users.exclude(id__in=intra_friends)
+# 			users = User.objects.all().exclude(id=request.user.id)
+# 			friends = userFriend.objects.all().filter(user=request.user).values_list('friend', flat=True) #.exclude(friend_id__isnull=True)
+# 			intra_serializer = UserSerializer(possible_intra_friends, many=True)
+# 			possible_friends = users.exclude(id__in=friends)
+# 			serializer = UserSerializer(possible_friends, many=True)
+# 			return Response({'intrafriends': intra_serializer.data, 'nonintrafriends':serializer.data})
+
 class ListUsersNotAlreadyFriends(APIView):
 	permission_classes = [IsAuthenticated]
 	def get(self, request):
+		update_last_active(request)
 		if hasattr(request.user, 'intra_id'):
-			intra_users = IntraUser.objects.all().exclude(username=request.user.username)
+			intra_users = IntraUser.objects.all().exclude(id=request.user.id)
+			intra_friends = userFriend.objects.filter(intra_user=request.user)
+			intra_friends_with_intra_friends = intra_friends.values_list('intra_friend_id', flat=True).exclude(intra_friend_id__isnull=True)
+			possible_intra_friends = intra_users.exclude(id__in=intra_friends_with_intra_friends)
+			intra_serializer = IntraUserSerializer(possible_intra_friends, many=True)
 			users = User.objects.all()
-			intra_friends = userFriend.objects.all().filter(intra_user=request.user).values_list('intra_friend', flat=True)
-			friends = userFriend.objects.all().filter(intra_user=request.user).values_list('friend', flat=True)
-			possible_intra_friends = intra_users.exclude(id__in=intra_friends)
+			friends = userFriend.objects.all().filter(intra_user=request.user).values_list('friend', flat=True).exclude(friend_id__isnull=True)
 			possible_friends = users.exclude(id__in=friends)
-			# return HttpResponse(possible_friends)
-			intra_serializer = IntraFriendSerializer(possible_intra_friends, many=True)
+			intra_serializer = IntraUserSerializer(possible_intra_friends, many=True)
 			serializer = UserSerializer(possible_friends, many=True)
 			return Response({'intrafriends': intra_serializer.data, 'nonintrafriends':serializer.data})
-
-			
-		# else:
-		# 	users = User.objects.all().exclude(id=request.user.id)
-		# friends = userFriend.objects.all().filter(user=request.user).values_list('friend', flat=True)
-		# possible_friends = users.exclude(id__in=friends)
-		# serializer = UserSerializer(possible_friends, many=True)
-		# return Response(serializer.data)
-	
+		else:
+			intra_users = IntraUser.objects.all()
+			all_friends = userFriend.objects.filter(user=request.user)
+			intra_friends = all_friends.values_list('intra_friend_id', flat=True).exclude(intra_friend_id__isnull=True)
+			possible_intra_friends = intra_users.exclude(id__in=intra_friends)
+			users = User.objects.all().exclude(id=request.user.id)
+			friends = userFriend.objects.all().filter(user=request.user).values_list('friend', flat=True).exclude(friend_id__isnull=True)
+			intra_serializer = IntraUserSerializer(possible_intra_friends, many=True)
+			possible_friends = users.exclude(id__in=friends)
+			serializer = UserSerializer(possible_friends, many=True)
+			return Response({'intrafriends': intra_serializer.data, 'nonintrafriends':serializer.data})
+		
 	
 class ListFriends(APIView):
 	permission_classes = [IsAuthenticated]
 	def get(self, request):
-
+		update_last_active(request)
 		user = request.user
 		if hasattr(user , 'intra_id'):
-			users = userFriend.objects.all().filter(intra_user=user)
-			other_users = User.objects.all() 
-		# else:
-		# 	users = userFriend.objects.all()
-		# 	other_users = IntraUser.objects.all().filter(user=user)
+			users = userFriend.objects.filter(intra_user=user)
+			other_users = userFriend.objects.filter(intra_user=user)
+		else:
+			users = userFriend.objects.filter(user=user)
+			other_users = userFriend.objects.filter(user=user)
 
 		intra_serializer = IntraFriendSerializer(other_users, many=True)
 		serializer = FriendSerializer(users, many=True)
@@ -428,22 +505,63 @@ class ListFriends(APIView):
 class DeleteFriend(APIView):
 	permission_classes = [IsAuthenticated]
 	def post(self, request):
+		update_last_active(request)
 		user = request.user
-		friend = request.POST.get('friend')
-		friend_object = User.objects.get(username=friend)
-		to_delete = userFriend.objects.all().filter(user=request.user, friend=friend_object)
-		to_delete.delete()
-		return Response({'success': f'{friend} has been deleted from your friends list'})
+		friend_name = request.POST.get('friend')
+		if hasattr(user, 'intra_id'):
+			if (User.objects.filter(username=friend_name).exists() == True):
+				friend_object = User.objects.get(username=friend_name)
+				if userFriend.objects.filter(intra_user=user, friend=friend_object).exists():
+					user_friend = userFriend.objects.get(intra_user=user, friend=friend_object)
+					user_friend.delete()
+			else:
+				friend_object = IntraUser.objects.get(username=friend_name)
+				if userFriend.objects.filter(intra_user=user, intra_friend=friend_object).exists():
+					user_friend = userFriend.objects.get(intra_user=user, intra_friend=friend_object)
+					user_friend.delete()
+			return Response({"success": "Friend deleted"})
+		else:
+			if (User.objects.filter(username=friend_name).exists() == True):
+				friend_object = User.objects.get(username=friend_name)
+				if userFriend.objects.filter(user=user, friend=friend_object).exists():
+					user_friend = userFriend.objects.get(user=user, friend=friend_object)
+					user_friend.delete()
+					return Response({"success": "Friend deleted"})
+			else:
+				friend_object = IntraUser.objects.get(username=friend_name)
+				if userFriend.objects.filter(user=user, intra_friend=friend_object).exists():
+					user_friend = userFriend.objects.get(user=user, intra_friend=friend_object)
+					user_friend.delete()
+					return Response({"success": "Friend deleted"})
 
 class GetOnlineStatus(APIView):
 	PermissionClasses = [IsAuthenticated]
 	def get(self, request):
-		users = userFriend.objects.all().filter(user=request.user)
+		update_last_active(request)
+		if hasattr(request.user, 'intra_id'):
+			users = userFriend.objects.all().filter(intra_user=request.user)
+		else:
+			users = userFriend.objects.all().filter(user=request.user)
+		# return HttpResponse(users)
 		status = {}
 		for x in users:
-			if x.friend.last_login > timezone.now() - timedelta(minutes=5):
-				status[x.friend.username] = True
-			else:
-				status[x.friend.username] = False
+			if x and x.intra_friend:
+				if lastActive.objects.filter(intrauser=x.intra_friend).exists():
+					online = lastActive.objects.get(intrauser=x.intra_friend).last_active
+					if online and online > timezone.now() - timedelta(minutes=5):
+						status[x.intra_friend.username] = True
+					else:
+						status[x.intra_friend.username] = False
+				else:
+					status[x.intra_friend.username] = False
+			if x and x.friend:
+				if lastActive.objects.filter(user=x.friend).exists():
+					online = lastActive.objects.get(user=x.friend).last_active
+					if online and online > timezone.now() - timedelta(minutes=5):
+						status[x.friend.username] = True
+					else:
+						status[x.friend.username] = False
+				else:
+					status[x.friend.username] = False
 		return Response(status)
 

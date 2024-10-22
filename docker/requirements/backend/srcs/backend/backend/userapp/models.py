@@ -1,6 +1,7 @@
 from django.db import models
 from .managers import IntraUserOAuthManager
 from django.contrib.auth.models import User
+from django.utils import timezone
 # Create your models here.
 
 class IntraUser(models.Model):
@@ -30,7 +31,17 @@ class userAvatar(models.Model):
 
 class userFriend(models.Model):
 	id = models.AutoField(primary_key=True)
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='non_intra_user')
-	friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='non_intra_friend')
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='non_intra_user')
+	friend = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='non_intra_friend')
 	intra_user = models.ForeignKey(IntraUser, on_delete=models.CASCADE, null=True, related_name='intra_user')
 	intra_friend = models.ForeignKey(IntraUser, on_delete=models.CASCADE, null=True,related_name='intra_friend')
+
+class lastActive(models.Model):
+
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+	intrauser = models.OneToOneField(IntraUser, on_delete=models.CASCADE, null=True)
+	last_active = models.DateTimeField(auto_now=True)
+
+	def update_last_active(self):
+		self.last_active = timezone.now()
+		self.save()
