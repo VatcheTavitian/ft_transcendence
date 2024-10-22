@@ -86,9 +86,11 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy the SSL generation script
 COPY ./tools/script.sh /init_script.sh
+COPY ./tools/entry.sh .
 
 # Generate SSL certificates
 RUN chmod +x /init_script.sh && \
+    chmod +x entry.sh && \
     /init_script.sh && \
     rm /init_script.sh 
 
@@ -99,5 +101,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 # Expose the port for the backend
 EXPOSE 80
 
+
 # Command to run supervisord
-CMD ["/usr/bin/supervisord"]
+# CMD ["/usr/bin/supervisord"]
+ENTRYPOINT [ "./entry.sh" ]

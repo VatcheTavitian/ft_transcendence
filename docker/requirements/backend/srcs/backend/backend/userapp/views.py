@@ -136,7 +136,7 @@ class loginNonIntra(APIView):
 class test(APIView):
 	permission_classes = [IsAuthenticated]
 	def get(self, request):
-		return JsonResponse({"message": "success!})"})
+		return JsonResponse({"message": "success from django backend!})"})
 	
 
 def input_validation(*args):

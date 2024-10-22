@@ -29,7 +29,7 @@ urlpatterns = [
 	# path('intraloginsuccess/', intraLoginSuccess.as_view(), name='intraloginsuccess'),
 	# path('logout/', intralogout, name='logout'),
 	# path('intralogin/', loginNonIntra.as_view(), name='intralogin'),
-	path('test/', test.as_view(), name='test'),
+	path('api/test/', test.as_view(), name='test'),
 	
 	path('api/auth/user/', get_authenticated_user, name='get_authenticated_user'),
 	path('api/getuserinfo/', getUserInfo.as_view(), name='getuserinfo'),
