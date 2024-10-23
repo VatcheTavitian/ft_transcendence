@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-
+from django.core.mail.backends.smtp import EmailBackend
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'backendmicro.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "userapp",
+        "NAME": "gameapp",
         "USER": "postgres",
         "PASSWORD": "postgres",
         "HOST": "postgres",  # or "postgres" if using Docker
@@ -141,4 +142,41 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
+	'x-csrftoken',
 ]
+
+AUTHENTICATION_BACKENDS = [
+	'userapp.auth.IntraAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',  
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer', #this will render a view when you visit the api in the browser
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+	  'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+		'rest_framework.authentication.SessionAuthentication',
+    ),
+}
+
+LOGIN_URL = '/intralogin'
+
+SESSION_COOKIE_NAME = 'sessionid'  # Default
+SESSION_COOKIE_SECURE = True  # Use only for HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust based on your needs
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER =os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD =os.environ.get('EMAIL_HOST_PASSWORD')

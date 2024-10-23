@@ -47,6 +47,7 @@
 FROM alpine:3.18
 
 ARG DB_NAME
+ARG DB_NAME2
 ARG DB_USER
 ARG DB_PASS
 ARG DB_HOST
@@ -74,7 +75,9 @@ USER postgres
 RUN pg_ctl -D /var/lib/postgresql/data -l /var/lib/postgresql/data/logfile start && \
     psql -c "ALTER USER ${DB_USER} WITH PASSWORD '${DB_PASS}';" && \
     psql -c "CREATE DATABASE ${DB_NAME};" && \
+    psql -c "CREATE DATABASE ${DB_NAME2};" && \
     psql -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_USER};" && \
+    psql -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME2} TO ${DB_USER};" && \
     pg_ctl -D /var/lib/postgresql/data stop
 
 # Allow all IP addresses to connect

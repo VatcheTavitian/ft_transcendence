@@ -130,6 +130,7 @@ services:
       dockerfile: Dockerfile
       args:
         DB_NAME: ${DB_NAME}
+        DB_NAME2: ${DB_NAME2}
         DB_USER: ${DB_USER}
         DB_PASS: ${DB_PASS}
         DB_HOST: ${DB_HOST}
@@ -176,7 +177,15 @@ services:
         CERTIFICATE_PATH: ${CERTIFICATE_PATH}
         VALUE: ${VALUE}
         GUNICORN_WD_BACKEND_MICRO: ${GUNICORN_WD_BACKEND_MICRO}
-        PYTHONPATHBACKENDMICRO: ${PYTHONPATHBACKENDMICRO}
+        API_CLIENT_ID: ${API_CLIENT_ID}
+        API_CLIENT_SECRET: ${API_CLIENT_SECRET}
+        API_REDIRECT_URI: ${API_REDIRECT_URI}
+        DB_HOST: postgres
+     
+        GUNICORN_WD_BACKEND: ${GUNICORN_WD_BACKEND}
+        PYTHONPATH: ${PYTHONPATHBACKENDMICRO}
+        EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+        EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
     env_file:
       - .env
     ports:
