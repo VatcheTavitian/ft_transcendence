@@ -140,6 +140,8 @@ services:
       - "5432:5432"
     networks:
       - nwtranscendence
+    # volumes:
+    #   - db-volume:/var/lib/postgresql/data
     restart: always
 
   backend:
@@ -164,6 +166,8 @@ services:
       - "8008:8008"
     networks:
       - nwtranscendence
+    volumes:
+      - backend-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -192,6 +196,8 @@ services:
       - "8009:8009"
     networks:
       - nwtranscendence
+    volumes:
+      - backendmicro-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -210,10 +216,42 @@ services:
       - "443:443"
     networks:
       - nwtranscendence
+    volumes:
+      - frontend-volume:/var/www/html
     depends_on:
       - backend
       - backendmicro
     restart: always
+
+    
+
+volumes:
+  db-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Documents/dbforft
+
+  backend-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
+    
+  
+  backendmicro-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
+
+  frontend-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
+
+
 
 networks:
   nwtranscendence:

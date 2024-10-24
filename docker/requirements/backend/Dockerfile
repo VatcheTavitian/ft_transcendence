@@ -88,7 +88,7 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./tools/script.sh /init_script.sh
 COPY ./tools/entry.sh .
 
-# Generate SSL certificates
+# Generate SSL certificates and database
 RUN chmod +x /init_script.sh && \
     chmod +x entry.sh && \
     /init_script.sh && \
@@ -103,5 +103,5 @@ EXPOSE 80
 
 
 # Command to run supervisord
-# CMD ["/usr/bin/supervisord"]
-ENTRYPOINT [ "./entry.sh" ]
+CMD ["/usr/bin/supervisord"]
+# ENTRYPOINT [ "./entry.sh" ]

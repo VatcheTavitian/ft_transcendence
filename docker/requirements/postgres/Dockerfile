@@ -52,6 +52,7 @@ ARG DB_USER
 ARG DB_PASS
 ARG DB_HOST
 
+
 RUN apk update && apk add --no-cache postgresql postgresql-client su-exec
 
 # Create the PostgreSQL data directory with the correct ownership and permissions

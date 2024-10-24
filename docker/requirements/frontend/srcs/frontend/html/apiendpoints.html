@@ -71,13 +71,23 @@
 	https://localhost:8008/api/getonlinestatus/
 	GET request gets online status of friends
 
-	Get game info/display stats such as win or loss
-	Update game history
-	Get match history
-	Get random player for tournament (Matchmaking)
-	User profiles display stats, such as wins and losses.
-	Each user has a Match History including 1v1 games, dates, and relevant
-	details, accessible to logged-in users. make sure to add an api call to change the user name in games table if the username is changed in userapp
+
+	GAME MICROSERVICE API CALLS
+	Get game info
+	https://localhost:8008/api/get_all_scores
+	GET request gets all game info
+
+	Add match
+	https://localhost:8008/api/add_match
+	POST request adds match to game info. Requires player1, player2, player1_score, player2_score. Returns game info if successful.
+
+	Get player scores/stats  
+	https://localhost:8008/api/get_player_scores?player= 
+	GET request gets player scores/stats. Requires player name in url. Returns player stats if successful.
+
+
+	Get random player for tournament (Matchmaking)?
+	Is there a need for api for this?
 	
 
 </body>

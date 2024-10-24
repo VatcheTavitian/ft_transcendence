@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-z-y8%7&q9i@_$!^tm(le6q*%4qu=yq_)9@81akts1pv)f2*_%7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["backendmicro"] # if you want to access directly from the browser, add "localhost" to the list
 
 
 # Application definition
@@ -43,14 +43,18 @@ INSTALLED_APPS = [
 	'rest_framework',
 ]
 
+
+# I deactivated the middleware because an API call being made from another django backend in another container can
+# create a session_id conflict as it tries to create a new session. Happens if the API call is made from a browser directly using the url
+# eg browsing to https://localhost:8009/api/get_all_scores
 MIDDLEWARE = [
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
 	'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 

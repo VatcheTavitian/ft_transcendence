@@ -49,6 +49,13 @@ urlpatterns = [
     path('api/listnonfriends/', views.ListUsersNotAlreadyFriends.as_view(), name='listnonfriends'),
     path('api/deletefriend/', views.DeleteFriend.as_view(), name="deletefriend"),
     path('api/getonlinestatus/', views.GetOnlineStatus.as_view(), name="getonlinestatus"),
+
+    # Calls to gameapp
+
+    path('api/get_all_scores/', views.GetAllScoresAPICall.as_view(), name='getallscores'),
+    path('api/add_match/', views.AddMatchAPICall.as_view()),
+	path('api/get_player_scores/', views.GetPlayerScoresAPICall.as_view()),
+
 ]
 
 if settings.DEBUG:

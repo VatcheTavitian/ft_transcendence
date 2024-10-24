@@ -3,20 +3,24 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import MatchHistory
 from .serializers import MatchHistorySerializer
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 def test(request):
 	return HttpResponse("This is test view for backend micro")
 
 class AddMatch(APIView):
+	permission_classes = [AllowAny]
 	def post(self, request):
+		if (request.POST.get('player1') == None or request.POST.get('player2') == None or request.POST.get('player1_score') == None or request.POST.get('player2_score') == None):
+			return Response({'error' : "Invalid data"})
 		player1 = request.POST.get('player1')
 		player2 = request.POST.get('player2')
 		player1_score = request.POST.get('player1_score')
 		player2_score = request.POST.get('player2_score')
 		if player1_score > player2_score:
 			winner = player1
-		if player1_score == player2_score:
+		elif player1_score == player2_score:
 			winner = 'draw'
 		else:
 			winner = player2
@@ -26,12 +30,14 @@ class AddMatch(APIView):
 	
 
 class GetAllScores(APIView):
+	permission_classes = [AllowAny]
 	def get(self, request):
 		matches = MatchHistory.objects.all()
 		serializer = MatchHistorySerializer(matches, many=True)
 		return Response(serializer.data)
 	
 class GetPlayerScores(APIView):
+	permission_classes = [AllowAny]
 	def get(self, request):
 		player = request.GET.get('player')
 		matches = MatchHistory.objects.filter(player1=player) | MatchHistory.objects.filter(player2=player)
@@ -39,7 +45,11 @@ class GetPlayerScores(APIView):
 		return Response(serializer.data)
 	
 class UpdatePlayerName(APIView):
+	permission_classes = [AllowAny]
 	def post(self, request):
+		print("test " * 200)
+		if (request.POST.get('player') == None or request.POST.get('new_name') == None):
+			return Response({'error' : "Invalid data"})
 		player = request.POST.get('player')
 		new_name = request.POST.get('new_name')
 		matches = MatchHistory.objects.filter(player1=player)

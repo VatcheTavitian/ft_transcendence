@@ -295,10 +295,10 @@ class UpdateUser(APIView):
 			avatar = userAvatar.objects.get(user=user)
 		user.save()
 		# update gameapptable
-		# payload = {'player': player, 'new_name': username}
-		# r = requests.post('https://localhost:8009/api/update_player_name/', data=payload)
-		# if (r.status_code != 200):
-		# 	return JsonResponse({"error": "Failed to update MatchHistory with new username"})
+		payload = {'player': player, 'new_name': username}
+		r = requests.post('https://backendmicro:8009/api/update_player_name/', data=payload, verify=False)
+		if (r.status_code != 200):
+			return JsonResponse({"error": "Failed to update MatchHistory with new username"})
 		user_serialiser = UserSerializer(user, many=False)
 		avatar_serialiser = AvatarSerializer(avatar, many=False)
 		return Response({"success": "User updated", "user" : user_serialiser.data, "avatar" : avatar_serialiser.data})
@@ -572,3 +572,33 @@ class GetOnlineStatus(APIView):
 					status[x.friend.username] = False
 		return Response(status)
 
+
+class GetAllScoresAPICall(APIView):
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		update_last_active(request)
+		r = requests.get('https://backendmicro:8009/api/get_all_scores/', verify=False)
+		return Response(r.json())
+
+
+class AddMatchAPICall(APIView):
+	permission_classes = [IsAuthenticated]
+	def post(self, request):
+		update_last_active(request)
+		player1 = request.POST.get('player1')
+		player2 = request.POST.get('player2')
+		player1_score = request.POST.get('player1_score')
+		player2_score = request.POST.get('player2_score')
+		payload = {'player1': player1, 'player2': player2, 'player1_score': player1_score, 'player2_score': player2_score}
+		r = requests.post('https://backendmicro:8009/api/add_match/', data=payload, verify=False)
+		return Response(r.json())
+	
+
+class GetPlayerScoresAPICall(APIView):
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		update_last_active(request)
+		player = request.GET.get('player')
+		payload = {'player': player}
+		r = requests.get('https://backendmicro:8009/api/get_player_scores/', params=payload, verify=False)
+		return Response(r.json())
