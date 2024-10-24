@@ -27,6 +27,7 @@ from django.contrib.auth.tokens import default_token_generator
 from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
+import requests
 
 
 
@@ -262,6 +263,7 @@ class UpdateUser(APIView):
 	def post(self, request):
 		update_last_active(request)
 		user = request.user
+		player = user.username
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 		email = request.POST.get('email')
@@ -292,6 +294,11 @@ class UpdateUser(APIView):
 		else:
 			avatar = userAvatar.objects.get(user=user)
 		user.save()
+		# update gameapptable
+		# payload = {'player': player, 'new_name': username}
+		# r = requests.post('https://localhost:8009/api/update_player_name/', data=payload)
+		# if (r.status_code != 200):
+		# 	return JsonResponse({"error": "Failed to update MatchHistory with new username"})
 		user_serialiser = UserSerializer(user, many=False)
 		avatar_serialiser = AvatarSerializer(avatar, many=False)
 		return Response({"success": "User updated", "user" : user_serialiser.data, "avatar" : avatar_serialiser.data})

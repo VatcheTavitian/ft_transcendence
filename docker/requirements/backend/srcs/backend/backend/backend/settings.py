@@ -185,7 +185,10 @@ SESSION_COOKIE_NAME = 'sessionid'  # Default
 SESSION_COOKIE_SECURE = True  # Use only for HTTPS
 SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust based on your needs
 
+# fix basedir with env
 BASE_DIR = Path(__file__).resolve().parent.parent
+# print(BASE_DIR)
+# BASE_DIR = '/app/srcs/backend/backend'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
