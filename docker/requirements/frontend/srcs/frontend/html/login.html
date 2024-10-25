@@ -6,8 +6,10 @@
 	<title>Login Page</title>
 </head>
 <body>
-	This is the login page
-
+	<br>
+	<br>
+	Login User without intra
+	<br>
 	<form action="https://localhost:8008/api/login/" method="POST"> 
 		<label for="username">Username:</label>
 		<input type="text" id="username" name="username"><br>
@@ -18,6 +20,19 @@
 
 
 <br>
+<br>
+------------------------------------------
+<br>
+Login User with intra
+<form action="https://localhost:8008/api/intralogin/" method="GET"> 
+	Login with intra here
+	<input type="submit" value="Login">
+</form>
+
+
+<br>
+<br>
+------------------------------------------------
 <br>
 	Check if user is already logged in
 	<form id ="checkUserForm" action="" method="GET"> 
@@ -40,7 +55,8 @@
 
 <br>
 <br>
-
+----------------------------------------------------------------
+<br>
 Logout User
 	<form id ="logoutUserForm" action="" method="GET"> 
 		<input type="submit" value="Submit" >
@@ -63,7 +79,8 @@ Logout User
 
 <br>
 <br>
-
+-------------------------------------------------
+<br>
 Get User info
 	<form id ="getUserInfoForm" action="" method="GET"> 
 		<input type="submit" value="Submit" >
@@ -83,6 +100,8 @@ Get User info
 			</script>
 
 <br>
+<br>
+-----------------------------------------------------
 <br>
 Create new user
 <form id='createNewUser' action="https://localhost:8008/api/register/" method="POST" enctype="multipart/form-data">
@@ -130,6 +149,8 @@ Create new user
 </script>
 
 <br>
+<br>
+---------------------------------------------------------
 <br>
 Update existing user
 <form id="updateUserForm" action="" method="POST" enctype="multipart/form-data" >
@@ -214,6 +235,8 @@ Update existing user
 
 <br>
 <br>
+-------------------------------------------
+<br>
 Change Password
 <form id="updatePasswordForm" action="" method="POST" >
 
@@ -261,6 +284,9 @@ Change Password
 
 	<br>
 	<br>
+	------------------------------------------
+	<br>
+	Reset Password
 	<form id="passwordResetForm" action="" method="POST" >
 		<label for="email">Email:</label>
 		<input type="email" id="email" name="email" required><br>
@@ -284,7 +310,9 @@ Change Password
 
 <br>
 <br>
-
+------------------------------------------
+<br>
+Add Friend
 <form id="addFriendForm" action="" method="POST" >
 	<label for="username">Username:</label>
 	<select id="username" name="username" required>
@@ -340,6 +368,8 @@ Change Password
 </script>
 <br>
 <br>
+------------------------------------------
+<br>
 List Friends
 <div id="friends">
 
@@ -376,6 +406,8 @@ List Friends
 </script>
 
 <br>
+<br>
+------------------------------------------
 <br>
 Delete Friend
 <form id="deleteFriendForm" action="" method="POST" >
@@ -416,18 +448,6 @@ Delete Friend
 				}
 			});
 		})
-
-
-		// .then(data => {
-			
-		// 	const select = document.getElementById('deleteFriendForm').querySelector('select');
-		// 	data.forEach(friend => {
-		// 		const option = document.createElement('option');
-		// 		option.value = friend.friend.username;
-		// 		option.text = friend.friend.username;
-		// 		select.appendChild(option);
-		// 	});
-		// })
 
 		.catch(error => console.error('Error:', error));
 	});

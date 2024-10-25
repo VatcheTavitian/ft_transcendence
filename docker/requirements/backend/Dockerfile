@@ -103,5 +103,5 @@ EXPOSE 80
 
 
 # Command to run supervisord
-CMD ["/usr/bin/supervisord"]
-# ENTRYPOINT [ "./entry.sh" ]
+# CMD ["/usr/bin/supervisord"]
+ENTRYPOINT [ "./entry.sh" ]

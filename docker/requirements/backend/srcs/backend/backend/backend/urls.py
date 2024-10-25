@@ -18,20 +18,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from userapp.views import index,   intralogin, get_authenticated_user, intralogout, getUserInfo, loginNonIntra , test
+from userapp.views import intralogin, intralogout, getUserInfo,  test
 from userapp import views
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index/', index, name='index'),
+    # path('index/', index, name='index'),
 	# path('intraloginsuccess/', intraLoginSuccess.as_view(), name='intraloginsuccess'),
 	# path('logout/', intralogout, name='logout'),
 	# path('intralogin/', loginNonIntra.as_view(), name='intralogin'),
 	path('api/test/', test.as_view(), name='test'),
 	
-	path('api/auth/user/', get_authenticated_user, name='get_authenticated_user'),
+	# path('api/auth/user/', get_authenticated_user, name='get_authenticated_user'),
 	path('api/getuserinfo/', getUserInfo.as_view(), name='getuserinfo'),
 	path('api/intralogin/', intralogin, name='intralogin'),
     path('api/intralogincomplete/', views.IntraLoginComplete.as_view(), name='intralogincomplete'),

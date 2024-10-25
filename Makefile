@@ -23,8 +23,8 @@ fclean:
 	docker stop $$(docker ps -qa)
 	docker system prune --all --force --volumes
 	docker network prune --force
-	docker volume prune --force
-	docker volume rm -f $$(docker volume ls -q)
+	#  docker volume prune --force
+	# docker volume rm -f $$(docker volume ls -q)
 	@echo  "$(RED)All docker images and networks and volumes removed$(RESET)"
 
 # deletelocal: fclean

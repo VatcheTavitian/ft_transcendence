@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["backendmicro"] # if you want to access directly from the brows
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

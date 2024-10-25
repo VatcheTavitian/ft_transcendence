@@ -85,9 +85,17 @@
 	https://localhost:8008/api/get_player_scores?player= 
 	GET request gets player scores/stats. Requires player name in url. Returns player stats if successful.
 
+	NOTES:
+	Enforce data input policy on front end
+	No  ' , " , ; , : , < , > , # , *, } , {  and other chars in input fields.
+	I have in backend sanitize_input() function that removes these and some other characters from input fields.
+
+	Enforce Password policy on backend
+	Minimum 8 characters, must have 1 uppercase, 1 lowercase, 1 number, 1 special character.
+	In backend I have password_policy() function that checks if password meets these requirements when creating or updating password.
 
 	Get random player for tournament (Matchmaking)?
-	Is there a need for api for this?
+	Is there a need for api or table for this?
 	
 
 </body>
