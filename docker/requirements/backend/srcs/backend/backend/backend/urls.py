@@ -55,6 +55,7 @@ urlpatterns = [
     path('api/get_all_scores/', views.GetAllScoresAPICall.as_view(), name='getallscores'),
     path('api/add_match/', views.AddMatchAPICall.as_view()),
 	path('api/get_player_scores/', views.GetPlayerScoresAPICall.as_view()),
+    path('api/get_tournament_info/', views.TournamentsWonInfoAPICall.as_view()),
 
 ]
 

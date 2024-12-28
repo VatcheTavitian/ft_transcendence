@@ -85,6 +85,14 @@
 	https://localhost:8008/api/get_player_scores?player= 
 	GET request gets player scores/stats. Requires player name in url. Returns player stats if successful.
 
+	Get player tournament win info  
+	https://localhost:8008/api/get_tournament_info
+	GET request uses logged in user info and returns number of tournament wins the user has had
+
+	Increment player tournament win info  
+	https://localhost:8008/api/get_tournament_info
+	POST request uses logged in user info and increments number of tournament wins by one
+
 	NOTES:
 	Enforce data input policy on front end
 	No  ' , " , ; , : , < , > , # , *, } , {  and other chars in input fields.

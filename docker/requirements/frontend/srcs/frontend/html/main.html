@@ -466,6 +466,123 @@ Delete Friend
 	    .catch(error => console.error('Error:', error));
 	});
 </script>
+
+---------------------------------------------------------------
+<h3>GAME INFO</h3>
+
+<br>
+Get Tournaments Won info
+	<form id ="TournamentsWon" action="" method="GET"> 
+		<input type="submit" value="Get Info">
+		</form>
+		<script>
+			document.getElementById('TournamentsWon').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Getting tournament info...');
+			    fetch('https://localhost:8008/api/get_tournament_info', {
+			        method: 'GET',
+			        credentials: 'include',
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+<br>
+<br>
+Add tournament Win
+	<form id ="AddTournamentsWon" action="" method="POST"> 
+		<input type="submit" value="Add win">
+		</form>
+		<script>
+			document.getElementById('AddTournamentsWon').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Getting tournament info...');
+			    fetch('https://localhost:8008/api/get_tournament_info/', {
+			        method: 'POST',
+			        credentials: 'include',
+					headers: { 'X-CSRFToken': getCookie('csrftoken') },
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+<br>
+<br>
+---------------------------------------------------------------
+<br>
+Get All Match Scores For Everyone
+	<form id ="GetAllScores" action="" method="GET"> 
+		<input type="submit" value="Get All Scores">
+		</form>
+		<script>
+			document.getElementById('GetAllScores').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Getting tournament info...');
+			    fetch('https://localhost:8008/api/get_all_scores', {
+			        method: 'GET',
+			        credentials: 'include',
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+<br>
+<br>
+------------------------------------------
+<br>
+Get All Match Scores For Logged in user
+	<form id ="GetUserScores" action="" method="GET"> 
+		<input type="submit" value="Get User Scores">
+		</form>
+		<script>
+			document.getElementById('GetUserScores').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Getting tournament info...');
+			    fetch('https://localhost:8008/api/get_player_scores', {
+			        method: 'GET',
+			        credentials: 'include',
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+<br>
+<br>
+------------------------------------------
+<br>
+Add Match Score for logged in user
+	<form id ="AddMatch" action="" method="POST">
+		<p>Enter Opponent Name
+		<input name="player2" type="text" value="" required="True"></p>
+		<p>Enter Logged In User Score
+		<input name="player1_score" type="number" value="" required="True"></p>
+		<p>Enter Opponent Score
+		<input name="player2_score" type="number" value="" required="True"></p>
+		<input type="submit" value="Add Match">
+		</form>
+		<script>
+			document.getElementById('AddMatch').addEventListener('submit', function(event) {
+			    event.preventDefault(); 
+				console.log('Adding match to logged in user record...');
+				const csrftoken = getCookie('csrftoken');
+			    fetch('https://localhost:8008/api/add_match/', {
+			        method: 'POST',
+			        credentials: 'include',
+					headers: { 'X-CSRFToken': csrftoken },
+					body: new FormData(document.getElementById('AddMatch'))
+			    })
+			    .then(response => response.json())
+			    .then(data => console.log(data))
+			    .catch(error => console.error('Error:', error));
+			});
+		</script>
+<br>
+<br>
+
 </body>
 
 </html>

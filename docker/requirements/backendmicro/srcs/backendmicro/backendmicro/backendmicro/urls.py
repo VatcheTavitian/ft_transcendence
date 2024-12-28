@@ -23,5 +23,6 @@ urlpatterns = [
 	path('api/add_match/', views.AddMatch.as_view()),
 	path('api/get_all_scores/', views.GetAllScores.as_view()),
 	path('api/get_player_scores/', views.GetPlayerScores.as_view()),
-	path('api/update_player_name/', views.UpdatePlayerName.as_view())
+	path('api/update_player_name/', views.UpdatePlayerName.as_view()),
+    path('api/get_tournament_info/', views.UpdateTournamentsWon.as_view())
 ]

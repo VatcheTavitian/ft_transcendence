@@ -518,17 +518,19 @@ class AddMatchAPICall(APIView):
 	def post(self, request):
 		try:
 			update_last_active(request)
-			player1 = sanitize_input(request.POST.get('player1'))
+			player1 = sanitize_input(request.user.username)
 			player2 = sanitize_input(request.POST.get('player2'))
 			player1_score = sanitize_input(request.POST.get('player1_score'))
 			player2_score = sanitize_input(request.POST.get('player2_score'))
+			if player1 == None or player2 == None or int(player1_score) < 0 or int(player2_score) < 0:
+				return Response({'error' : "Invalid data"})
 			payload = {'player1': player1, 'player2': player2, 'player1_score': player1_score, 'player2_score': player2_score}
 			r = requests.post('https://backendmicro:8009/api/add_match/', data=payload, verify=False)
 			if (r.status_code != 200):
 				return JsonResponse({'error': 'Internal Server Error while adding match'}, status)
 			return Response(r.json())
 		except:
-			return JsonResponse({'error': 'Internal Server Error'}, status=500)
+			return JsonResponse({'error': 'Internal Server Error!'}, status=500)
 	
 
 class GetPlayerScoresAPICall(APIView):
@@ -536,11 +538,34 @@ class GetPlayerScoresAPICall(APIView):
 	def get(self, request):
 		try:
 			update_last_active(request)
-			player = sanitize_input(request.GET.get('player'))
+			player = sanitize_input(request.user.username)
 			payload = {'player': player}
 			r = requests.get('https://backendmicro:8009/api/get_player_scores/', params=payload, verify=False)
 			if (r.status_code != 200):
 				return JsonResponse({'error': 'Internal Server Error while getting player scores'}, status=500)
 			return Response(r.json())
 		except:
-			return JsonResponse({'error': 'Internal Server Error'}, status=500)
+			return JsonResponse({'error': 'Internal Server Error!'}, status=500)
+
+class TournamentsWonInfoAPICall(APIView):
+	permission_classes = [IsAuthenticated]
+	def get(self, request):
+		try:
+			player = sanitize_input(request.user.username)
+			payload = {'player': player}
+			r = requests.get('https://backendmicro:8009/api/get_tournament_info/', params=payload, verify=False)
+			if (r.status_code != 200):
+				return JsonResponse({'error': 'Internal Server Error while getting tournament info for player'}, status=500)
+			return Response(r.json())
+		except:
+			return JsonResponse({'error': 'Internal Server Error!'}, status=500)
+	def post(self, request):
+		try:
+			player = sanitize_input(request.user.username)
+			payload = {'player': 'vtavitia'}
+			r = requests.post('https://backendmicro:8009/api/get_tournament_info/', data=payload, verify=False)
+			if (r.status_code != 200):
+				return JsonResponse({'error': 'Internal Server Error while getting tournament info for player'}, status=500)
+			return Response(r.json())
+		except:
+			return JsonResponse({'error': 'Internal Server Error!'}, status=500)
