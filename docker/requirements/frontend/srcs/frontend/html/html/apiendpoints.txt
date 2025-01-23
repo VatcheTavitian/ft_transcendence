@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>API Endpoints</title>
-</head>
-<body>
-	<h1>API Endpoints</h1>
 
-	<h2>Here I will put a list of api end points in both get and post methods, so you can fetch data of users and the game whenever you 
+API Endpoints
+	
+	Here I will put a list of api end points in both get and post methods, so you can fetch data of users and the game whenever you 
 		need to use in your single page application.
-	</h2>
+
 	
 
 	All responses are in JSON and need to be parsed accordingly.
@@ -102,9 +95,7 @@
 	Minimum 8 characters, must have 1 uppercase, 1 lowercase, 1 number, 1 special character.
 	In backend I have password_policy() function that checks if password meets these requirements when creating or updating password.
 
-	Get random player for tournament (Matchmaking)?
-	Is there a need for api or table for this?
+
 	
 
-</body>
-</html>
+
