@@ -19,6 +19,8 @@ class AddMatch(APIView):
 			player2 = request.POST.get('player2')
 			player1_score = request.POST.get('player1_score')
 			player2_score = request.POST.get('player2_score')
+			player1_score = int(player1_score)
+			player2_score = int(player2_score)
 			if player1 == None or player2 == None or int(player1_score) < 0 or int(player2_score) < 0:
 				return Response({'error' : "Invalid data"})
 			if player1_score > player2_score:

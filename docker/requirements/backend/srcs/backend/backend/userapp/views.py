@@ -512,7 +512,7 @@ class GetAllScoresAPICall(APIView):
 		except:
 			return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class AddMatchAPICall(APIView):
 	permission_classes = [IsAuthenticated]
 	def post(self, request):

@@ -198,8 +198,8 @@ function renderPlayGameButton() {
     alink.addEventListener('click', function(event) {
         event.preventDefault();
         history.pushState({ page: "playgame" }, "PlayGame", "/playgame");
-     
-        });
+        loadGamePage()
+    });
 }
 
 function renderPlayTournamentButton() {

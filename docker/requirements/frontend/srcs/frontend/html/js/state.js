@@ -434,7 +434,7 @@ function loadMatchHistoryPage() {
                         <span class="badge bg-primary">Score: ${match.player1_score}</span>
                     </div>
                     <div class="mb-2">
-                        <strong>Player 2:</strong> ${match.player2} 
+                        <strong>Opponent:</strong> ${match.player2} 
                         <span class="badge bg-primary">Score: ${match.player2_score}</span>
                     </div>
                 `;
@@ -680,151 +680,33 @@ function loadRegisterPage() {
     });
 }
 
+function loadGamePage() {
+    const contentdiv = document.getElementById('contentdiv');
+    contentdiv.innerHTML = ""
+    const newcontainer = document.createElement('div')
+    newcontainer.innerHTML = ` <div id="menu" class="menu">
+        <h1>PONG</h1>
+        <button id="singleplayer-btn" class="menu-btn">Singleplayer</button>
+        <button id="2player-btn" class="menu-btn">2 Player</button>
+        <button id="3player-btn" class="menu-btn">3 Player</button>
+        <button id="4player-btn" class="menu-btn">4 Player</button>
+         <button id="tournament" class="menu-btn">Tournament</button>
+    </div>
 
-// function loadRegisterPage() {
-//     const contentdiv = document.getElementById("contentdiv");
-    
+    <script src="../js/script.js"></script>`
+    contentdiv.appendChild(newcontainer)
+    // spb = document.getElementById('singleplayer-btn');
+    // spb.addEventListener('click', loadSinglePlayerPage);
+    // spb = document.getElementById('2player-btn');
+    // spb.addEventListener('click', load2PlayerPage);
+    // spb = document.getElementById('3player-btn');
+    // spb.addEventListener('click', load3PlayerPage);
+    // spb = document.getElementById('4player-btn');
+    // spb.addEventListener('click', load4PlayerPage);
+    spb = document.getElementById('tournament');
+    spb.addEventListener('click', loadTournamentPage);
+}
 
-//     contentdiv.innerHTML = '';
-
-//     const newdiv = document.createElement("div");
-
-//     const head = document.createElement("H3");
-//     head.innerText = "Create new user";
-
-
-//     const form = document.createElement("form");
-//     form.id = 'createNewUser';
-//     form.action = "https://localhost:8008/api/register/";
-//     form.method = "POST";
-//     form.enctype = "multipart/form-data";
-
-  
-//     const usernameLabel = document.createElement("label");
-//     usernameLabel.setAttribute("for", "username");
-//     usernameLabel.innerText = "Username:";
-//     const usernameInput = document.createElement("input");
-//     usernameInput.type = "text";
-//     usernameInput.id = "username";
-//     usernameInput.name = "username";
-//     usernameInput.required = true;
-
-
-//     const passwordLabel = document.createElement("label");
-//     passwordLabel.setAttribute("for", "password");
-//     passwordLabel.innerText = "Password:";
-//     const passwordInput = document.createElement("input");
-//     passwordInput.type = "password";
-//     passwordInput.id = "password";
-//     passwordInput.name = "password";
-//     passwordInput.required = true;
-
-
-//     const confirmPasswordLabel = document.createElement("label");
-//     confirmPasswordLabel.setAttribute("for", "confirm_password");
-//     confirmPasswordLabel.innerText = "Confirm Password:";
-//     const confirmPasswordInput = document.createElement("input");
-//     confirmPasswordInput.type = "password";
-//     confirmPasswordInput.id = "confirm_password";
-//     confirmPasswordInput.name = "confirm_password";
-//     confirmPasswordInput.required = true;
-
-  
-//     const emailLabel = document.createElement("label");
-//     emailLabel.setAttribute("for", "email");
-//     emailLabel.innerText = "Email:";
-//     const emailInput = document.createElement("input");
-//     emailInput.type = "email";
-//     emailInput.id = "email";
-//     emailInput.name = "email";
-//     emailInput.required = true;
-
- 
-//     const firstNameLabel = document.createElement("label");
-//     firstNameLabel.setAttribute("for", "first_name");
-//     firstNameLabel.innerText = "First Name:";
-//     const firstNameInput = document.createElement("input");
-//     firstNameInput.type = "text";
-//     firstNameInput.id = "first_name";
-//     firstNameInput.name = "first_name";
-//     firstNameInput.required = true;
-
-   
-//     const lastNameLabel = document.createElement("label");
-//     lastNameLabel.setAttribute("for", "last_name");
-//     lastNameLabel.innerText = "Last Name:";
-//     const lastNameInput = document.createElement("input");
-//     lastNameInput.type = "text";
-//     lastNameInput.id = "last_name";
-//     lastNameInput.name = "last_name";
-//     lastNameInput.required = true;
-
-   
-//     const avatarLabel = document.createElement("label");
-//     avatarLabel.setAttribute("for", "avatar");
-//     avatarLabel.innerText = "Profile Image:";
-//     const avatarInput = document.createElement("input");
-//     avatarInput.type = "file";
-//     avatarInput.id = "avatar";
-//     avatarInput.name = "avatar";
-//     avatarInput.accept = "image/*";
-
-
-//     const submitButton = document.createElement("input");
-//     submitButton.type = "submit";
-//     submitButton.value = "Register";
-
- 
-//     form.appendChild(usernameLabel);
-//     form.appendChild(usernameInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(passwordLabel);
-//     form.appendChild(passwordInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(confirmPasswordLabel);
-//     form.appendChild(confirmPasswordInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(emailLabel);
-//     form.appendChild(emailInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(firstNameLabel);
-//     form.appendChild(firstNameInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(lastNameLabel);
-//     form.appendChild(lastNameInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(avatarLabel);
-//     form.appendChild(avatarInput);
-//     form.appendChild(document.createElement("br"));
-
-//     form.appendChild(submitButton);
-
-//     newdiv.appendChild(head);
-//     newdiv.appendChild(form);
-//     contentdiv.appendChild(newdiv);
-
-//     // Add the event listener for form submission
-//     document.getElementById('createNewUser').addEventListener('submit', function(event) {
-//         event.preventDefault(); 
-//         console.log('Updating user info...');
-//         const csrftoken = getCookie('csrftoken');
-//         fetch('https://localhost:8008/api/register/', {
-//             method: 'POST',
-//             credentials: 'include', 
-//             headers: { 'X-CSRFToken': csrftoken },
-//             body: new FormData(document.getElementById('createNewUser'))
-//         })
-//         .then(response => response.json())
-//         .then(data => console.log(data))
-//         .catch(error => console.error('Error:', error));
-//     });
-// }
 
 
 window.onpopstate = function(event) {
