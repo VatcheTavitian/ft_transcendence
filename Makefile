@@ -2,29 +2,25 @@ GREEN := \033[0;32m
 RED := \033[0;31m
 RESET := \033[0m
 
-all: dirs
+all: #dirs
 	@echo "$(GREEN)Running make all!$(RESET)"
-	docker compose -f ./docker/docker-compose.yml --env-file ./docker/.env up -d
-
-build: #dirs
-	docker compose -f ./docker/docker-compose.yml --env-file ./docker/.env up -d
+	docker compose -f ./docker/docker-compose-elk.yml --env-file ./docker/.env up -d --build
+	docker exec -it es01 sh /usr/share/elasticsearch/config/setup_ilm.sh
+	@sleep 5 
+	docker compose -f ./docker/docker-compose.yml --env-file ./docker/.env up -d --build
 
 down:
+	docker compose -f ./docker/docker-compose-elk.yml down
 	docker compose -f ./docker/docker-compose.yml down
 
-
-re: down
-	docker compose -f ./docker/docker-compose.yml --env-file ./docker/.env up -d --build
+re: down all 
 
 clean: down
 	docker system prune -a
 
-fclean: 
-	docker stop $$(docker ps -qa)
-	docker system prune --all --force --volumes
+fclean: clean
 	docker network prune --force
-	#  docker volume prune --force
-	# docker volume rm -f $$(docker volume ls -q)
+	docker volume rm -f $$(docker volume ls -q)
 	@echo  "$(RED)All docker images and networks and volumes removed$(RESET)"
 
 # deletelocal: fclean
@@ -39,4 +35,4 @@ fclean:
 # 	    mkdir -p /home/$(USER)/data/wordpress; \
 # 	fi
 
-.PHONY: all build down re clean fclean deletelocal dirs
+.PHONY: all down re clean fclean deletelocal dirs

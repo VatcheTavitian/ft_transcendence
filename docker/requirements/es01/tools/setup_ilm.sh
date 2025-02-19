@@ -4,9 +4,9 @@ echo "--- waiting for availability Elasticsearch ---"
 until curl --cacert "/usr/share/elasticsearch/config/certs/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" "https://localhost:9200/_cluster/health" | grep -q '"status":"\(green\|yellow\)"' ; do
   sleep 5
 done
-echo "--- Elasticsearch is availabile ---"
+echo "--- Elasticsearch is available ---"
 
-echo "--- adding a policy ILM ---"
+echo "--- Adding ILM policy ---"
 
 curl -X PUT "https://localhost:9200/_ilm/policy/logs_retention_policy" \
   -H 'Content-Type: application/json' \
@@ -27,31 +27,29 @@ curl -X PUT "https://localhost:9200/_ilm/policy/logs_retention_policy" \
             "delete": {
               "min_age": "30m",
               "actions": {
-                "delete": {
-                  "delete_searchable_snapshot": true
-                }
+                "delete": {}
               }
             }
           }
         }
       }'
 
-echo "--- The ILM policy has been added ---"
+echo "--- ILM policy has been added ---"
 
-echo "--- adding a policy in index template ---"
+echo "--- Adding ILM policy to index template ---"
 
-curl -X PUT "https://localhost:9200/_index_template/logs_template" \
+curl -X PUT "https://localhost:9200/_index_template/nginx_template" \
   -H 'Content-Type: application/json' \
   --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt \
   -u "elastic:${ELASTIC_PASSWORD}" \
   -d '{
-        "index_patterns": ["logs-*"], 
+        "index_patterns": ["nginx-*"], 
         "template": {
           "settings": {
             "index.lifecycle.name": "logs_retention_policy",
-            "index.lifecycle.rollover_alias": "logs"
+            "index.lifecycle.rollover_alias": "nginx-logs"
           }
         }
       }'
 
-echo "--- policy has been added in index template ---"
+echo "--- Index template has been added ---"
