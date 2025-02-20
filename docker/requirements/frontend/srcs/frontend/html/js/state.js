@@ -690,21 +690,18 @@ function loadGamePage() {
         <button id="2player-btn" class="menu-btn">2 Player</button>
         <button id="3player-btn" class="menu-btn">3 Player</button>
         <button id="4player-btn" class="menu-btn">4 Player</button>
-         <button id="tournament" class="menu-btn">Tournament</button>
     </div>
 
     <script src="../js/script.js"></script>`
     contentdiv.appendChild(newcontainer)
-    // spb = document.getElementById('singleplayer-btn');
-    // spb.addEventListener('click', loadSinglePlayerPage);
-    // spb = document.getElementById('2player-btn');
-    // spb.addEventListener('click', load2PlayerPage);
-    // spb = document.getElementById('3player-btn');
-    // spb.addEventListener('click', load3PlayerPage);
-    // spb = document.getElementById('4player-btn');
-    // spb.addEventListener('click', load4PlayerPage);
-    spb = document.getElementById('tournament');
-    spb.addEventListener('click', loadTournamentPage);
+    spb = document.getElementById('singleplayer-btn');
+    spb.addEventListener('click', loadSinglePlayerPage);
+    spb2 = document.getElementById('2player-btn');
+    spb2.addEventListener('click', load2PlayerPage);
+    spb3 = document.getElementById('3player-btn');
+    spb3.addEventListener('click', load3PlayerPage);
+    spb4 = document.getElementById('4player-btn');
+    spb4.addEventListener('click', load4PlayerPage);
 }
 
 

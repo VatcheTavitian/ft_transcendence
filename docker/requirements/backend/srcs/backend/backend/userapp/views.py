@@ -75,7 +75,7 @@ class IntraLoginComplete(View):
 			login(request, intra_user)
 			if (lastActive.objects.filter(intrauser=intra_user).exists() == False):
 				lastActive.objects.create(intrauser=intra_user)
-			return redirect('https://localhost/main.html')
+			return redirect('https://localhost/main')
 		else:
 			return JsonResponse({'error': 'login unable to continue'})
 
