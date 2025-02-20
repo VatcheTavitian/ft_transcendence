@@ -6,8 +6,6 @@ window.start4PlayerGame = function() {
 };
 
 
-
-
 function showModal(message) {
     modalMessage.textContent = message;
     modal.style.display = "flex";
@@ -23,10 +21,10 @@ class PongGameFourPlayer {
         this.ctx = this.canvas.getContext("2d");
         this.running = false;
         this.animationFrameId = null;
-        this.keys = { w: false, s: false, ArrowUp: false, ArrowDown: false, z: false, x: false, n: false, m: false }; // Added keys for Player 4
+        this.keys = { w: false, s: false, ArrowUp: false, ArrowDown: false, z: false, x: false, n: false, m: false };
         this.player2Name = prompt("Enter Player 2's name:") || "Player 2";
         this.player3Name = prompt("Enter Player 3's name:") || "Player 3";
-        this.player4Name = prompt("Enter Player 4's name:") || "Player 4"; // Prompt for Player 4's name
+        this.player4Name = prompt("Enter Player 4's name:") || "Player 4"; 
         
         this.setupGame();
         this.addEventListeners();
@@ -43,7 +41,7 @@ class PongGameFourPlayer {
         this.ballSpeed = 4;
         this.maxScore = 10;
         this.paddle3X = this.fieldWidth / 2 - this.paddleWidth / 2;
-        this.paddle4X = this.fieldWidth / 4 - this.paddleWidth / 2; // Position for Player 4's paddle
+        this.paddle4X = this.fieldWidth / 4 - this.paddleWidth / 2; 
         this.resetGame();
     }
 
@@ -76,7 +74,7 @@ class PongGameFourPlayer {
         this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle3Y = (this.fieldHeight - this.paddleHeight) / 2;
-        this.paddle4Y = (this.fieldHeight - this.paddleHeight) / 2; // Reset Player 4's paddle position
+        this.paddle4Y = (this.fieldHeight - this.paddleHeight) / 2; 
         this.ballX = this.fieldWidth / 2;
         this.ballY = this.fieldHeight / 2;
         this.ballDirectionX = 1;
@@ -84,7 +82,7 @@ class PongGameFourPlayer {
         this.player1Score = 0;
         this.player2Score = 0;
         this.player3Score = 0;
-        this.player4Score = 0; // Reset Player 4's score
+        this.player4Score = 0; 
         this.running = true;
     }
 
@@ -110,73 +108,22 @@ class PongGameFourPlayer {
         }
     }
 
-    // update() {
-      
-    //     if (this.keys.w && this.paddle1Y > 0) this.paddle1Y -= this.paddleSpeed;
-    //     if (this.keys.s && this.paddle1Y < this.fieldHeight - this.paddleHeight) this.paddle1Y += this.paddleSpeed;
-        
-   
-    //     if (this.keys.ArrowUp && this.paddle2Y > 0) this.paddle2Y -= this.paddleSpeed;
-    //     if (this.keys.ArrowDown && this.paddle2Y < this.fieldHeight - this.paddleHeight) this.paddle2Y += this.paddleSpeed;
-        
-     
-    //     if (this.keys.z && this.paddle3Y > 0) this.paddle3Y -= this.paddleSpeed;
-    //     if (this.keys.x && this.paddle3Y < this.fieldHeight - this.paddleHeight) this.paddle3Y += this.paddleSpeed;
-        
-   
-    //     if (this.keys.n && this.paddle4Y > 0) this.paddle4Y -= this.paddleSpeed;
-    //     if (this.keys.m && this.paddle4Y < this.fieldHeight - this.paddleHeight) this.paddle4Y += this.paddleSpeed;
-
-    //     this.ballX += this.ballDirectionX * this.ballSpeed;
-    //     this.ballY += this.ballDirectionY * this.ballSpeed;
-
-    //     if (this.ballY <= 0 || this.ballY >= this.fieldHeight) {
-    //         this.ballDirectionY = -this.ballDirectionY;
-    //     }
-
-    //     // Paddle collisions
-    //     if (this.ballX <= this.paddleWidth && this.ballY >= this.paddle1Y && this.ballY <= this.paddle1Y + this.paddleHeight) {
-    //         this.ballDirectionX = -this.ballDirectionX;
-    //     }
-
-    //     if (this.ballX >= this.fieldWidth - this.paddleWidth - this.ballRadius && this.ballY >= this.paddle2Y && this.ballY <= this.paddle2Y + this.paddleHeight) {
-    //         this.ballDirectionX = -this.ballDirectionX;
-    //     }
-
-    //     if (this.ballX >= this.paddle3X && this.ballX <= this.paddle3X + this.paddleWidth && this.ballY >= this.paddle3Y && this.ballY <= this.paddle3Y + this.paddleHeight) {
-    //         this.ballDirectionX = -this.ballDirectionX;
-    //     }
-
-    //     if (this.ballX >= this.paddle4X && this.ballX <= this.paddle4X + this.paddleWidth && this.ballY >= this.paddle4Y && this.ballY <= this.paddle4Y + this.paddleHeight) {
-    //         this.ballDirectionX = -this.ballDirectionX;
-    //     }
-
-    //     // Scoring
-    //     if (this.ballX <= 0) {
-    //         this.player2Score++;
-    //         this.resetBall();
-    //     }
-
-    //     if (this.ballX >= this.fieldWidth) {
-    //         this.player1Score++;
-    //         this.resetBall();
-    //     }
-    // }
+    
 
     update() {
-        // Player 1 controls
+     
         if (this.keys.w && this.paddle1Y > 0) this.paddle1Y -= this.paddleSpeed;
         if (this.keys.s && this.paddle1Y < this.fieldHeight - this.paddleHeight) this.paddle1Y += this.paddleSpeed;
         
-        // Player 2 controls
+  
         if (this.keys.ArrowUp && this.paddle2Y > 0) this.paddle2Y -= this.paddleSpeed;
         if (this.keys.ArrowDown && this.paddle2Y < this.fieldHeight - this.paddleHeight) this.paddle2Y += this.paddleSpeed;
         
-        // Player 3 controls (swapped with Player 4)
+      
         if (this.keys.n && this.paddle3Y > 0) this.paddle3Y -= this.paddleSpeed;
         if (this.keys.m && this.paddle3Y < this.fieldHeight - this.paddleHeight) this.paddle3Y += this.paddleSpeed;
         
-        // Player 4 controls (swapped with Player 3)
+
         if (this.keys.z && this.paddle4Y > 0) this.paddle4Y -= this.paddleSpeed;
         if (this.keys.x && this.paddle4Y < this.fieldHeight - this.paddleHeight) this.paddle4Y += this.paddleSpeed;
     
@@ -187,7 +134,7 @@ class PongGameFourPlayer {
             this.ballDirectionY = -this.ballDirectionY;
         }
     
-        // Paddle collisions
+      
         if (this.ballX <= this.paddleWidth && this.ballY >= this.paddle1Y && this.ballY <= this.paddle1Y + this.paddleHeight) {
             this.ballDirectionX = -this.ballDirectionX;
         }
@@ -204,7 +151,8 @@ class PongGameFourPlayer {
             this.ballDirectionX = -this.ballDirectionX;
         }
     
-        // Scoring
+  
+        
         if (this.ballX <= 0) {
             this.player2Score++;
             this.resetBall();
@@ -261,7 +209,7 @@ class PongGameFourPlayer {
         this.ctx.fillRect(0, this.paddle1Y, this.paddleWidth, this.paddleHeight);
         this.ctx.fillRect(this.fieldWidth - this.paddleWidth, this.paddle2Y, this.paddleWidth, this.paddleHeight);
         this.ctx.fillRect(this.paddle3X, this.paddle3Y, this.paddleWidth, this.paddleHeight);
-        this.ctx.fillRect(this.paddle4X, this.paddle4Y, this.paddleWidth, this.paddleHeight); // Draw Player 4's paddle
+        this.ctx.fillRect(this.paddle4X, this.paddle4Y, this.paddleWidth, this.paddleHeight);
         
         this.ctx.beginPath();
         this.ctx.arc(this.ballX, this.ballY, this.ballRadius, 0, Math.PI * 2);

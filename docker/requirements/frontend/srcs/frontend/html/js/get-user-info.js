@@ -1,32 +1,10 @@
 
 
 
-// async function getUserInfo() {
-//     try {
-//         let response = await fetch('https://localhost:8008/api/getuserinfo', {
-//             method: 'GET',
-//             credentials: 'include',
-//         });
-//         user = await response.json();
-//         console.log("User info updated!!:", user);
-//     } catch (error) {
-//         console.error('Error fetching user info:', error);
-//     }
-// }
-
-
 function instructLogin () {
 
     removeAfterLogout()
-    // const logoutButton = document.getElementById('logoutButton')
-    // if (logoutButton)
-    //     logoutButton.remove()
-    // const profileButton = document.getElementById('profileButton')
-    // if (profileButton)
-    //     profileButton.remove()
 
-    // renderLoginButton()
-    // renderRegisterButton()
 
     const contentdiv = document.getElementById("contentdiv")
     contentdiv.innerHTML = ''
