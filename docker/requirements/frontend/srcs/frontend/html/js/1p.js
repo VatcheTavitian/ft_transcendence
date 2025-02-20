@@ -1,4 +1,206 @@
 
+<<<<<<< HEAD
+=======
+
+// function startSingleGame() {
+//     const canvas = document.getElementById("gameCanvas");
+//     if (!canvas) {
+//         console.error("Canvas not found!");
+//         return;
+//     }
+    
+//     const ctx = canvas.getContext("2d");
+
+//     // Game settings
+//     const fieldWidth = canvas.width;
+//     const fieldHeight = canvas.height;
+//     const paddleWidth = 10;
+//     const paddleHeight = 60;
+//     const ballRadius = 8;
+//     const paddleSpeed = 5;
+//     const ballSpeed = 4;
+//     const maxScore = 10;
+
+//     let paddle1Y = (fieldHeight - paddleHeight) / 2;
+//     let paddle2Y = (fieldHeight - paddleHeight) / 2;
+//     let ballX = fieldWidth / 2;
+//     let ballY = fieldHeight / 2;
+//     let ballDirectionX = 1;
+//     let ballDirectionY = Math.random() * 2 - 1;
+//     let player1Score = 0;
+//     let player2Score = 0;
+
+//     let keys = {
+//         w: false,
+//         s: false,
+//     };
+
+//     function playSound(soundFilePath) {
+//         const sound = new Audio(soundFilePath);
+//         sound.play();
+//     }
+
+//     window.addEventListener("keydown", (e) => {
+//         if (e.key === "w") keys.w = true;
+//         if (e.key === "s") keys.s = true;
+//     });
+
+//     window.addEventListener("keyup", (e) => {
+//         if (e.key === "w") keys.w = false;
+//         if (e.key === "s") keys.s = false;
+//     });
+
+//     const modal = document.getElementById("modal");
+//     const modalMessage = document.getElementById("modalMessage");
+//     const modalButton = document.getElementById("modalButton");
+
+//     modalButton.addEventListener("click", () => {
+//         modal.style.display = "none";
+//         startSingleGame()
+//     });
+
+//     function gameLoop() {
+//         if (player1Score >= maxScore || player2Score >= maxScore) return;
+//         update();
+//         draw();
+//         requestAnimationFrame(gameLoop);
+//     }
+
+//     function update() {
+//         if (keys.w && paddle1Y > 0) paddle1Y -= paddleSpeed;
+//         if (keys.s && paddle1Y < fieldHeight - paddleHeight) paddle1Y += paddleSpeed;
+//         aiMove();
+
+//         ballX += ballDirectionX * ballSpeed;
+//         ballY += ballDirectionY * ballSpeed;
+
+//         if (ballY <= 0 || ballY >= fieldHeight) {
+//             ballDirectionY = -ballDirectionY;
+//         }
+
+//         if (ballX <= paddleWidth && ballY >= paddle1Y && ballY <= paddle1Y + paddleHeight) {
+//             ballDirectionX = -ballDirectionX;
+//             playSound("/assets/audio/L-Paddle-Hit.mp3");
+//         }
+//         if (ballX >= fieldWidth - paddleWidth - ballRadius && ballY >= paddle2Y && ballY <= paddle2Y + paddleHeight) {
+//             ballDirectionX = -ballDirectionX;
+//             playSound("/assets/audio/R-Paddle-Hit.mp3");
+//         }
+
+//         if (ballX <= 0) {
+//             player2Score++;
+//             playSound("/assets/audio/score.mp3");
+//             resetBall();
+//         }
+//         if (ballX >= fieldWidth) {
+//             player1Score++;
+//             playSound("/assets/audio/score.mp3");
+//             resetBall();
+//         }
+//     }
+
+//     function resetBall() {
+//         ballX = fieldWidth / 2;
+//         ballY = fieldHeight / 2;
+//         ballDirectionX = -ballDirectionX;
+//         ballDirectionY = Math.random() * 2 - 1;
+
+//         if (player1Score >= maxScore) {
+//             showModal("Player 1 Wins!");
+            
+//             const formData = new FormData();
+//             formData.append('player2', 'AI');
+//             formData.append('player1_score', player1Score);
+//             formData.append('player2_score', player2Score);
+//             const csrftoken = getCookie('csrftoken');
+//             fetch('https://localhost:8008/api/add_match/', {
+//                 method: 'POST',
+//                 credentials: 'include',  
+//                 headers: {
+//                     'X-CSRFToken': csrftoken 
+//                 },
+//                 body: formData  
+//             })
+//             .then(response => response.json())
+//             .then(data => console.log('Match added:', data))
+//             .catch(error => console.error('Error:', error));
+//         }
+//         if (player2Score >= maxScore) {
+//             showModal("Player 2 Wins!");
+//         }
+//     }
+
+//     function showModal(message) {
+//         modalMessage.textContent = message;
+//         modal.style.display = "flex";
+//     }
+
+//     function aiMove() {
+//         if (ballY < paddle2Y + paddleHeight / 2) {
+//             paddle2Y -= paddleSpeed;
+//         } else if (ballY > paddle2Y + paddleHeight / 2) {
+//             paddle2Y += paddleSpeed;
+//         }
+
+//         if (paddle2Y < 0) paddle2Y = 0;
+//         if (paddle2Y > fieldHeight - paddleHeight) paddle2Y = fieldHeight - paddleHeight;
+//     }
+
+//     function draw() {
+//         // Set background color
+//         ctx.fillStyle = "#000";  // Black background
+//         ctx.fillRect(0, 0, fieldWidth, fieldHeight);
+    
+//         // Draw dashed center line
+//         const barCount = 10;
+//         const barSpacing = fieldHeight / (barCount + 1);
+//         ctx.fillStyle = "#FFF";  // White color
+//         for (let i = 1; i <= barCount; i++) {
+//             const barY = i * barSpacing;
+//             ctx.fillRect(fieldWidth / 2 - 1, barY - 5, 2, 10);
+//         }
+    
+//         // Draw paddles
+//         ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
+//         ctx.fillRect(fieldWidth - paddleWidth, paddle2Y, paddleWidth, paddleHeight);
+    
+//         // Draw ball
+//         ctx.beginPath();
+//         ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+//         ctx.fill();
+    
+//         // Draw scores
+//         ctx.font = "30px Arial";
+//         ctx.fillText(user.username, fieldWidth / 4, 30);
+//         ctx.fillText(player1Score, fieldWidth / 4, 60);
+//         ctx.fillText("AI", fieldWidth * 3 / 4, 30);
+//         ctx.fillText(player2Score, fieldWidth * 3 / 4, 60);
+//     }
+    
+//     gameLoop();
+//     function resetGame() {
+//         player1Score = 0;
+//         player2Score = 0;
+//         clearInterval(gameLoopInterval); // Stop the current game loop
+//         canvas.width = canvas.width; // Reset canvas to clear the board
+//     }
+//     document.getElementById("modalButton").addEventListener("click", () => {
+//         resetGame();
+//         startSingleGame();
+//     });
+// }
+
+
+
+// document.addEventListener("DOMContentLoaded", startSingleGame);
+
+
+
+
+
+
+/////////////////////////////////////////////
+>>>>>>> origin/master
 window.startSingleGame = function() {
     if (window.gameInstance) {
         window.gameInstance.destroy();
@@ -24,6 +226,10 @@ class PongGame {
     }
 
     setupGame() {
+<<<<<<< HEAD
+=======
+        // Game settings
+>>>>>>> origin/master
         this.fieldWidth = this.canvas.width;
         this.fieldHeight = this.canvas.height;
         this.paddleWidth = 10;
@@ -33,6 +239,10 @@ class PongGame {
         this.ballSpeed = 4;
         this.maxScore = 10;
 
+<<<<<<< HEAD
+=======
+        // Initialize game state
+>>>>>>> origin/master
         this.resetGame();
     }
 
@@ -177,7 +387,11 @@ class PongGame {
         this.ctx.fillStyle = "#000";
         this.ctx.fillRect(0, 0, this.fieldWidth, this.fieldHeight);
 
+<<<<<<< HEAD
     
+=======
+        // Draw center line
+>>>>>>> origin/master
         this.ctx.fillStyle = "#FFF";
         const barCount = 10;
         const barSpacing = this.fieldHeight / (barCount + 1);
@@ -186,16 +400,28 @@ class PongGame {
             this.ctx.fillRect(this.fieldWidth / 2 - 1, barY - 5, 2, 10);
         }
 
+<<<<<<< HEAD
     
         this.ctx.fillRect(0, this.paddle1Y, this.paddleWidth, this.paddleHeight);
         this.ctx.fillRect(this.fieldWidth - this.paddleWidth, this.paddle2Y, this.paddleWidth, this.paddleHeight);
 
     
+=======
+        // Draw paddles
+        this.ctx.fillRect(0, this.paddle1Y, this.paddleWidth, this.paddleHeight);
+        this.ctx.fillRect(this.fieldWidth - this.paddleWidth, this.paddle2Y, this.paddleWidth, this.paddleHeight);
+
+        // Draw ball
+>>>>>>> origin/master
         this.ctx.beginPath();
         this.ctx.arc(this.ballX, this.ballY, this.ballRadius, 0, Math.PI * 2);
         this.ctx.fill();
 
+<<<<<<< HEAD
       
+=======
+        // Draw scores
+>>>>>>> origin/master
         this.ctx.font = "30px Arial";
         this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
         this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
@@ -209,6 +435,10 @@ class PongGame {
     }
 }
 
+<<<<<<< HEAD
+=======
+// Start game
+>>>>>>> origin/master
 let gameInstance = null;
 document.addEventListener("DOMContentLoaded", () => {
     gameInstance = new PongGame("gameCanvas");
