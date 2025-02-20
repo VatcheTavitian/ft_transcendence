@@ -98,601 +98,360 @@ function load4PlayerPage() {
 }
 
 
-<<<<<<< HEAD
-=======
-
-// function loadTournamentPage() {
-// 	const gameContainer = document.getElementById('contentdiv');
-// 	gameContainer.innerHTML = `
-// 	<div id="modal" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px; text-align: center;">
-// 		<p id="modalMessage">Modal message will appear here.</p>
-// 	</div><script src="../js/tournament.js"></script>`;
-// 	loadTournamentAndStart()
-// }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Tournament below
 
 
 
 
-// function start2PlayerGame() {
-//     const canvas = document.getElementById("gameCanvas");
-//     const ctx = canvas.getContext("2d");
-	
-//     const fieldWidth = canvas.width;
-//     const fieldHeight = canvas.height;
-//     const paddleWidth = 10;
-//     const paddleHeight = 60;
-//     const ballRadius = 8;
-//     const paddleSpeed = 5;
-//     const ballSpeed = 4;
-//     const maxScore = 1;
-	
-//     let paddle1Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle2Y = (fieldHeight - paddleHeight) / 2;
-//     let ballX = fieldWidth / 2;
-//     let ballY = fieldHeight / 2;
-//     let ballDirectionX = 1;
-//     let ballDirectionY = Math.random() * 2 - 1;
-//     let player1Score = 0;
-//     let player2Score = 0;
-	
-//     let paddle1Direction = 0;
-//     let paddle2Direction = 0;
-	
-//     let keys = {
-//         w: false,
-//         s: false,
-//         ArrowUp: false,
-//         ArrowDown: false,
-//     };
 
-//     let player2Name =  prompt("Enter Player 2's name:") || "Opponent";
-	
-//     function playSound(soundFilePath) {
-//         const sound = new Audio(soundFilePath);
-//         sound.play();
-//     }
-	
-	
-//     window.addEventListener("keydown", (e) => {
-//         if (e.key === "w") keys.w = true;
-//         if (e.key === "s") keys.s = true;
-//         if (e.key === "ArrowUp") keys.ArrowUp = true;
-//         if (e.key === "ArrowDown") keys.ArrowDown = true;
-//     });
-	
-//     window.addEventListener("keyup", (e) => {
-//         if (e.key === "w") keys.w = false;
-//         if (e.key === "s") keys.s = false;
-//         if (e.key === "ArrowUp") keys.ArrowUp = false;
-//         if (e.key === "ArrowDown") keys.ArrowDown = false;
-//     });
-	
-//     const modal = document.getElementById("modal");
-//     const modalMessage = document.getElementById("modalMessage");
-//     const modalButton = document.getElementById("modalButton");
-	
-//     modalButton.addEventListener("click", () => {
-//         modal.style.display = "none";
-//         resetGame();
-//     });
-	
-//     function gameLoop() {
-//         if (player1Score >= maxScore || player2Score >= maxScore) return;
-	
-//         update();
-//         draw();
-//         requestAnimationFrame(gameLoop);
-//     }
-	
-//     function update() {
-//         if (keys.w && paddle1Y > 0) paddle1Y -= paddleSpeed;
-//         if (keys.s && paddle1Y < fieldHeight - paddleHeight) paddle1Y += paddleSpeed;
-//         if (keys.ArrowUp && paddle2Y > 0) paddle2Y -= paddleSpeed;
-//         if (keys.ArrowDown && paddle2Y < fieldHeight - paddleHeight) paddle2Y += paddleSpeed;
-	
-//         ballX += ballDirectionX * ballSpeed;
-//         ballY += ballDirectionY * ballSpeed;
-	
-//         if (ballY <= 0 || ballY >= fieldHeight) {
-//             ballDirectionY = -ballDirectionY;
-//         }
-	
-//         if (ballX <= paddleWidth && ballY >= paddle1Y && ballY <= paddle1Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/L-Paddle-Hit.mp3");
-//         }
-//         if (ballX >= fieldWidth - paddleWidth - ballRadius && ballY >= paddle2Y && ballY <= paddle2Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/R-Paddle-Hit.mp3");
-//         }
-	
-//         if (ballX <= 0) {
-//             player2Score++;
-//             playSound("../assets/audio/score.mp3");
-//             resetBall();
-//         }
-//         if (ballX >= fieldWidth) {
-//             player1Score++;
-//             playSound("../assets/audio/score.mp3");
-//             resetBall();
-//         }
-//     }
-	
-//     function resetBall() {
-//         ballX = fieldWidth / 2;
-//         ballY = fieldHeight / 2;
-//         ballDirectionX = -ballDirectionX;
-//         ballDirectionY = Math.random() * 2 - 1;
-	
-//         if (player1Score >= maxScore) {
-//             showModal(f"{user.username} Wins!");
-			
-//             const formData = new FormData();
-//             formData.append('player2', player2Name);
-//             formData.append('player1_score', player1Score);
-//             formData.append('player2_score', player2Score);
-//             const csrftoken = getCookie('csrftoken');
-//             fetch('https://localhost:8008/api/add_match/', {
-//                 method: 'POST',
-//                 credentials: 'include',  
-//                 headers: {
-//                     'X-CSRFToken': csrftoken 
-//                 },
-//                 body: formData  
-//             })
-//             .then(response => response.json())
-//             .then(data => console.log('Match added:', data))
-//             .catch(error => console.error('Error:', error));
-//         }
-//         if (player2Score >= maxScore) {
-//             showModal("Player 2 Wins!");
-//         }
-//     }
-		
-	
-//     function showModal(message) {
-//         modalMessage.textContent = message;
-//         modal.style.display = "flex";
-//     }
-	
-//     function draw() {
-//         ctx.clearRect(0, 0, fieldWidth, fieldHeight);
-	
-//         const barCount = 10;
-//         const barSpacing = fieldHeight / (barCount + 1);
-//         ctx.fillStyle = "#000";
-//         for (let i = 1; i <= barCount; i++) {
-//             const barY = i * barSpacing;
-//             ctx.fillRect(fieldWidth / 2 - 1, barY - 5, 2, 10);
-//         }
-	
-//         ctx.fillStyle = "#FFF";
-//         ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
-//         ctx.fillRect(fieldWidth - paddleWidth, paddle2Y, paddleWidth, paddleHeight);
-	
-//         ctx.fillStyle = "#FFF";
-//         ctx.beginPath();
-//         ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-//         ctx.fill();
-	
-//         ctx.fillStyle = "#FFF";
-//         ctx.font = "30px Arial";
-//         ctx.fillText(user.username, fieldWidth / 4, 30);
-//         ctx.fillText(player1Score, fieldWidth / 4, 60);
-//         ctx.fillText(player2Name, fieldWidth * 3 / 4, 30);
-//         ctx.fillText(player2Score, fieldWidth * 3 / 4, 60);
-//     }
-	
-//     gameLoop();
-	
-// }    
+class PongGameTwoPlayer {
+   
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) {
+            console.error("Canvas not found!");
+            return;
+        }
+        this.ctx = this.canvas.getContext("2d");
+        this.running = false;
+        this.animationFrameId = null;
+        this.keys = { w: false, s: false, ArrowUp: false, ArrowDown: false };
+        this.player2Name =  prompt("Enter Player 2's name:") || "Opponent";
+        this.setupGame();
+        this.addEventListeners();
+        this.start();
+    }
 
-// function start3PlayerGame() {
-//     const canvas = document.getElementById("gameCanvas");
-//     const ctx = canvas.getContext("2d");
+    setupGame() {
+        this.fieldWidth = this.canvas.width;
+        this.fieldHeight = this.canvas.height;
+        this.paddleWidth = 10;
+        this.paddleHeight = 60;
+        this.ballRadius = 8;
+        this.paddleSpeed = 5;
+        this.ballSpeed = 4;
+        this.maxScore = 10;
+        this.resetGame();
+    }
 
-//     const fieldWidth = canvas.width;
-//     const fieldHeight = canvas.height;
-//     const paddleWidth = 10;
-//     const paddleHeight = 60;
-//     const ballRadius = 8;
-//     const paddleSpeed = 5;
-//     const ballSpeed = 4;
-//     const maxScore = 10;
+    addEventListeners() {
+        this.keydownHandler = (e) => {
+            if (e.key in this.keys) this.keys[e.key] = true;
+        };
 
-//     let paddle1Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle2Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle3Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle3X = fieldWidth / 4;
-//     let ballX = fieldWidth / 2;
-//     let ballY = fieldHeight / 2;
-//     let ballDirectionX = 1;
-//     let ballDirectionY = Math.random() * 2 - 1;
-//     let player1Score = 0;
-//     let player2Score = 0;
-//     let player3Score = 0;
+        this.keyupHandler = (e) => {
+            if (e.key in this.keys) this.keys[e.key] = false;
+        };
 
-//     let keys = {
-//         w: false,
-//         s: false,
-//         ArrowUp: false,
-//         ArrowDown: false,
-//         c: false,
-//         v: false,
-//     };
+        this.modalButtonHandler = () => {
+            this.resetGame();
+            this.start();
+        };
 
-//     // Ask for player names
-//     let player2Name = prompt("Enter Player 2's name:") || "Player 2";
-//     let player3Name = prompt("Enter Player 3's name:") || "Player 3";
+        window.addEventListener("keydown", this.keydownHandler);
+        window.addEventListener("keyup", this.keyupHandler);
+        document.getElementById("modalButton").addEventListener("click", this.modalButtonHandler);
+    }
 
-//     function playSound(soundFilePath) {
-//         const sound = new Audio(soundFilePath);
-//         sound.play();
-//     }
+    removeEventListeners() {
+        window.removeEventListener("keydown", this.keydownHandler);
+        window.removeEventListener("keyup", this.keyupHandler);
+        document.getElementById("modalButton").removeEventListener("click", this.modalButtonHandler);
+    }
 
-//     window.addEventListener("keydown", (e) => {
-//         if (e.key === "w") keys.w = true;
-//         if (e.key === "s") keys.s = true;
-//         if (e.key === "ArrowUp") keys.ArrowUp = true;
-//         if (e.key === "ArrowDown") keys.ArrowDown = true;
-//         if (e.key === "c") keys.c = true;
-//         if (e.key === "v") keys.v = true;
-//     });
+    resetGame() {
+        this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
+        this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
+        this.ballX = this.fieldWidth / 2;
+        this.ballY = this.fieldHeight / 2;
+        this.ballDirectionX = 1;
+        this.ballDirectionY = Math.random() * 2 - 1;
+        this.player1Score = 0;
+        this.player2Score = 0;
+        this.running = true;
+    }
 
-//     window.addEventListener("keyup", (e) => {
-//         if (e.key === "w") keys.w = false;
-//         if (e.key === "s") keys.s = false;
-//         if (e.key === "ArrowUp") keys.ArrowUp = false;
-//         if (e.key === "ArrowDown") keys.ArrowDown = false;
-//         if (e.key === "c") keys.c = false;
-//         if (e.key === "v") keys.v = false;
-//     });
+    start() {
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+        }
+        this.running = true;
+        this.gameLoop();
+    }
 
-//     const modal = document.getElementById("modal");
-//     const modalMessage = document.getElementById("modalMessage");
-//     const modalButton = document.getElementById("modalButton");
+    stop() {
+        this.running = false;
+        cancelAnimationFrame(this.animationFrameId);
+    }
 
-//     modalButton.addEventListener("click", () => {
-//         modal.style.display = "none";
-//         resetGame();
-//     });
+    gameLoop() {
+        if (!this.running) return;
+        this.update();
+        this.draw();
+        if (this.running) {
+        this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+        }
+    }
 
-//     function gameLoop() {
-//         if (player1Score >= maxScore || player2Score >= maxScore || player3Score >= maxScore) return;
+    update() {
+        if (this.keys.w && this.paddle1Y > 0) this.paddle1Y -= this.paddleSpeed;
+        if (this.keys.s && this.paddle1Y < this.fieldHeight - this.paddleHeight) this.paddle1Y += this.paddleSpeed;
+        if (this.keys.ArrowUp && this.paddle2Y > 0) this.paddle2Y -= this.paddleSpeed;
+        if (this.keys.ArrowDown && this.paddle2Y < this.fieldHeight - this.paddleHeight) this.paddle2Y += this.paddleSpeed;
 
-//         update();
-//         draw();
-//         requestAnimationFrame(gameLoop);
-//     }
+        this.ballX += this.ballDirectionX * this.ballSpeed;
+        this.ballY += this.ballDirectionY * this.ballSpeed;
 
-//     function update() {
-//         if (keys.w && paddle1Y > 0) paddle1Y -= paddleSpeed;
-//         if (keys.s && paddle1Y < fieldHeight - paddleHeight) paddle1Y += paddleSpeed;
-//         if (keys.ArrowUp && paddle2Y > 0) paddle2Y -= paddleSpeed;
-//         if (keys.ArrowDown && paddle2Y < fieldHeight - paddleHeight) paddle2Y += paddleSpeed;
-//         if (keys.c && paddle3Y > 0) paddle3Y -= paddleSpeed;
-//         if (keys.v && paddle3Y < fieldHeight - paddleHeight) paddle3Y += paddleSpeed;
+        if (this.ballY <= 0 || this.ballY >= this.fieldHeight) {
+            this.ballDirectionY = -this.ballDirectionY;
+        }
 
-//         ballX += ballDirectionX * ballSpeed;
-//         ballY += ballDirectionY * ballSpeed;
+        if (this.ballX <= this.paddleWidth && this.ballY >= this.paddle1Y && this.ballY <= this.paddle1Y + this.paddleHeight) {
+            this.ballDirectionX = -this.ballDirectionX;
+        }
 
-//         if (ballY <= 0 || ballY >= fieldHeight) {
-//             ballDirectionY = -ballDirectionY;
-//         }
+        if (this.ballX >= this.fieldWidth - this.paddleWidth - this.ballRadius && this.ballY >= this.paddle2Y && this.ballY <= this.paddle2Y + this.paddleHeight) {
+            this.ballDirectionX = -this.ballDirectionX;
+        }
 
-//         if (ballX <= paddleWidth && ballY >= paddle1Y && ballY <= paddle1Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/L-Paddle-Hit.mp3");
-//         }
-//         if (ballX >= fieldWidth - paddleWidth - ballRadius && ballY >= paddle2Y && ballY <= paddle2Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/R-Paddle-Hit.mp3");
-//         }
+        if (this.ballX <= 0) {
+            this.player2Score++;
+            this.resetBall();
+        }
 
-//         if (ballX >= paddle3X && ballX <= paddle3X + paddleWidth && ballY >= paddle3Y && ballY <= paddle3Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/L-Paddle-Hit.mp3");
-//         }
+        if (this.ballX >= this.fieldWidth) {
+            this.player1Score++;
+            this.resetBall();
+        }
+    }
 
-//         if (ballX <= 0) {
-//             player2Score++;
-//             playSound("../assets/audio/score.mp3");
-//             resetBall();
-//         }
-//         if (ballX >= fieldWidth) {
-//             player1Score++;
-//             playSound("../assets/audio/score.mp3");
-//             resetBall();
-//         }
-//     }
+    resetBall() {
+        this.ballX = this.fieldWidth / 2;
+        this.ballY = this.fieldHeight / 2;
+        this.ballDirectionX = -this.ballDirectionX;
+        this.ballDirectionY = Math.random() * 2 - 1;
+        if (this.player1Score >= this.maxScore || this.player2Score >= this.maxScore) {
+            this.running = false;
+        }
+        if (this.player1Score >= this.maxScore) {
+            this.showModal( user.username + " Wins!");
 
-//     function resetBall() {
-//         ballX = fieldWidth / 2;
-//         ballY = fieldHeight / 2;
-//         ballDirectionX = -ballDirectionX;
-//         ballDirectionY = Math.random() * 2 - 1;
+            const formData = new FormData();
+            formData.append('player2', this.player2Name);
+            formData.append('player1_score', this.player1Score);
+            formData.append('player2_score', this.player2Score);
+            console.log('sending request')
+            const csrftoken = getCookie('csrftoken');
+            fetch('https://localhost:8008/api/add_match/', {
+                method: 'POST',
+                credentials: 'include',  
+                headers: {
+                    'X-CSRFToken': csrftoken 
+                },
+                body: formData  
+            })
+            .then(response => response.json())
+            .then(data => console.log('Match added:', data))
+            .catch(error => console.error('Error:', error));
+        } else if (this.player2Score >= this.maxScore) {
+            this.showModal("Player 2 Wins!");
+        }
+    }
 
-//         if (player1Score >= maxScore) {
-//             showModal(user.username + " Wins!");
-//             const formData = new FormData();
-//             formData.append('player1', user.username);
-//             formData.append('player2', player2Name + " & " + player3Name);
-//             formData.append('player1_score', player1Score);
-//             formData.append('player2_score', player2Score);
-//             const csrftoken = getCookie('csrftoken');
-//             fetch('https://localhost:8008/api/add_match/', {
-//                 method: 'POST',
-//                 credentials: 'include',  
-//                 headers: {
-//                     'X-CSRFToken': csrftoken 
-//                 },
-//                 body: formData  
-//             })
-//             .then(response => response.json())
-//             .then(data => console.log('Match added:', data))
-//             .catch(error => console.error('Error:', error));
-//         }
-//         if (player2Score >= maxScore) {
-//             showModal(`${player2Name} Wins!`);
-//         }
-//         if (player3Score >= maxScore) {
-//             showModal(`${player3Name} Wins!`);
-//         }
-//     }
+    showModal(message) {
+        document.getElementById("modalMessage").textContent = message;
+        document.getElementById("modal").style.display = "flex";
+        this.stop();
+    }
 
-//     function showModal(message) {
-//         modalMessage.textContent = message;
-//         modal.style.display = "flex";
-//     }
+    draw() {
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillRect(0, 0, this.fieldWidth, this.fieldHeight);
 
-//     function draw() {
-//         ctx.clearRect(0, 0, fieldWidth, fieldHeight);
+        this.ctx.fillStyle = "#FFF";
+        this.ctx.fillRect(0, this.paddle1Y, this.paddleWidth, this.paddleHeight);
+        this.ctx.fillRect(this.fieldWidth - this.paddleWidth, this.paddle2Y, this.paddleWidth, this.paddleHeight);
 
-//         const barCount = 10;
-//         const barSpacing = fieldHeight / (barCount + 1);
-//         ctx.fillStyle = "#000";
-//         for (let i = 1; i <= barCount; i++) {
-//             const barY = i * barSpacing;
-//             ctx.fillRect(fieldWidth / 2 - 1, barY - 5, 2, 10);
-//         }
+        this.ctx.beginPath();
+        this.ctx.arc(this.ballX, this.ballY, this.ballRadius, 0, Math.PI * 2);
+        this.ctx.fill();
 
-//         ctx.fillStyle = "#FFF";
-//         ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
-//         ctx.fillRect(fieldWidth - paddleWidth, paddle2Y, paddleWidth, paddleHeight);
-//         ctx.fillRect(paddle3X, paddle3Y, paddleWidth, paddleHeight);
+        this.ctx.font = "30px Arial";
+        this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
+        this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
+        this.ctx.fillText(this.player2Name, this.fieldWidth * 3 / 4, 30);
+        this.ctx.fillText(this.player2Score, this.fieldWidth * 3 / 4, 60);
+    }
 
-//         ctx.fillStyle = "#FFF";
-//         ctx.beginPath();
-//         ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-//         ctx.fill();
-
-//         ctx.fillStyle = "#FFF";
-//         ctx.font = "30px Arial";
-//         ctx.fillText(player1Score, fieldWidth / 4, 60);
-//         ctx.fillText(player2Score, fieldWidth / 2, 60);
-//         ctx.fillText(player3Score, fieldWidth * 3 / 4, 60);
-
-//         ctx.fillText(user.username, fieldWidth / 4, 30);
-//         ctx.fillText(player2Name, fieldWidth / 2, 30);
-//         ctx.fillText(player3Name, fieldWidth * 3 / 4, 30);
-//     }
-
-//     gameLoop();
-// }
+    destroy() {
+        this.stop();
+        this.removeEventListeners();
+    }
+}
 
 
-// function start4PlayerGame() {
-//     const canvas = document.getElementById("gameCanvas");
-//     const ctx = canvas.getContext("2d");
 
-//     const fieldWidth = canvas.width;
-//     const fieldHeight = canvas.height;
-//     const paddleWidth = 10;
-//     const paddleHeight = 60;
-//     const ballRadius = 8;
-//     const paddleSpeed = 5;
-//     const ballSpeed = 4;
-//     const maxScore = 10;
+async function startTournament() {
+    console.log('1');
+    const gameContainer = document.getElementById('contentdiv');
+   
+    gameContainer.innerHTML = `
+        <style>body {background-color: black;}</style>
+        <div id="tourCanvas"></div
+        <div id="modal">
+            <div id="modalMessage"></div>
+            <button id="modalButton">Next Match</button>
+        </div>
+    `;
 
-//     let paddle1Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle2Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle3Y = (fieldHeight - paddleHeight) / 2;
-//     let paddle4Y = (fieldHeight - paddleHeight) / 2; // Player 4's paddle
-//     let paddle3X = fieldWidth / 4;
-//     let paddle4X = fieldWidth * 3 / 4; // Position Player 4
-//     let ballX = fieldWidth / 2;
-//     let ballY = fieldHeight / 2;
-//     let ballDirectionX = 1;
-//     let ballDirectionY = Math.random() * 2 - 1;
-//     let player1Score = 0;
-//     let player2Score = 0;
-//     let player3Score = 0;
-//     let player4Score = 0; // Player 4 score
 
-//     let keys = {
-//         w: false,
-//         s: false,
-//         ArrowUp: false,
-//         ArrowDown: false,
-//         c: false,
-//         v: false,
-//         x: false, // Player 4 control (up)
-//         z: false, // Player 4 control (down)
-//     };
+    // Create script elements for both scripts
+    const script = document.createElement('script');
+    script.src = '../js/tournament.js';
+    const script2 = document.createElement('script');
+    script2.src = '../js/2p.js';
 
-//     // Ask for player names
-//     let player2Name = prompt("Enter Player 2's name:") || "Player 2";
-//     let player3Name = prompt("Enter Player 3's name:") || "Player 3";
-//     let player4Name = prompt("Enter Player 4's name:") || "Player 4"; // Player 4's name
+    // Append the scripts to the document body
+    document.body.appendChild(script);
+    document.body.appendChild(script2);
+    console.log('Scripts added');
 
-//     function playSound(soundFilePath) {
-//         const sound = new Audio(soundFilePath);
-//         sound.play();
-//     }
+    // Function to load a script and return a promise
+    const loadScript = (script) => {
+        return new Promise((resolve, reject) => {
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error(`Script load error: ${script.src}`));
+        });
+    };
 
-//     window.addEventListener("keydown", (e) => {
-//         if (e.key === "w") keys.w = true;
-//         if (e.key === "s") keys.s = true;
-//         if (e.key === "ArrowUp") keys.ArrowUp = true;
-//         if (e.key === "ArrowDown") keys.ArrowDown = true;
-//         if (e.key === "c") keys.c = true;
-//         if (e.key === "v") keys.v = true;
-//         if (e.key === "x") keys.x = true; // Player 4 up
-//         if (e.key === "z") keys.z = true; // Player 4 down
-//     });
+    // Wait for both scripts to load
+    try {
+        await Promise.all([loadScript(script), loadScript(script2)]);
+        console.log('Both scripts loaded');
 
-//     window.addEventListener("keyup", (e) => {
-//         if (e.key === "w") keys.w = false;
-//         if (e.key === "s") keys.s = false;
-//         if (e.key === "ArrowUp") keys.ArrowUp = false;
-//         if (e.key === "ArrowDown") keys.ArrowDown = false;
-//         if (e.key === "c") keys.c = false;
-//         if (e.key === "v") keys.v = false;
-//         if (e.key === "x") keys.x = false; // Player 4 up
-//         if (e.key === "z") keys.z = false; // Player 4 down
-//     });
+        // Now that both scripts have loaded, check if startTournamentGameCall exists
+        if (typeof startTournamentGameCall === "function") {
+            // Wait a short time before calling startTournamentGameCall
+            setTimeout(function() {
+                startTournamentGameCall();  // Calls startTournamentGame after a delay
+            }, 2000);  // Adjust delay (in ms) if needed
+        } else {
+            console.error("startTournamentGameCall is not defined");
+        }
+    } catch (error) {
+        console.error("Error loading scripts:", error);
+    }
+}
 
-//     const modal = document.getElementById("modal");
-//     const modalMessage = document.getElementById("modalMessage");
-//     const modalButton = document.getElementById("modalButton");
 
-//     modalButton.addEventListener("click", () => {
-//         modal.style.display = "none";
-//         resetGame();
-//     });
 
-//     function gameLoop() {
-//         if (player1Score >= maxScore || player2Score >= maxScore || player3Score >= maxScore || player4Score >= maxScore) return;
+class Tournament {
+    constructor(canvasId, username) {
+        this.canvasId = canvasId;
+        this.username = username;
+        this.players = [];
+        this.game = null;
+        this.round = 1;
+        this.match = 1;
+        this.winner = null;
+        this.setupTournament();
+    }
+    
+    setupTournament() {
+        let numPlayers = 0;
+        while (numPlayers < 2 || numPlayers > 8) {
+            numPlayers = parseInt(prompt("Enter number of players (2-8):"));
+        }
+        
+        this.players.push(this.username); // Add the current user as Player 1
+        
+        for (let i = 2; i <= numPlayers; i++) {
+            const playerName = prompt(`Enter Player ${i}'s name:`) || `Player ${i}`;
+            this.players.push(playerName);
+        }
 
-//         update();
-//         draw();
-//         requestAnimationFrame(gameLoop);
-//     }
+        this.startRound();
+    }
 
-//     function update() {
-//         if (keys.w && paddle1Y > 0) paddle1Y -= paddleSpeed;
-//         if (keys.s && paddle1Y < fieldHeight - paddleHeight) paddle1Y += paddleSpeed;
-//         if (keys.ArrowUp && paddle2Y > 0) paddle2Y -= paddleSpeed;
-//         if (keys.ArrowDown && paddle2Y < fieldHeight - paddleHeight) paddle2Y += paddleSpeed;
-//         if (keys.c && paddle3Y > 0) paddle3Y -= paddleSpeed;
-//         if (keys.v && paddle3Y < fieldHeight - paddleHeight) paddle3Y += paddleSpeed;
-//         if (keys.x && paddle4Y > 0) paddle4Y -= paddleSpeed; // Player 4 up
-//         if (keys.z && paddle4Y < fieldHeight - paddleHeight) paddle4Y += paddleSpeed; // Player 4 down
+    startRound() {
+        if (this.players.length === 1) {
+            this.winner = this.players[0];
+            this.endTournament();
+            return;
+        }
 
-//         ballX += ballDirectionX * ballSpeed;
-//         ballY += ballDirectionY * ballSpeed;
+        const player1 = this.players.shift();
+        const player2 = this.players.shift();
+        
+        this.game = new PongGameTwoPlayer(this.canvasId, player1, player2); // Pass player names to the game
+        this.game.onGameOver = (winner, loser, player1Score, player2Score) => this.endMatch(winner, loser, player1Score, player2Score);
+        this.game.start();
+    }
+    
+    
+    
+    endMatch(winner, loser, player1Score, player2Score) {
+        if (winner) {
+            this.players.push(winner);
+        }
+        if (loser) {
+            const loserIndex = this.players.indexOf(loser);
+            if (loserIndex > -1) {
+                this.players.splice(loserIndex, 1);
+            }
+        }
+        
+        this.game.destroy();
+        this.game = null;
 
-//         if (ballY <= 0 || ballY >= fieldHeight) {
-//             ballDirectionY = -ballDirectionY;
-//         }
+        if (this.players.length === 1) {
+            this.winner = this.players[0];
+            this.endTournament();
+        } else {
+            this.startRound();
+        }
+    }
+    
+    endTournament() {
+        const modalMessage = document.getElementById("modalMessage");
+        const modal = document.getElementById("modal");
+        
+        if (this.winner) {
+            modalMessage.textContent = `${this.winner} wins the tournament!`;
+        } else {
+            modalMessage.textContent = "Tournament ended unexpectedly.";
+        }
+        modal.style.display = "flex";
+        this.game?.destroy();
+        this.game = null;
+    }
+}
 
-//         if (ballX <= paddleWidth && ballY >= paddle1Y && ballY <= paddle1Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/L-Paddle-Hit.mp3");
-//         }
-//         if (ballX >= fieldWidth - paddleWidth - ballRadius && ballY >= paddle2Y && ballY <= paddle2Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/R-Paddle-Hit.mp3");
-//         }
-//         if (ballX >= paddle3X && ballX <= paddle3X + paddleWidth && ballY >= paddle3Y && ballY <= paddle3Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/L-Paddle-Hit.mp3");
-//         }
-//         if (ballX >= paddle4X && ballX <= paddle4X + paddleWidth && ballY >= paddle4Y && ballY <= paddle4Y + paddleHeight) {
-//             ballDirectionX = -ballDirectionX;
-//             playSound("../assets/audio/R-Paddle-Hit.mp3");
-//         }
 
-//         if (ballX <= 0) {
-//             player2Score++;
-//             playSound("../assets/audio/score.mp3");
-//             resetBall();
-//         }
-//         if (ballX >= fieldWidth) {
-//             player1Score++;
-//             playSound("../assets/audio/score.mp3");
-//             resetBall();
-//         }
-//     }
 
-//     function resetBall() {
-//         ballX = fieldWidth / 2;
-//         ballY = fieldHeight / 2;
-//         ballDirectionX = -ballDirectionX;
-//         ballDirectionY = Math.random() * 2 - 1;
 
-//         if (player1Score >= maxScore) {
-//             showModal(user.username + " Wins!");
-//             const formData = new FormData();
-//             formData.append('player1', user.username);
-//             formData.append('player2', player2Name + " & " + player3Name + " & " + player4Name);
-//             formData.append('player1_score', player1Score);
-//             formData.append('player2_score', player2Score);
-//             const csrftoken = getCookie('csrftoken');
-//             fetch('https://localhost:8008/api/add_match/', {
-//                 method: 'POST',
-//                 credentials: 'include',  
-//                 headers: {
-//                     'X-CSRFToken': csrftoken 
-//                 },
-//                 body: formData  
-//             })
-//             .then(response => response.json())
-//             .then(data => console.log('Match added:', data))
-//             .catch(error => console.error('Error:', error));
-//         }
-		
-//         if (player2Score >= maxScore) {
-//             showModal(`${player2Name} Wins!`);
-//         }
-//         if (player3Score >= maxScore) {
-//             showModal(`${player3Name} Wins!`);
-//         }
-//         if (player4Score >= maxScore) {
-//             showModal(`${player4Name} Wins!`);
-//         }
-//     }
 
-//     function showModal(message) {
-//         modalMessage.textContent = message;
-//         modal.style.display = "flex";
-//     }
+function startTournament() {
+    setTimeout(() => {
+        console.log('Waiting for 3 seconds before starting the tournament...');
+        const gameContainer = document.getElementById('tourCanvas');
+        const newContainer = document.createElement('div');
+        newContainer.innerHTML = `
+            <canvas id="gameCanvas" width="800" height="400"></canvas>`;
 
-//     function draw() {
-//         ctx.clearRect(0, 0, fieldWidth, fieldHeight);
+        gameContainer.appendChild(newContainer);
+        const canv = document.getElementById('gameCanvas');
+        const tournament = new Tournament(canv, user.username);
+    }, 3000);
+}
 
-//         const barCount = 10;
-//         const barSpacing = fieldHeight / (barCount + 1);
-//         ctx.fillStyle = "#000";
-//         for (let i = 1; i <= barCount; i++) {
-//             const barY = i * barSpacing;
-//             ctx.fillRect(fieldWidth / 2 - 1, barY - 5, 2, 10);
-//         }
-
-//         ctx.fillStyle = "#FFF";
-//         ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight);
-//         ctx.fillRect(fieldWidth - paddleWidth, paddle2Y, paddleWidth, paddleHeight);
-//         ctx.fillRect(paddle3X, paddle3Y, paddleWidth, paddleHeight);
-//         ctx.fillRect(paddle4X, paddle4Y, paddleWidth, paddleHeight); // Draw Player 4's paddle
-
-//         ctx.fillStyle = "#FFF";
-//         ctx.beginPath();
-//         ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-//         ctx.fill();
-
-//         ctx.fillStyle = "#FFF";
-//         ctx.font = "30px Arial";
-//         ctx.fillText(player1Score, fieldWidth / 4, 60);
-//         ctx.fillText(player2Score, fieldWidth / 2, 60);
-//         ctx.fillText(player3Score, fieldWidth * 3 / 4, 60);
-//         ctx.fillText(player4Score, fieldWidth * 7 / 8, 60); // Player 4's score
-
-//         ctx.fillText(user.username, fieldWidth / 4, 30);
-//         ctx.fillText(player2Name, fieldWidth / 2, 30);
-//         ctx.fillText(player3Name, fieldWidth * 3 / 4, 30);
-//         ctx.fillText(player4Name, fieldWidth * 7 / 8, 30); // Player 4's name
-//     }
-
-//     gameLoop();
-// }
->>>>>>> origin/master
+    window.startTournamentGameCall = function() {
+        if (window.gameInstance) {
+            window.gameInstance.destroy();
+        }
+        startTournament();
+        // window.gameInstance = new PongGame("gameCanvas");
+    };
+    // Call the startTournament function when needed
+    startTournamentGameCall()

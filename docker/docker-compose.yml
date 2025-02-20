@@ -1,126 +1,3 @@
-# services:
-#   postgres:
-#     container_name: postgres
-#     build:
-#       context: ./requirements/postgres/
-#       dockerfile: Dockerfile
-#       args:
-#         DB_NAME: ${DB_NAME}
-#         DB_USER: ${DB_USER}
-#         DB_PASS: ${DB_PASS}
-#         DB_HOST: ${DB_HOST}
-#     env_file:
-#       - .env
-#     ports:
-#       - "5432:5432"
-#     networks:
-#       - nwtranscendence
-#     # volumes:
-#     #   - db-volume:/var/lib/postgresql/data
-#     restart: always
-
-#   backend:
-#     container_name: backend
-#     build:
-#       context: ./requirements/backend/
-#       dockerfile: Dockerfile
-#       args:
-#           API_CLIENT_ID: ${API_CLIENT_ID}
-#           API_CLIENT_SECRET : ${API_CLIENT_SECRET}
-#           API_REDIRECT_URI: ${API_REDIRECT_URI}
-#           DB_HOST: ${DB_HOST}
-#           CERTIFICATE_PATH: ${CERTIFICATE_PATH}
-#           VALUE: ${VALUE}
-#           GUNICORN_WD_BACKEND: ${GUNICORN_WD_BACKEND}
-#           PYTHONPATH: ${PYTHONPATHBACKEND}
-#           EMAIL_HOST_USER: ${EMAIL_HOST_USER}
-#           EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
-#     env_file:
-#       - .env
-#     ports:
-#       - "8008:8008"
-#     networks:
-#       - nwtranscendence
-#     # volumes:
-#     #   - backend-volume:/app
-#     depends_on:
-#       - postgres
-#     restart: always
-
-#   backendmicro:
-#     container_name: backendmicro
-#     build:
-#       context: ./requirements/backendmicro/
-#       dockerfile: Dockerfile
-#       args:
-#         CERTIFICATE_PATH: ${CERTIFICATE_PATH}
-#         VALUE: ${VALUE}
-#         GUNICORN_WD_BACKEND_MICRO: ${GUNICORN_WD_BACKEND_MICRO}
-#         PYTHONPATHBACKENDMICRO: ${PYTHONPATHBACKENDMICRO}
-#     env_file:
-#       - .env
-#     ports:
-#       - "8009:8009"
-#     networks:
-#       - nwtranscendence
-#     # volumes:
-#     #   - backendmicro-volume:/app
-#     depends_on:
-#       - postgres
-#     restart: always
-
-#   frontend:
-#       container_name: frontend
-#       build:
-#         context: ./requirements/frontend/
-#         dockerfile: Dockerfile
-#         args:
-#           CERTIFICATE_PATH: ${CERTIFICATE_PATH}
-#           VALUE: ${VALUE}
-#       env_file:
-#         - .env
-#       ports:
-#         - "443:443"
-#       networks:
-#         - nwtranscendence
-#       depends_on:
-#         - backend
-#       # volumes:
-#       #   - frontend-volume:/var/www/html
-#       restart: always 
-
-# # volumes:
-# #   db-volume:
-# #     driver_opts:
-# #       o: bind
-# #       type: none
-# #       device: /home/vatche/Documents/dbforft
-
-# #   backend-volume:
-# #     driver_opts:
-# #       o: bind
-# #       type: none
-# #       device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
-    
-  
-# #   backendmicro-volume:
-# #     driver_opts:
-# #       o: bind
-# #       type: none
-# #       device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
-
-# #   frontend-volume:
-# #     driver_opts:
-# #       o: bind
-# #       type: none
-# #       device: /home/vatche/Desktop/Oct14/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
-
-
-# networks:
-#     nwtranscendence:
-#         driver: bridge
-
-# version: '3.8'
 
 services:
   postgres:
@@ -145,8 +22,8 @@ services:
     logging:
       driver: "gelf"
       options:
-        # gelf-address: "udp://logstash:12201"   # ON Linux # Monitoring DO NOT DELETE
-        gelf-address: "udp://host.docker.internal:12201"   # ON MAC # Monitoring DO NOT DELETE
+        gelf-address: "udp://logstash:12201"   # ON Linux # Monitoring DO NOT DELETE
+        # gelf-address: "udp://host.docker.internal:12201"   # ON MAC # Monitoring DO NOT DELETE
         tag: "postgres"
     restart: always
 
@@ -222,14 +99,14 @@ services:
       - "443:443"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - frontend-volume:/var/www/html
+    volumes:
+      - frontend-volume:/var/www/html
     depends_on:
       - backend
       - backendmicro
     restart: always
 
-# ---------------------- MONITORING ---------------------- #
+# # ---------------------- MONITORING ---------------------- #
 
   prometheus:
     container_name: prom
@@ -282,11 +159,11 @@ volumes:
   #     type: none
   #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
 
-  # frontend-volume:
-  #   driver_opts:
-  #     o: bind
-  #     type: none
-  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
+  frontend-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
 
   # certs:
   #   driver: local

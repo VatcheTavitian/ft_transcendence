@@ -690,6 +690,7 @@ function loadGamePage() {
         <button id="2player-btn" class="menu-btn">2 Player</button>
         <button id="3player-btn" class="menu-btn">3 Player</button>
         <button id="4player-btn" class="menu-btn">4 Player</button>
+        <button id="tournament-btn" class="menu-btn">Tournament</button>
     </div>
 
     <script src="../js/script.js"></script>`
@@ -702,6 +703,8 @@ function loadGamePage() {
     spb3.addEventListener('click', load3PlayerPage);
     spb4 = document.getElementById('4player-btn');
     spb4.addEventListener('click', load4PlayerPage);
+    spb5 = document.getElementById('tournament-btn');
+    spb5.addEventListener('click', startTournament);
 }
 
 
