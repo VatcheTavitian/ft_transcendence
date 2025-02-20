@@ -120,7 +120,7 @@
 #     nwtranscendence:
 #         driver: bridge
 
-version: '3.8'
+# version: '3.8'
 
 services:
   postgres:
@@ -142,6 +142,12 @@ services:
       - nwtranscendence
     # volumes:
     #   - db-volume:/var/lib/postgresql/data
+    logging:
+      driver: "gelf"
+      options:
+        # gelf-address: "udp://logstash:12201"   # ON Linux # Monitoring DO NOT DELETE
+        gelf-address: "udp://host.docker.internal:12201"   # ON MAC # Monitoring DO NOT DELETE
+        tag: "postgres"
     restart: always
 
   backend:
@@ -216,14 +222,45 @@ services:
       - "443:443"
     networks:
       - nwtranscendence
-    volumes:
-      - frontend-volume:/var/www/html
+    # volumes:
+    #   - frontend-volume:/var/www/html
     depends_on:
       - backend
       - backendmicro
     restart: always
 
+# ---------------------- MONITORING ---------------------- #
+
+  prometheus:
+    container_name: prom
+    build:
+      context: ./requirements/prometheus
+      dockerfile: Dockerfile
+    command:
+      - '--web.enable-lifecycle'
+      - '--storage.tsdb.retention.time=1h'
+    ports:
+      - '9090:9090'
     
+  grafana:
+    container_name: grafana
+    build:
+      context: ./requirements/grafana
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin1234
+
+  node-exporter:
+    container_name: node-exporter
+    image: 'quay.io/prometheus/node-exporter:v1.8.2'
+    command:
+      - '--path.rootfs=/host'
+    ports:
+      - '9100:9100'
+
+# ---------------------- VOLUMES ---------------------- #
 
 volumes:
   db-volume:
@@ -232,27 +269,36 @@ volumes:
       type: none
       device: /home/vatche/Documents/dbforft
 
-  backend-volume:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
+  # backend-volume:
+  #   driver_opts:
+  #     o: bind
+  #     type: none
+  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
     
   
-  backendmicro-volume:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
+  # backendmicro-volume:
+  #   driver_opts:
+  #     o: bind
+  #     type: none
+  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
 
-  frontend-volume:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
+  # frontend-volume:
+  #   driver_opts:
+  #     o: bind
+  #     type: none
+  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
 
+  # certs:
+  #   driver: local
+  # esdata01:
+  #   driver: local
+  # kibanadata:
+  #   driver: local
 
+# ---------------------- NETWORKS ---------------------- #
 
 networks:
   nwtranscendence:
+    driver: bridge
+  elknet:
     driver: bridge
