@@ -46,17 +46,14 @@ function launchTournament() {
     const modalMessage = document.getElementById("modalMessage");
     const modalButton = document.getElementById("modalButton");
 
-    // Load sound effects
-    // const paddleHitSound = new Audio('../assets/audio/r-Paddle-Hit.mp3');
-    // const scoreSound = new Audio('../assets/audio/score.mp3');
-
+ 
     startInputBtn.addEventListener("click", () => {
         const numPlayers = parseInt(numPlayersInput.value);
         if (numPlayers >= 2 && numPlayers <= 10) {
             playersInputsDiv.style.display = "block";
             playerNamesInputsDiv.innerHTML = "";
 
-            // Create input fields for player aliases
+          
             for (let i = 1; i <= numPlayers; i++) {
                 const playerInputDiv = document.createElement("div");
                 playerInputDiv.classList.add("playerInput");
@@ -85,7 +82,7 @@ function launchTournament() {
         const numPlayers = parseInt(numPlayersInput.value);
         const playerNames = [];
 
-        // Collect player aliases
+
         for (let i = 1; i <= numPlayers; i++) {
             const playerNameInput = document.getElementById(`player${i}`);
             const alias = playerNameInput.value.trim();
@@ -100,7 +97,7 @@ function launchTournament() {
             }
         }
 
-        // Initialize the tournament
+ 
         initializeTournament(playerNames);
         let modalBtn = document.getElementById("modalButton");
         modalBtn.removeAttribute('style');
@@ -109,7 +106,7 @@ function launchTournament() {
     });
 
     function initializeTournament(playerNames) {
-        // Hide the player input section and show the game canvas
+ 
         document.getElementById("playerInputSection").style.display = "none";
         numPlayersInput.style.display = "none";
         startInputBtn.style.display = "none";
@@ -128,8 +125,6 @@ function launchTournament() {
         opponentIndex = 1;
         matchInProgress = true;
         resetGame();
-
-        // Start the tournament match cycle
         startNextMatch();
     }
 
@@ -142,7 +137,7 @@ function launchTournament() {
             modalMessage.textContent = `Match: ${player1Name} vs ${player2Name}`;
             modal.style.display = "flex";
 
-            // Wait for the user to close the modal before starting the game
+         
             modalButton.removeEventListener("click", handleFinalResultsModalClick);
             modalButton.addEventListener("click", () => {
                 modal.style.display = "none"; // Close the modal
@@ -150,7 +145,7 @@ function launchTournament() {
                 //gameLoop();
             });
         } else {
-            startTournamentBtn.style.display = "none";  // Hide the "Start Match" button after tournament ends
+            startTournamentBtn.style.display = "none";  
             console.log("Tournament Over");
             showFinalStandings();
             // console.error("Invalid player indices:", currentPlayerIndex, opponentIndex);

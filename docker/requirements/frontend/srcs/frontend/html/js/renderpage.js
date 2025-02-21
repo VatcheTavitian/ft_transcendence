@@ -84,8 +84,6 @@ function loadUserData() {
     }
     else {
       loadMainPage()
-    //   renderProfileButton()
-
     }
     
 }

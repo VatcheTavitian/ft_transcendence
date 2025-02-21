@@ -13,53 +13,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// function loadFriendList() {
-//     const contentdiv = document.getElementById("contentdiv");
-//     const newcontainer = document.createElement('div');
-//     newcontainer.innerHTML = `
-//         <br>
-//         <br>
-//         <div>
-//             <h3>Your Friends</h3>
-//             <ul id="friends"></ul>
-//         </div>
-//     `;
-//     contentdiv.appendChild(newcontainer)
-//     loadAddFriend()
-//     loadDeleteFriendList()
-//     fetch('https://localhost:8008/api/listfriends/', {
-//         method: 'GET',
-//         credentials: 'include',
-//         headers: { 'X-CSRFToken': getCookie('csrftoken') },
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         const friendsList = document.getElementById('friends');
-        
-//         if (data.nonintrafriends) {
-//             data.nonintrafriends.forEach(friend => {
-//                 const friendDiv = document.createElement('li');
-//                 if (friend.friend && friend.friend.username) {
-//                     friendDiv.innerHTML = friend.friend.username;
-
-//                     friendsList.appendChild(friendDiv);
-//                 }
-//             });
-//         }
-
-//         if (data.intrafriends) {
-//             data.intrafriends.forEach(intrafriend => {
-//                 const friendDiv = document.createElement('li');
-//                 if (intrafriend.intra_friend && intrafriend.intra_friend.username) {
-//                     friendDiv.innerHTML = intrafriend.intra_friend.username;
-//                     friendsList.appendChild(friendDiv);
-//                 }
-//             });
-//         }
-//     })
-//     .catch(error => console.error('Error:', error));
-// }
-
 function loadFriendList() {
     const contentdiv = document.getElementById("contentdiv");
     const newcontainer = document.createElement('div');
@@ -93,7 +46,6 @@ function loadFriendList() {
             friends = friends.concat(data.intrafriends.map(intrafriend => intrafriend.intra_friend?.username));
         }
 
-        // Fetch online statuses
         fetch('https://localhost:8008/api/getonlinestatus/', {
             method: 'GET',
             credentials: 'include',
@@ -106,7 +58,7 @@ function loadFriendList() {
                     const friendDiv = document.createElement('li');
                     friendDiv.textContent = username;
 
-                    // Set text color to red if online
+    
                     if (statusData[username]) {
                         friendDiv.style.color = 'Green';
                         friendDiv.textContent += " (Online)";
@@ -311,68 +263,70 @@ function loadMainPage() {
 }
 
 function changePasswordForm() {
-    const contentdiv = document.getElementById('contentdiv');
-    const newcontainer = document.createElement('div')
-    newcontainer.innerHTML = `
-    <br>
-    <br>
-    <h4> Update your password </h4>
-       <div class="container mt-4">
-            <form id="updatePasswordForm" method="POST" class="form">
-                <div class="form-group">
-                    <label for="old_password">Old Password:</label>
-                    <input type="password" id="old_password" name="old_password" class="form-control" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="new_password">New Password:</label>
-                    <input type="password" id="new_password" name="new_password" class="form-control" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password:</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary mt-2">Change Password</button>
-            </form>
-        </div>
-    `;
-    contentdiv.appendChild(newcontainer)
-    
-    document.getElementById('updatePasswordForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        console.log('Changing password...');
+    if (!user.intra_id) {
+        const contentdiv = document.getElementById('contentdiv');
+        const newcontainer = document.createElement('div')
+        newcontainer.innerHTML = `
+        <br>
+        <br>
+        <h4> Update your password </h4>
+        <div class="container mt-4">
+                <form id="updatePasswordForm" method="POST" class="form">
+                    <div class="form-group">
+                        <label for="old_password">Old Password:</label>
+                        <input type="password" id="old_password" name="old_password" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new_password">New Password:</label>
+                        <input type="password" id="new_password" name="new_password" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary mt-2">Change Password</button>
+                </form>
+            </div>
+        `;
+        contentdiv.appendChild(newcontainer)
         
-        const newPassword = document.getElementById('new_password').value;
-        const confirmPassword = document.getElementById('confirm_password').value;
-        
-        if (newPassword !== confirmPassword) {
-            alert('New password and confirm password do not match.');
-            return;
-        }
-        
-        const formData = new FormData(this);
-        const csrftoken = getCookie('csrftoken');
-        
-        try {
-            const response = await fetch('https://localhost:8008/api/updatepassword/', {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'X-CSRFToken': csrftoken },
-                body: formData
-            });
+        document.getElementById('updatePasswordForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            console.log('Changing password...');
             
-            const result = await response.json();
-            console.log('Password change response:', result);
-            if (result.error)
-                alert('Error!' + result.error);
-            else
-                loadProfilePage()
-        } catch (error) {
-            console.error('Error changing password:', error); 
-        }
-    });
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('New password and confirm password do not match.');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const csrftoken = getCookie('csrftoken');
+            
+            try {
+                const response = await fetch('https://localhost:8008/api/updatepassword/', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'X-CSRFToken': csrftoken },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                console.log('Password change response:', result);
+                if (result.error)
+                    alert('Error!' + result.error);
+                else
+                    loadProfilePage()
+            } catch (error) {
+                console.error('Error changing password:', error); 
+            }
+        });
+    }
 }
 
 async function loadProfilePage() {
@@ -434,7 +388,7 @@ async function loadProfilePage() {
             document.getElementById('email').value = data.user.email;
             document.getElementById('first_name').value = data.user.first_name;
             document.getElementById('last_name').value = data.user.last_name;
-            // console.log('URL IS ', avatarUrl)
+         
             const avatarUrl = data.avatar.avatar.startsWith('/media/https')
                 ? data.avatar.avatar.replace('/media/', '').replace('https%3A/', 'https://')
                 : "https://localhost:8008" + data.avatar.avatar;
@@ -783,7 +737,7 @@ function loadRegisterPage() {
     `;
 
  
-    // Add the event listener for form submission
+
     document.getElementById('createNewUser').addEventListener('submit', function(event) {
         event.preventDefault(); 
         console.log('Creating new user...');
@@ -870,10 +824,6 @@ function loadTournamentPage() {
     else {
         const contentdiv = document.getElementById('contentdiv');
         contentdiv.innerHTML = ""
-        // const existingScript = document.querySelector('script[src="../js/tournament.js"]');
-        // if (existingScript) {
-        //     existingScript.remove();
-        // }
         const newcontainer = document.createElement('div')
         newcontainer.innerHTML = `
         <head><link rel="stylesheet" href="../css/tournament.css"></head>

@@ -147,7 +147,6 @@ function renderMatchHistoryButton() {
         event.preventDefault();
         history.pushState({ page: "matchhistory" }, "MatchHistory", "/matchhistory");
         loadTournamentsWonPage()
-        // loadMatchHistoryPage()
         });
 }
 
