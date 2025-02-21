@@ -39,7 +39,7 @@ class PongGameFourPlayer {
         this.ballRadius = 8;
         this.paddleSpeed = 5;
         this.ballSpeed = 4;
-        this.maxScore = 10;
+        this.maxScore = 5;
         this.paddle3X = this.fieldWidth / 2 - this.paddleWidth / 2;
         this.paddle4X = this.fieldWidth / 4 - this.paddleWidth / 2; 
         this.resetGame();
@@ -56,6 +56,7 @@ class PongGameFourPlayer {
 
         this.modalButtonHandler = () => {
             this.resetGame();
+            this.showModal("")
             this.start();
         };
 

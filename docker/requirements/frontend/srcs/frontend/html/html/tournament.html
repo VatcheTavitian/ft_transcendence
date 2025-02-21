@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Round-Robin Tournament</title>
+    <link rel="stylesheet" href="../css/tournament.css">
+</head>
+<body>
+    <div id="playerInputSection">
+        <h2>Enter Tournament Details</h2>
+        <label for="numPlayers">Number of Players: </label>
+        <input type="number" id="numPlayers" min="2" max="10" value="2">
+        <button id="startInputBtn">Start Tournament</button>
+        
+        <div id="playersInputs" style="display: none;">
+            <h3>Enter Player Aliases</h3>
+            <div id="playerNamesInputs"></div>
+            <button id="startTournamentBtn" style="display: none;">Start Tournament</button>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
+
+    <div id="modal">
+        <div id="modalMessage"></div>
+        <button id="modalButton">Begin</button>
+    </div>
+    <script src="../js/tournament.js"></script>
+</body>
+</html>

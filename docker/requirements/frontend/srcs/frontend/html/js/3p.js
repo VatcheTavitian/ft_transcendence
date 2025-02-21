@@ -41,7 +41,7 @@ class PongGameThreePlayer {
         this.ballRadius = 8;
         this.paddleSpeed = 5;
         this.ballSpeed = 4;
-        this.maxScore = 10;
+        this.maxScore = 5;
         this.paddle3X = this.fieldWidth / 2 - this.paddleWidth / 2;
         this.resetGame();
     }
@@ -57,6 +57,7 @@ class PongGameThreePlayer {
 
         this.modalButtonHandler = () => {
             this.resetGame();
+            this.showModal("")
             this.start();
         };
 

@@ -31,7 +31,7 @@ class PongGame {
         this.ballRadius = 8;
         this.paddleSpeed = 5;
         this.ballSpeed = 4;
-        this.maxScore = 10;
+        this.maxScore = 5;
 
         this.resetGame();
     }
@@ -49,6 +49,7 @@ class PongGame {
 
         this.modalButtonHandler = () => {
             this.resetGame();
+            this.showModal("")
             this.start();
         };
 

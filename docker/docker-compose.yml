@@ -19,12 +19,12 @@ services:
       - nwtranscendence
     # volumes:
     #   - db-volume:/var/lib/postgresql/data
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "udp://logstash:12201"   # ON Linux # Monitoring DO NOT DELETE
-        # gelf-address: "udp://host.docker.internal:12201"   # ON MAC # Monitoring DO NOT DELETE
-        tag: "postgres"
+    # logging:
+    #   driver: "gelf"
+    #   options:
+    #     gelf-address: "udp://logstash:12201"   # ON Linux # Monitoring DO NOT DELETE
+    #     # gelf-address: "udp://host.docker.internal:12201"   # ON MAC # Monitoring DO NOT DELETE
+    #     tag: "postgres"
     restart: always
 
   backend:
