@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('userapp', '0007_auto_20241021_0848'),
+        ("userapp", "0007_auto_20241021_0848"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='useravatar',
-            name='intra_user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='userapp.intrauser'),
+            model_name="useravatar",
+            name="intra_user",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="userapp.intrauser",
+            ),
         ),
     ]

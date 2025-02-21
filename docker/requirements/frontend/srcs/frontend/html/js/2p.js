@@ -67,6 +67,7 @@ class PongGameTwoPlayer {
     }
 
     resetGame() {
+        this.gameOver = false;
         this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.ballX = this.fieldWidth / 2;
@@ -133,6 +134,7 @@ class PongGameTwoPlayer {
     }
 
     resetBall() {
+        this.gameOver = false;
         this.ballX = this.fieldWidth / 2;
         this.ballY = this.fieldHeight / 2;
         this.ballDirectionX = -this.ballDirectionX;
@@ -141,6 +143,7 @@ class PongGameTwoPlayer {
             this.running = false;
         }
         if (this.player1Score >= this.maxScore) {
+            this.gameOver = true;
             this.showModal( user.username + " Wins!");
 
             const formData = new FormData();
@@ -161,13 +164,15 @@ class PongGameTwoPlayer {
             .then(data => console.log('Match added:', data))
             .catch(error => console.error('Error:', error));
         } else if (this.player2Score >= this.maxScore) {
-            this.showModal("Player 2 Wins!");
+            this.gameOver = true;
+            this.showModal(this.player2Name + " Wins!");
         }
     }
 
     showModal(message) {
         document.getElementById("modalMessage").textContent = message;
         document.getElementById("modal").style.display = "flex";
+        document.getElementById("modalMessage").style.color = "white";
         this.stop();
     }
 
@@ -188,6 +193,13 @@ class PongGameTwoPlayer {
         this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
         this.ctx.fillText(this.player2Name, this.fieldWidth * 3 / 4, 30);
         this.ctx.fillText(this.player2Score, this.fieldWidth * 3 / 4, 60);
+
+        if (this.gameOver) {
+            this.ctx.font = "50px Arial";
+            this.ctx.fillStyle = "red";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText("GAME OVER", this.fieldWidth / 2, this.fieldHeight / 2);
+        }
     }
 
     destroy() {

@@ -82,7 +82,7 @@ function load4PlayerPage() {
 	<div id="modal">
 		<div id="modalContent">
 		<button id="modalButton">Reset</button>
-		<p id="modalMessage" style="font-weight: bold;"></p>
+		<p id="modalMessage" style="font-weight: bold; color: white;"></p>
 		</div>
 	</div>`;
 	const script = document.createElement('script');

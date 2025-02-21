@@ -3,11 +3,12 @@ from .models import MatchHistory, TournamentsWon
 
 
 class MatchHistorySerializer(serializers.ModelSerializer):
-	class Meta:
-		model = MatchHistory
-		fields = '__all__'
+    class Meta:
+        model = MatchHistory
+        fields = "__all__"
+
 
 class TournamentsWonSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = TournamentsWon
-		fields = '__all__'
+    class Meta:
+        model = TournamentsWon
+        fields = "__all__"

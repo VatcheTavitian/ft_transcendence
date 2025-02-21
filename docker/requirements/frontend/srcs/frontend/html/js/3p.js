@@ -9,6 +9,7 @@ window.start3PlayerGame = function() {
 
 function showModal(message) {
     modalMessage.textContent = message;
+    modalMessage.style.color = "white";
     modal.style.display = "flex";
 }
 
@@ -57,7 +58,7 @@ class PongGameThreePlayer {
 
         this.modalButtonHandler = () => {
             this.resetGame();
-            this.showModal("")
+            showModal("")
             this.start();
         };
 
@@ -73,6 +74,7 @@ class PongGameThreePlayer {
     }
 
     resetGame() {
+        this.gameOver = false;
         this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle3Y = (this.fieldHeight - this.paddleHeight) / 2;
@@ -157,6 +159,7 @@ class PongGameThreePlayer {
         this.ballDirectionX = Math.random() > 0.5 ? 1 : -1;
         this.ballDirectionY = Math.random() * 2 - 1;
         if (this.player1Score >= this.maxScore) {
+            this.gameOver = true;
             showModal(user.username + " Wins!");
             const formData = new FormData();
             formData.append('player1', user.username);
@@ -177,9 +180,11 @@ class PongGameThreePlayer {
             .catch(error => console.error('Error:', error));
         }
         if (this.player2Score >= this.maxScore) {
+            this.gameOver = true;
             showModal(`${this.player2Name} Wins!`);
         }
         if (this.player3Score >= this.maxScore) {
+            this.gameOver = true;
             showModal(`${this.player3Name} Wins!`);
         }
     }
@@ -203,6 +208,13 @@ class PongGameThreePlayer {
         this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
         this.ctx.fillText(this.player2Name, this.fieldWidth / 2, 30);
         this.ctx.fillText(this.player3Name, this.fieldWidth * 3 / 4, 30);
+
+        if (this.gameOver) {
+            this.ctx.font = "50px Arial";
+            this.ctx.fillStyle = "red";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText("GAME OVER", this.fieldWidth / 2, this.fieldHeight / 2);
+        }
     }
 
     destroy() {

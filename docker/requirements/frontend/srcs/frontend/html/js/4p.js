@@ -8,6 +8,7 @@ window.start4PlayerGame = function() {
 
 function showModal(message) {
     modalMessage.textContent = message;
+    modalMessage.style.color = "white";
     modal.style.display = "flex";
 }
 
@@ -56,7 +57,7 @@ class PongGameFourPlayer {
 
         this.modalButtonHandler = () => {
             this.resetGame();
-            this.showModal("")
+            showModal("")
             this.start();
         };
 
@@ -72,6 +73,7 @@ class PongGameFourPlayer {
     }
 
     resetGame() {
+        this.gameOver = false;
         this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle3Y = (this.fieldHeight - this.paddleHeight) / 2;
@@ -175,9 +177,10 @@ class PongGameFourPlayer {
         this.ballDirectionY = Math.random() * 2 - 1;
 
         if (this.player1Score >= this.maxScore) {
+            this.gameOver = true;
             showModal(`${user.username} Wins!`);
             const formData = new FormData();
-            formData.append('player2', this.player2Score + '/' + this.player3Score + '/' + this.player4Score);
+            formData.append('player2', this.player2Name + '/' + this.player3Name + '/' + this.player4Name);
             formData.append('player1_score', this.player1Score);
             formData.append('player2_score', this.player2Score);
             const csrftoken = getCookie('csrftoken');
@@ -194,12 +197,15 @@ class PongGameFourPlayer {
             .catch(error => console.error('Error:', error));
         }
         if (this.player2Score >= this.maxScore) {
+            this.gameOver = true;
             showModal(`${this.player2Name} Wins!`);
         }
         if (this.player3Score >= this.maxScore) {
+            this.gameOver = true;
             showModal(`${this.player3Name} Wins!`);
         }
         if (this.player4Score >= this.maxScore) {
+            this.gameOver = true;  
             showModal(`${this.player4Name} Wins!`);
         }
     }
@@ -227,6 +233,13 @@ class PongGameFourPlayer {
         this.ctx.fillText(this.player2Name, this.fieldWidth / 2, 30);
         this.ctx.fillText(this.player3Name, this.fieldWidth * 3 / 4, 30);
         this.ctx.fillText(this.player4Name, this.fieldWidth * 3 / 4 + 100, 30); 
+
+        if (this.gameOver) {
+            this.ctx.font = "50px Arial";
+            this.ctx.fillStyle = "red";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText("GAME OVER", this.fieldWidth / 2, this.fieldHeight / 2);
+        }
     }
 
     destroy() {

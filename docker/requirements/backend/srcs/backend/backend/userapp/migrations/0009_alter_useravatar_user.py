@@ -9,13 +9,17 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('userapp', '0008_useravatar_intra_user'),
+        ("userapp", "0008_useravatar_intra_user"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='useravatar',
-            name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="useravatar",
+            name="user",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

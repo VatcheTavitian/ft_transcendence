@@ -9,21 +9,35 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('userapp', '0006_useravatar'),
+        ("userapp", "0006_useravatar"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='useravatar',
-            name='avatar',
-            field=models.ImageField(blank=True, null=True, upload_to='avatars/'),
+            model_name="useravatar",
+            name="avatar",
+            field=models.ImageField(blank=True, null=True, upload_to="avatars/"),
         ),
         migrations.CreateModel(
-            name='userFriend',
+            name="userFriend",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('friend', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friend', to=settings.AUTH_USER_MODEL)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user', to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "friend",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="friend",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="user",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -65,6 +65,7 @@ class PongGame {
     }
 
     resetGame() {
+        this.gameOver = false;
         this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.ballX = this.fieldWidth / 2;
@@ -138,6 +139,7 @@ class PongGame {
         
 
         if (this.player1Score >= this.maxScore) {
+            this.gameOver = true;
             const formData = new FormData();
             formData.append('player2', 'AI');
             formData.append('player1_score', this.player1Score);
@@ -154,8 +156,8 @@ class PongGame {
             .then(response => response.json())
             .then(data => console.log('Match added:', data))
             .catch(error => console.error('Error:', error));
-            this.showModal( user.username + " Wins!");
         } else if (this.player2Score >= this.maxScore) {
+            this.gameOver = true;
             const formData = new FormData();
             formData.append('player2', 'AI');
             formData.append('player1_score', this.player1Score);
@@ -172,13 +174,14 @@ class PongGame {
             .then(response => response.json())
             .then(data => console.log('Match added:', data))
             .catch(error => console.error('Error:', error));
-            this.showModal("Player 2 Wins!");
+            this.showModal("AI Wins!");
         }
     }
 
     showModal(message) {
         document.getElementById("modalMessage").textContent = message;
         document.getElementById("modal").style.display = "flex";
+        document.getElementById("modalMessage").style.color = "white";
         this.stop();
     }
 
@@ -218,6 +221,13 @@ class PongGame {
         this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
         this.ctx.fillText("AI", this.fieldWidth * 3 / 4, 30);
         this.ctx.fillText(this.player2Score, this.fieldWidth * 3 / 4, 60);
+
+        if (this.gameOver) {
+            this.ctx.font = "50px Arial";
+            this.ctx.fillStyle = "red";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText("GAME OVER", this.fieldWidth / 2, this.fieldHeight / 2);
+        }
     }
 
     destroy() {

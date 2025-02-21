@@ -13,6 +13,53 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// function loadFriendList() {
+//     const contentdiv = document.getElementById("contentdiv");
+//     const newcontainer = document.createElement('div');
+//     newcontainer.innerHTML = `
+//         <br>
+//         <br>
+//         <div>
+//             <h3>Your Friends</h3>
+//             <ul id="friends"></ul>
+//         </div>
+//     `;
+//     contentdiv.appendChild(newcontainer)
+//     loadAddFriend()
+//     loadDeleteFriendList()
+//     fetch('https://localhost:8008/api/listfriends/', {
+//         method: 'GET',
+//         credentials: 'include',
+//         headers: { 'X-CSRFToken': getCookie('csrftoken') },
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         const friendsList = document.getElementById('friends');
+        
+//         if (data.nonintrafriends) {
+//             data.nonintrafriends.forEach(friend => {
+//                 const friendDiv = document.createElement('li');
+//                 if (friend.friend && friend.friend.username) {
+//                     friendDiv.innerHTML = friend.friend.username;
+
+//                     friendsList.appendChild(friendDiv);
+//                 }
+//             });
+//         }
+
+//         if (data.intrafriends) {
+//             data.intrafriends.forEach(intrafriend => {
+//                 const friendDiv = document.createElement('li');
+//                 if (intrafriend.intra_friend && intrafriend.intra_friend.username) {
+//                     friendDiv.innerHTML = intrafriend.intra_friend.username;
+//                     friendsList.appendChild(friendDiv);
+//                 }
+//             });
+//         }
+//     })
+//     .catch(error => console.error('Error:', error));
+// }
+
 function loadFriendList() {
     const contentdiv = document.getElementById("contentdiv");
     const newcontainer = document.createElement('div');
@@ -24,9 +71,11 @@ function loadFriendList() {
             <ul id="friends"></ul>
         </div>
     `;
-    contentdiv.appendChild(newcontainer)
-    loadAddFriend()
-    loadDeleteFriendList()
+    contentdiv.appendChild(newcontainer);
+    
+    loadAddFriend();
+    loadDeleteFriendList();
+
     fetch('https://localhost:8008/api/listfriends/', {
         method: 'GET',
         credentials: 'include',
@@ -35,29 +84,43 @@ function loadFriendList() {
     .then(response => response.json())
     .then(data => {
         const friendsList = document.getElementById('friends');
-        
+        let friends = [];
+
         if (data.nonintrafriends) {
-            data.nonintrafriends.forEach(friend => {
-                const friendDiv = document.createElement('li');
-                if (friend.friend && friend.friend.username) {
-                    friendDiv.innerHTML = friend.friend.username;
-                    friendsList.appendChild(friendDiv);
-                }
-            });
+            friends = friends.concat(data.nonintrafriends.map(friend => friend.friend?.username));
+        }
+        if (data.intrafriends) {
+            friends = friends.concat(data.intrafriends.map(intrafriend => intrafriend.intra_friend?.username));
         }
 
-        if (data.intrafriends) {
-            data.intrafriends.forEach(intrafriend => {
-                const friendDiv = document.createElement('li');
-                if (intrafriend.intra_friend && intrafriend.intra_friend.username) {
-                    friendDiv.innerHTML = intrafriend.intra_friend.username;
+        // Fetch online statuses
+        fetch('https://localhost:8008/api/getonlinestatus/', {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        })
+        .then(response => response.json())
+        .then(statusData => {
+            friends.forEach(username => {
+                if (username) {
+                    const friendDiv = document.createElement('li');
+                    friendDiv.textContent = username;
+
+                    // Set text color to red if online
+                    if (statusData[username]) {
+                        friendDiv.style.color = 'Green';
+                        friendDiv.textContent += " (Online)";
+                    }
+
                     friendsList.appendChild(friendDiv);
                 }
             });
-        }
+        })
+        .catch(error => console.error('Error fetching online status:', error));
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error fetching friend list:', error));
 }
+
 
 function loadAddFriend() {
     const contentdiv = document.getElementById("contentdiv");
@@ -227,21 +290,24 @@ function loadDeleteFriendList() {
 
 
 function loadMainPage() {
-    removeAfterLogin()
-    const contentdiv = document.getElementById("contentdiv");
-    contentdiv.innerHTML = ''
-    const newdiv = document.createElement("div");
-    const head = document.createElement("H3");
-    if (user.first_name) {
-        head.innerText = "Welcome back " + user.first_name;
-        newdiv.appendChild(head)
-        contentdiv.appendChild(newdiv)
-        loadFriendList()
+    if (!user) {
+        removeAfterLogout()
+        loadLoginPage()
+    }
+    else {
+        removeAfterLogin()
+        const contentdiv = document.getElementById("contentdiv");
+        contentdiv.innerHTML = ''
+        const newdiv = document.createElement("div");
+        const head = document.createElement("H3");
+        if (user.first_name) {
+            head.innerText = "Welcome back " + user.first_name;
+            newdiv.appendChild(head)
+            contentdiv.appendChild(newdiv)
+            loadFriendList()
+        }
     }
 
-    
-   
-    
 }
 
 function changePasswordForm() {
@@ -310,220 +376,237 @@ function changePasswordForm() {
 }
 
 async function loadProfilePage() {
-    const container = document.getElementById('contentdiv');
-    container.innerHTML = `
-        <div class="container mt-4">
-        <form id="updateUserForm" method="POST" enctype="multipart/form-data">
-         <h4> Update your details </h4>
-
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="username" id="username" name="username" class="form-control" required readonly>
-        </div>
-
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name" class="form-control" required>
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="current_photo">Current Profile Image:</label><br>
-            <img id="current_photo" src="" alt="Current Profile Image" class="img-thumbnail" width="150">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="avatar">UpdateProfile Image:</label>
-            <input type="file" id="avatar" name="avatar" class="form-control-file" accept="image/*">
-        </div>     
-
-        <button type="submit" class="btn btn-primary">Update</button>
-    </form>
-</div>
-
-    `;
-    changePasswordForm()
-    try {
-        const response = await fetch('https://localhost:8008/api/updateuser/', {
-            method: 'GET',
-            credentials: 'include'
-        });
-        const data = await response.json();
-        
-        document.getElementById('username').value = data.user.username;
-        document.getElementById('email').value = data.user.email;
-        document.getElementById('first_name').value = data.user.first_name;
-        document.getElementById('last_name').value = data.user.last_name;
-        // console.log('URL IS ', avatarUrl)
-        const avatarUrl = data.avatar.avatar.startsWith('/media/https')
-            ? data.avatar.avatar.replace('/media/', '').replace('https%3A/', 'https://')
-            : "https://localhost:8008" + data.avatar.avatar;
-        
-        document.getElementById('current_photo').src = avatarUrl;
-    } catch (error) {
-        console.error('Error fetching user data:', error);
+    if (!user) {
+        removeAfterLogout()
+        loadLoginPage()
     }
-    
-    document.getElementById('updateUserForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        console.log('Updating user info...');
-        
-        const csrftoken = getCookie('csrftoken');
-        const formData = new FormData(this);
-        
+    else {
+        const container = document.getElementById('contentdiv');
+        container.innerHTML = `
+            <div class="container mt-4">
+            <form id="updateUserForm" method="POST" enctype="multipart/form-data">
+            <h4> Update your details </h4>
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="username" id="username" name="username" class="form-control" required readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="current_photo">Current Profile Image:</label><br>
+                <img id="current_photo" src="" alt="Current Profile Image" class="img-thumbnail" width="150">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="avatar">UpdateProfile Image:</label>
+                <input type="file" id="avatar" name="avatar" class="form-control-file" accept="image/*">
+            </div>     
+
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+
+        `;
+        changePasswordForm()
         try {
             const response = await fetch('https://localhost:8008/api/updateuser/', {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'X-CSRFToken': csrftoken },
-                body: formData
+                method: 'GET',
+                credentials: 'include'
             });
+            const data = await response.json();
             
-            const result = await response.json();
-            console.log('Update response:', result);
-            if (result.error)
-                alert("Error! " + result.error)
-            else
-                loadProfilePage()
+            document.getElementById('username').value = data.user.username;
+            document.getElementById('email').value = data.user.email;
+            document.getElementById('first_name').value = data.user.first_name;
+            document.getElementById('last_name').value = data.user.last_name;
+            // console.log('URL IS ', avatarUrl)
+            const avatarUrl = data.avatar.avatar.startsWith('/media/https')
+                ? data.avatar.avatar.replace('/media/', '').replace('https%3A/', 'https://')
+                : "https://localhost:8008" + data.avatar.avatar;
+            
+            document.getElementById('current_photo').src = avatarUrl;
         } catch (error) {
-            console.error('Error updating user:', error);
+            console.error('Error fetching user data:', error);
         }
-    });
+        
+        document.getElementById('updateUserForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            console.log('Updating user info...');
+            
+            const csrftoken = getCookie('csrftoken');
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('https://localhost:8008/api/updateuser/', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'X-CSRFToken': csrftoken },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                console.log('Update response:', result);
+                if (result.error)
+                    alert("Error! " + result.error)
+                else
+                    loadProfilePage()
+            } catch (error) {
+                console.error('Error updating user:', error);
+            }
+        });
+    }
 }
 
 function loadMatchHistoryPage() {
-    const container = document.getElementById('contentdiv');
-    const newcontainer = document.createElement('div')
-    newcontainer.innerHTML = `
-        <div>
-            <h3>Match History</h3>
-            <ul id="matchHistoryList" class="list-group"></ul>
-        </div>
-    `;
+    if (!user) {
+        removeAfterLogout()
+        loadLoginPage()
+    }
+    else {
+        const container = document.getElementById('contentdiv');
+        const newcontainer = document.createElement('div')
+        newcontainer.innerHTML = `
+            <div>
+                <h3>Match History</h3>
+                <ul id="matchHistoryList" class="list-group"></ul>
+            </div>
+        `;
 
-    container.appendChild(newcontainer)
-    fetch('https://localhost:8008/api/get_player_scores', {
-        method: 'GET',
-        credentials: 'include',
-    })
-    .then(response => response.json())
-    .then(data => {
-        const matchHistoryList = document.getElementById('matchHistoryList');
-        
-        if (data.length > 0) {
-            data.forEach(match => {
-                const matchItem = document.createElement('li');
-                matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
-                
-                matchItem.innerHTML = `
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">${new Date(match.match_date).toLocaleString()}</span>
-                        <span class="badge bg-success">Winner: <strong>${match.winner}</strong></span>
-                    </div>
-                    <div class="mb-2">
-                        <strong>Player 1:</strong> ${match.player1} 
-                        <span class="badge bg-primary">Score: ${match.player1_score}</span>
-                    </div>
-                    <div class="mb-2">
-                        <strong>Opponent:</strong> ${match.player2} 
-                        <span class="badge bg-primary">Score: ${match.player2_score}</span>
-                    </div>
-                `;
-                matchHistoryList.appendChild(matchItem);
-            });
-        } else {
-            matchHistoryList.innerHTML = '<p>No match history found.</p>';
-        }
-    })
-    .catch(error => console.error('Error fetching match history:', error));
+        container.appendChild(newcontainer)
+        fetch('https://localhost:8008/api/get_player_scores', {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then(response => response.json())
+        .then(data => {
+            const matchHistoryList = document.getElementById('matchHistoryList');
+            
+            if (data.length > 0) {
+                data.forEach(match => {
+                    const matchItem = document.createElement('li');
+                    matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
+                    
+                    matchItem.innerHTML = `
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">${new Date(match.match_date).toLocaleString()}</span>
+                            <span class="badge bg-success">Winner: <strong>${match.winner}</strong></span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Player 1:</strong> ${match.player1} 
+                            <span class="badge bg-primary">Score: ${match.player1_score}</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Opponent:</strong> ${match.player2} 
+                            <span class="badge bg-primary">Score: ${match.player2_score}</span>
+                        </div>
+                    `;
+                    matchHistoryList.appendChild(matchItem);
+                });
+            } else {
+                matchHistoryList.innerHTML = '<p>No match history found.</p>';
+            }
+        })
+        .catch(error => console.error('Error fetching match history:', error));
+    }
 }
 
 function loadTournamentsWonPage() {
-    
-    const contentdiv = document.getElementById('contentdiv');
-    contentdiv.innerHTML = ''
-    const newcontainer = document.createElement('div')
-    newcontainer.innerHTML = `
-        <div>
-            <h3>Tournaments Won</h3>
-            <ul id="tournamentsWonList"></ul>
-        </div>
-    `;
-    contentdiv.appendChild(newcontainer)
-    
-    fetch('https://localhost:8008/api/get_tournament_info', {
-        method: 'GET',
-        credentials: 'include',
-    })
-    .then(response => response.json())
-    .then(data => {
-        const tournamentsWonList = document.getElementById('tournamentsWonList');
-        const tournamentItem = document.createElement('div')
-        if (data.won > 0) {
-                tournamentItem.innerHTML = `
-                    <strong>${data.won}</strong> <br>
-                `;
-                tournamentsWonList.appendChild(tournamentItem);
-          
-        } else
-            tournamentsWonList.innerHTML = 'No tournaments won found.';
-    
-    
-    })
-    .catch(error => console.error('Error fetching tournaments won info:', error));
-
-    const newcontainer2 = document.createElement('div')
-    newcontainer2.innerHTML = `
-        <div>
-            <h3>Match History</h3>
-            <ul id="matchHistoryList" class="list-group"></ul>
-        </div>
-    `;
-
-    contentdiv.appendChild(newcontainer2)
-    fetch('https://localhost:8008/api/get_player_scores', {
-        method: 'GET',
-        credentials: 'include',
-    })
-    .then(response => response.json())
-    .then(data => {
-        const matchHistoryList = document.getElementById('matchHistoryList');
+    if (!user) {
+        removeAfterLogout()
+        loadLoginPage()
+    }
+    else {
+        const contentdiv = document.getElementById('contentdiv');
+        contentdiv.innerHTML = ''
+        const newcontainer = document.createElement('div')
+        newcontainer.innerHTML = `
+            <div>
+                <h3>Tournaments Won</h3>
+                <ul id="tournamentsWonList"></ul>
+            </div>
+        `;
+        contentdiv.appendChild(newcontainer)
         
-        if (data.length > 0) {
-            data.forEach(match => {
-                const matchItem = document.createElement('li');
-                matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
-                
-                matchItem.innerHTML = `
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">${new Date(match.match_date).toLocaleString()}</span>
-                        <span class="badge bg-success">Winner: <strong>${match.winner}</strong></span>
-                    </div>
-                    <div class="mb-2">
-                        <strong>Player 1:</strong> ${match.player1} 
-                        <span class="badge bg-primary">Score: ${match.player1_score}</span>
-                    </div>
-                    <div class="mb-2">
-                        <strong>Opponent:</strong> ${match.player2} 
-                        <span class="badge bg-primary">Score: ${match.player2_score}</span>
-                    </div>
-                `;
-                matchHistoryList.appendChild(matchItem);
-            });
-        } else {
-            matchHistoryList.innerHTML = '<p>No match history found.</p>';
-        }
-    })
-    .catch(error => console.error('Error fetching match history:', error));
+        fetch('https://localhost:8008/api/get_tournament_info', {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then(response => response.json())
+        .then(data => {
+            const tournamentsWonList = document.getElementById('tournamentsWonList');
+            const tournamentItem = document.createElement('div')
+            if (data.won > 0) {
+                    tournamentItem.innerHTML = `
+                        <strong>${data.won}</strong> <br>
+                    `;
+                    tournamentsWonList.appendChild(tournamentItem);
+            
+            } else
+                tournamentsWonList.innerHTML = 'No tournaments won found.';
+        
+        
+        })
+        .catch(error => console.error('Error fetching tournaments won info:', error));
+
+        const newcontainer2 = document.createElement('div')
+        newcontainer2.innerHTML = `
+            <div>
+                <h3>Match History</h3>
+                <ul id="matchHistoryList" class="list-group"></ul>
+            </div>
+        `;
+
+        contentdiv.appendChild(newcontainer2)
+        fetch('https://localhost:8008/api/get_player_scores', {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then(response => response.json())
+        .then(data => {
+            const matchHistoryList = document.getElementById('matchHistoryList');
+            
+            if (data.length > 0) {
+                data.forEach(match => {
+                    const matchItem = document.createElement('li');
+                    matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
+                    
+                    matchItem.innerHTML = `
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">${new Date(match.match_date).toLocaleString()}</span>
+                            <span class="badge bg-success">Winner: <strong>${match.winner}</strong></span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Player 1:</strong> ${match.player1} 
+                            <span class="badge bg-primary">Score: ${match.player1_score}</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Opponent:</strong> ${match.player2} 
+                            <span class="badge bg-primary">Score: ${match.player2_score}</span>
+                        </div>
+                    `;
+                    matchHistoryList.appendChild(matchItem);
+                });
+            } else {
+                matchHistoryList.innerHTML = '<p>No match history found.</p>';
+            }
+        })
+        .catch(error => console.error('Error fetching match history:', error));
+    }
 }
 
 
@@ -726,33 +809,40 @@ function loadRegisterPage() {
 }
 
 function loadGamePage() {
-    const contentdiv = document.getElementById('contentdiv');
-    contentdiv.innerHTML = ""
-    const newcontainer = document.createElement('div')
-    newcontainer.innerHTML = ` <div id="menu" class="menu">
-        <h1>PONG</h1>
-        <button id="singleplayer-btn" class="menu-btn">Singleplayer</button>
-        <button id="2player-btn" class="menu-btn">2 Player</button>
-        <button id="3player-btn" class="menu-btn">3 Player</button>
-        <button id="4player-btn" class="menu-btn">4 Player</button>
-    </div>
+    if (!user) {
+        removeAfterLogout()
+        loadLoginPage()
+    }
+    else {
+        const contentdiv = document.getElementById('contentdiv');
+        contentdiv.innerHTML = ""
+        const newcontainer = document.createElement('div')
+        newcontainer.innerHTML = ` <div id="menu" class="menu">
+            <h1>PONG</h1>
+            <button id="singleplayer-btn" class="menu-btn">Singleplayer</button>
+            <button id="2player-btn" class="menu-btn">2 Player</button>
+            <button id="3player-btn" class="menu-btn">3 Player</button>
+            <button id="4player-btn" class="menu-btn">4 Player</button>
+        </div>
 
-    <script src="../js/script.js"></script>`
-    contentdiv.appendChild(newcontainer)
-    spb = document.getElementById('singleplayer-btn');
-    spb.addEventListener('click', loadSinglePlayerPage);
-    spb2 = document.getElementById('2player-btn');
-    spb2.addEventListener('click', load2PlayerPage);
-    spb3 = document.getElementById('3player-btn');
-    spb3.addEventListener('click', load3PlayerPage);
-    spb4 = document.getElementById('4player-btn');
-    spb4.addEventListener('click', load4PlayerPage);
+        <script src="../js/script.js"></script>`
+        contentdiv.appendChild(newcontainer)
+        spb = document.getElementById('singleplayer-btn');
+        spb.addEventListener('click', loadSinglePlayerPage);
+        spb2 = document.getElementById('2player-btn');
+        spb2.addEventListener('click', load2PlayerPage);
+        spb3 = document.getElementById('3player-btn');
+        spb3.addEventListener('click', load3PlayerPage);
+        spb4 = document.getElementById('4player-btn');
+        spb4.addEventListener('click', load4PlayerPage);
+    }
 }
 
 
 
 window.onpopstate = function(event) {
-    const page = event.state ? event.state.page : 'main';  
+    console.log('activatee') 
+    const page = event.state ? event.state.page : 'main';
     if (page === 'login') 
         loadLoginPage()
     else if (page === 'register')
@@ -773,43 +863,49 @@ window.onpopstate = function(event) {
 
 
 function loadTournamentPage() {
-    const contentdiv = document.getElementById('contentdiv');
-    contentdiv.innerHTML = ""
-    // const existingScript = document.querySelector('script[src="../js/tournament.js"]');
-    // if (existingScript) {
-    //     existingScript.remove();
-    // }
-    const newcontainer = document.createElement('div')
-    newcontainer.innerHTML = `
-    <head><link rel="stylesheet" href="../css/tournament.css"></head>
-    <style>body {background-color: grey;}</style>
-    <div id="playerInputSection">
-    <h2>Enter Tournament Details</h2>
-    <label for="numPlayers">Number of Players: </label>
-    <input type="number" id="numPlayers" min="2" max="10" value="2">
-    <button id="startInputBtn">Enter Names</button>
+    if (!user) {
+        removeAfterLogout()
+        loadLoginPage()
+    }
+    else {
+        const contentdiv = document.getElementById('contentdiv');
+        contentdiv.innerHTML = ""
+        // const existingScript = document.querySelector('script[src="../js/tournament.js"]');
+        // if (existingScript) {
+        //     existingScript.remove();
+        // }
+        const newcontainer = document.createElement('div')
+        newcontainer.innerHTML = `
+        <head><link rel="stylesheet" href="../css/tournament.css"></head>
+        <style>body {background-color: grey;}</style>
+        <div id="playerInputSection">
+        <h2>Enter Tournament Details</h2>
+        <label for="numPlayers">Number of Players: </label>
+        <input type="number" id="numPlayers" min="2" max="10" value="2">
+        <button id="startInputBtn">Enter Names</button>
 
-    <div id="playersInputs" style="display: none;">
-        <h3>Enter Player Aliases</h3>
-        <div id="playerNamesInputs"></div>
-        <button id="startTournamentBtn" style="display: none;">Start Tournament</button>
-    </div>
-    </div>
+        <div id="playersInputs" style="display: none;">
+            <h3>Enter Player Aliases</h3>
+            <div id="playerNamesInputs"></div>
+            <button id="startTournamentBtn" style="display: none;">Start Tournament</button>
+        </div>
+        </div>
 
-    <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
+        <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
 
-    <div id="modal">
-    <div id="modalMessage"></div>
-    <button id="modalButton" style="display: none;">Next Match</button>
-    </div>
-    <script src="../js/tournament.js"></script>
-    `;
-    contentdiv.appendChild(newcontainer);
-	const script = document.createElement('script');
-	script.src = '../js/tournament.js';
-    script.onload = function() {
-        console.log('tournament.js has been successfully loaded.');
-        launchTournament();
-    };
-    document.body.appendChild(script);
+        <div id="modal">
+        <div id="modalMessage"></div>
+        <button id="modalButton" style="display: none;">Next Match</button>
+        </div>
+        <script src="../js/tournament.js"></script>
+        `;
+        contentdiv.appendChild(newcontainer);
+        const script = document.createElement('script');
+        script.src = '../js/tournament.js';
+        script.onload = function() {
+            console.log('tournament.js has been successfully loaded.');
+            launchTournament();
+        };
+        document.body.appendChild(script);
+    }
 }

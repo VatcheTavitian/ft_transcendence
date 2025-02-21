@@ -169,6 +169,7 @@ function renderLogoutButton() {
     alink.addEventListener('click', function(event) {
         event.preventDefault();
         history.pushState({ page: "logout" }, "Logout", "/logout");
+        user = null
         fetch('https://localhost:8008/api/logout', {
             method: 'GET',
             credentials: 'include'  

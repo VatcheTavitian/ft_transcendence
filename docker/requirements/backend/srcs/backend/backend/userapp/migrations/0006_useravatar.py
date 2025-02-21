@@ -9,16 +9,22 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('userapp', '0005_intrauser_username'),
+        ("userapp", "0005_intrauser_username"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='userAvatar',
+            name="userAvatar",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('avatar', models.CharField(max_length=255, null=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("avatar", models.CharField(max_length=255, null=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
