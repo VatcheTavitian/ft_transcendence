@@ -1,5 +1,3 @@
-
-
 window.start2PlayerGame = function() {
     if (window.gameInstance) {
         window.gameInstance.destroy();
@@ -38,7 +36,7 @@ class PongGameTwoPlayer {
         this.ballRadius = 8;
         this.paddleSpeed = 5;
         this.ballSpeed = 4;
-        this.maxScore = 10;
+        this.maxScore = 5;
         this.resetGame();
     }
 
@@ -53,6 +51,7 @@ class PongGameTwoPlayer {
 
         this.modalButtonHandler = () => {
             this.resetGame();
+            this.showModal("")
             this.start();
         };
 

@@ -363,9 +363,9 @@ async function loadProfilePage() {
         document.getElementById('email').value = data.user.email;
         document.getElementById('first_name').value = data.user.first_name;
         document.getElementById('last_name').value = data.user.last_name;
-        
+        // console.log('URL IS ', avatarUrl)
         const avatarUrl = data.avatar.avatar.startsWith('/media/https')
-            ? data.avatar.avatar.replace('/media/', '').replace('https:/', 'https://')
+            ? data.avatar.avatar.replace('/media/', '').replace('https%3A/', 'https://')
             : "https://localhost:8008" + data.avatar.avatar;
         
         document.getElementById('current_photo').src = avatarUrl;
@@ -448,6 +448,7 @@ function loadMatchHistoryPage() {
 }
 
 function loadTournamentsWonPage() {
+    
     const contentdiv = document.getElementById('contentdiv');
     contentdiv.innerHTML = ''
     const newcontainer = document.createElement('div')
@@ -478,9 +479,53 @@ function loadTournamentsWonPage() {
     
     
     })
-
     .catch(error => console.error('Error fetching tournaments won info:', error));
+
+    const newcontainer2 = document.createElement('div')
+    newcontainer2.innerHTML = `
+        <div>
+            <h3>Match History</h3>
+            <ul id="matchHistoryList" class="list-group"></ul>
+        </div>
+    `;
+
+    contentdiv.appendChild(newcontainer2)
+    fetch('https://localhost:8008/api/get_player_scores', {
+        method: 'GET',
+        credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(data => {
+        const matchHistoryList = document.getElementById('matchHistoryList');
+        
+        if (data.length > 0) {
+            data.forEach(match => {
+                const matchItem = document.createElement('li');
+                matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
+                
+                matchItem.innerHTML = `
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">${new Date(match.match_date).toLocaleString()}</span>
+                        <span class="badge bg-success">Winner: <strong>${match.winner}</strong></span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Player 1:</strong> ${match.player1} 
+                        <span class="badge bg-primary">Score: ${match.player1_score}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Opponent:</strong> ${match.player2} 
+                        <span class="badge bg-primary">Score: ${match.player2_score}</span>
+                    </div>
+                `;
+                matchHistoryList.appendChild(matchItem);
+            });
+        } else {
+            matchHistoryList.innerHTML = '<p>No match history found.</p>';
+        }
+    })
+    .catch(error => console.error('Error fetching match history:', error));
 }
+
 
 
 
@@ -690,7 +735,6 @@ function loadGamePage() {
         <button id="2player-btn" class="menu-btn">2 Player</button>
         <button id="3player-btn" class="menu-btn">3 Player</button>
         <button id="4player-btn" class="menu-btn">4 Player</button>
-        <button id="tournament-btn" class="menu-btn">Tournament</button>
     </div>
 
     <script src="../js/script.js"></script>`
@@ -703,21 +747,69 @@ function loadGamePage() {
     spb3.addEventListener('click', load3PlayerPage);
     spb4 = document.getElementById('4player-btn');
     spb4.addEventListener('click', load4PlayerPage);
-    spb5 = document.getElementById('tournament-btn');
-    spb5.addEventListener('click', startTournament);
 }
 
 
 
 window.onpopstate = function(event) {
     const page = event.state ? event.state.page : 'main';  
-    if (page === 'login') {
+    if (page === 'login') 
         loadLoginPage()
-    } else if (page === 'register') {
+    else if (page === 'register')
         loadRegisterPage()
-    } else if (page === 'main') {
-        document.title = 'Main';
-    } else {
-        document.title = 'Nothing';
-    }
+    else if (page === 'main')
+        loadMainPage()
+    else if (page === 'playgame')
+        loadGamePage()
+    else if (page === 'playtournament')
+        loadTournamentPage()
+    else if (page === 'matchhistory')
+        loadTournamentsWonPage()
+    else if (page === 'profile') 
+        loadProfilePage()
+}
+
+
+
+
+function loadTournamentPage() {
+    const contentdiv = document.getElementById('contentdiv');
+    contentdiv.innerHTML = ""
+    // const existingScript = document.querySelector('script[src="../js/tournament.js"]');
+    // if (existingScript) {
+    //     existingScript.remove();
+    // }
+    const newcontainer = document.createElement('div')
+    newcontainer.innerHTML = `
+    <head><link rel="stylesheet" href="../css/tournament.css"></head>
+    <style>body {background-color: grey;}</style>
+    <div id="playerInputSection">
+    <h2>Enter Tournament Details</h2>
+    <label for="numPlayers">Number of Players: </label>
+    <input type="number" id="numPlayers" min="2" max="10" value="2">
+    <button id="startInputBtn">Enter Names</button>
+
+    <div id="playersInputs" style="display: none;">
+        <h3>Enter Player Aliases</h3>
+        <div id="playerNamesInputs"></div>
+        <button id="startTournamentBtn" style="display: none;">Start Tournament</button>
+    </div>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
+
+    <div id="modal">
+    <div id="modalMessage"></div>
+    <button id="modalButton" style="display: none;">Next Match</button>
+    </div>
+    <script src="../js/tournament.js"></script>
+    `;
+    contentdiv.appendChild(newcontainer);
+	const script = document.createElement('script');
+	script.src = '../js/tournament.js';
+    script.onload = function() {
+        console.log('tournament.js has been successfully loaded.');
+        launchTournament();
+    };
+    document.body.appendChild(script);
 }

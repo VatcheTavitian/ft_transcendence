@@ -49,6 +49,31 @@ function renderProfileButton() {
     }
 }
 
+function renderMainButton() {
+
+    const mainButton = document.getElementById('mainButton')
+    if (!mainButton) {
+        const navbarNav = document.getElementById("navbarNav")
+        const li = document.createElement("li")
+        li.className = "nav-item"
+        const alink = document.createElement("a")
+        alink.href = "/main"
+        alink.className = "nav-link"
+        alink.innerText = "Home"
+        alink.style.color = "#39FF14"
+        alink.id = "mainButton" 
+
+        li.append(alink)
+        navbarNav.appendChild(li)
+
+        alink.addEventListener('click', function(event) {
+        event.preventDefault();
+        history.pushState({ page: "main" }, "Main", "/main");
+        loadMainPage();
+        })
+    }
+}
+
 
 function renderLoginButton() {
 
@@ -122,7 +147,7 @@ function renderMatchHistoryButton() {
         event.preventDefault();
         history.pushState({ page: "matchhistory" }, "MatchHistory", "/matchhistory");
         loadTournamentsWonPage()
-        loadMatchHistoryPage()
+        // loadMatchHistoryPage()
         });
 }
 
@@ -198,6 +223,6 @@ function renderPlayTournamentButton() {
     alink.addEventListener('click', function(event) {
         event.preventDefault();
         history.pushState({ page: "playtournament" }, "PlayTournament", "/playtournament");
-     
+        loadTournamentPage()
         });
 }

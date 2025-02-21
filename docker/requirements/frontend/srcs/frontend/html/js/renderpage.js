@@ -16,6 +16,7 @@ async function getUserInfo() {
 
 
 function removeAfterLogout() {
+        const mainButton = document.getElementById('mainButton')
         const playGameButton = document.getElementById('playGameButton')
         const playTournamentButton = document.getElementById('playTournamentButton')
         const loginButton = document.getElementById('loginButton')
@@ -23,6 +24,9 @@ function removeAfterLogout() {
         const logoutButton = document.getElementById('logoutButton')
         const profileButton = document.getElementById('profileButton')
         const matchHistoryButton = document.getElementById('matchHistoryButton')
+        if (mainButton !== null) {
+            mainButton.remove();
+        }
         if (loginButton == null) {
             renderLoginButton();
         }
@@ -41,6 +45,7 @@ function removeAfterLogout() {
     }    
 
 function removeAfterLogin() {
+    const mainButton = document.getElementById('mainButton')
     const playGameButton = document.getElementById('playGameButton')
     const playTournamentButton = document.getElementById('playTournamentButton')
     const loginButton = document.getElementById('loginButton')
@@ -48,6 +53,9 @@ function removeAfterLogin() {
     const logoutButton = document.getElementById('logoutButton')
     const profileButton = document.getElementById('profileButton')
     const matchHistoryButton = document.getElementById('matchHistoryButton')
+    if (mainButton == null) {
+       renderMainButton();
+    }
     if (loginButton !== null) {
         loginButton.remove();
     }
@@ -59,10 +67,10 @@ function removeAfterLogin() {
         renderPlayTournamentButton()
     if (matchHistoryButton == null)
         renderMatchHistoryButton()
-    if (logoutButton == null)
-        renderLogoutButton()
     if (profileButton == null)
         renderProfileButton()
+    if (logoutButton == null)
+        renderLogoutButton()
 }
 
 

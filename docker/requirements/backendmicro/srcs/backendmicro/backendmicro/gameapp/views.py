@@ -96,7 +96,9 @@ class UpdateTournamentsWon(APIView):
 			player = request.POST.get('player')
 			won = TournamentsWon.objects.filter(player=player).first()
 			if not won:
-				TournamentsWon.objects.create(player=player)
+				added = TournamentsWon.objects.create(player=player)
+				added.won = F('won') + 1
+				added.save()
 			else:
 				won.won = F('won') + 1
 				won.save()
