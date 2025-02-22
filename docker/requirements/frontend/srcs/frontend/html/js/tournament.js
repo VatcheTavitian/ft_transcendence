@@ -657,22 +657,28 @@ function launchTournament() {
         ctx.fillText(player2Score, fieldWidth * 3 / 4, 60);
     }
 
-  
+
     function endMatch() {
-     
+
+        console.log(players)
+        let knockedOutPlayers = players.filter(player => player.knockout);
+        console.log(knockedOutPlayers)
+        // if ( players.length == 1){
+        //     showFinalStandings();
+        // }
         if (players[currentPlayerIndex] && players[opponentIndex]) {
-            if (players.length == 1) {
-                showFinalStandings();
-            }
+           
+       
             if (player1Score > player2Score) {
-                players.push(players.splice(currentPlayerIndex, 1)[0]);
-                
-                // players[currentPlayerIndex].wins++;
-                // players[opponentIndex].losses++;
+                players[currentPlayerIndex].knockout = false;
+                players[opponentIndex].knockout = true;
+                players[currentPlayerIndex].wins++;
+                players[opponentIndex].losses++;
             } else {
-                players.splice(opponentIndex, 1);
-                // players[opponentIndex].wins++;
-                // players[currentPlayerIndex].losses++;
+                players[opponentIndex].knockout = false;
+                players[currentPlayerIndex].knockout = true;
+                players[opponentIndex].wins++;
+                players[currentPlayerIndex].losses++;
             }
     
             if (opponentIndex < players.length - 1) {
