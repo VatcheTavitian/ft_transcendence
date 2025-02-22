@@ -1,4 +1,4 @@
-
+# ---------------------- MAIN PART ---------------------- #
 services:
   postgres:
     container_name: postgres
@@ -17,13 +17,11 @@ services:
       - "5432:5432"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - db-volume:/var/lib/postgresql/data
     logging:
       driver: "gelf"
       options:
-        gelf-address: "udp://localhost:12201"   # ON Linux # Monitoring DO NOT DELETE
-        # gelf-address: "udp://host.docker.internal:12201"   # ON MAC # Monitoring DO NOT DELETE
+        # gelf-address: "udp://localhost:12201"
+        gelf-address: "udp://host.docker.internal:12201"
         tag: "postgres"
     restart: always
 
@@ -49,8 +47,6 @@ services:
       - "8008:8008"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - backend-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -79,8 +75,6 @@ services:
       - "8009:8009"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - backendmicro-volume:/app
     depends_on:
       - postgres
     restart: always
@@ -99,15 +93,12 @@ services:
       - "443:443"
     networks:
       - nwtranscendence
-    # volumes:
-    #   - ./requirements/frontend:/
-    #   - frontend-volume:/var/www/html
     depends_on:
       - backend
       - backendmicro
     restart: always
 
-# # ---------------------- MONITORING ---------------------- #
+# ---------------------- MONITORING ---------------------- #
 
   prometheus:
     container_name: prom
@@ -140,38 +131,12 @@ services:
 
 # ---------------------- VOLUMES ---------------------- #
 
-# volumes:
-#   db-volume:
-#     driver_opts:
-#       o: bind
-#       type: none
-#       device: /home/vatche/Documents/dbforft
-
-  # backend-volume:
-  #   driver_opts:
-  #     o: bind
-  #     type: none
-  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backend/srcs/backend/backend/
-    
-  
-  # backendmicro-volume:
-  #   driver_opts:
-  #     o: bind
-  #     type: none
-  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
-
-  # frontend-volume:
-  #   driver_opts:
-  #     o: bind
-  #     type: none
-  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
-
-  # certs:
-  #   driver: local
-  # esdata01:
-  #   driver: local
-  # kibanadata:
-  #   driver: local
+  certs:
+    driver: local
+  esdata01:
+    driver: local
+  kibanadata:
+    driver: local
 
 # ---------------------- NETWORKS ---------------------- #
 
