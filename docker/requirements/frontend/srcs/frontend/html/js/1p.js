@@ -186,11 +186,17 @@ class PongGame {
     }
 
     aiMove() {
+        let temp = this.paddle2Y;
+    
         if (this.ballY < this.paddle2Y + this.paddleHeight / 2) {
-            this.paddle2Y -= this.paddleSpeed;
+            temp = this.paddle2Y - this.paddleSpeed;
         } else if (this.ballY > this.paddle2Y + this.paddleHeight / 2) {
-            this.paddle2Y += this.paddleSpeed;
+            temp = this.paddle2Y + this.paddleSpeed;
         }
+    
+        temp = Math.max(25, Math.min(525, temp));
+    
+        this.paddle2Y = temp;
     }
 
     draw() {

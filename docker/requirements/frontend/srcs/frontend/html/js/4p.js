@@ -24,8 +24,14 @@ class PongGameFourPlayer {
         this.animationFrameId = null;
         this.keys = { w: false, s: false, ArrowUp: false, ArrowDown: false, z: false, x: false, n: false, m: false };
         this.player2Name = prompt("Enter Player 2's name:") || "Player 2";
-        this.player3Name = prompt("Enter Player 3's name:") || "Player 3";
-        this.player4Name = prompt("Enter Player 4's name:") || "Player 4"; 
+        while (this.player2Name.length > 10)
+            this.player2Name = prompt("Name too long, max 10 letters") || "Player 2";
+        this.player3Name = prompt("Enter Player 3's name:") || "Player 3"
+        while (this.player3Name.length > 10)
+            this.player3Name = prompt("Name too long, max 10 letters") || "Player 3"
+        this.player4Name = prompt("Enter Player 4's name:") || "Player 4" 
+         while (this.player4Name.length > 10)
+            this.player4Name = prompt("Name too long, max 10 letters") || "Player 4" 
         
         this.setupGame();
         this.addEventListeners();
@@ -41,8 +47,8 @@ class PongGameFourPlayer {
         this.paddleSpeed = 5;
         this.ballSpeed = 4;
         this.maxScore = 5;
-        this.paddle3X = this.fieldWidth / 2 - this.paddleWidth / 2;
-        this.paddle4X = this.fieldWidth / 4 - this.paddleWidth / 2; 
+        this.paddle3X = this.fieldWidth - this.paddleWidth;
+        this.paddle4X = 0; 
         this.resetGame();
     }
 
@@ -73,6 +79,7 @@ class PongGameFourPlayer {
     }
 
     resetGame() {
+        
         this.gameOver = false;
         this.paddle1Y = (this.fieldHeight - this.paddleHeight) / 2;
         this.paddle2Y = (this.fieldHeight - this.paddleHeight) / 2;
@@ -178,7 +185,7 @@ class PongGameFourPlayer {
 
         if (this.player1Score >= this.maxScore) {
             this.gameOver = true;
-            showModal(`${user.username} Wins!`);
+            showModal(`${user.username} & ${this.player3Name} Win!`);
             const formData = new FormData();
             formData.append('player2', this.player2Name + '/' + this.player3Name + '/' + this.player4Name);
             formData.append('player1_score', this.player1Score);
@@ -214,48 +221,9 @@ class PongGameFourPlayer {
             .then(response => response.json())
             .then(data => console.log('Match added:', data))
             .catch(error => console.error('Error:', error));
-            showModal(`${this.player2Name} Wins!`);
+            showModal(`${this.player2Name} & ${this.player4Name} Win!`);
         }
-        if (this.player3Score >= this.maxScore) {
-            this.gameOver = true;
-            const formData = new FormData();
-            formData.append('player2', this.player2Name + '/' + this.player3Name + '/' + this.player4Name);
-            formData.append('player1_score', this.player1Score);
-            formData.append('player2_score', this.player2Score);
-            const csrftoken = getCookie('csrftoken');
-            fetch('https://localhost:8008/api/add_match/', {
-                method: 'POST',
-                credentials: 'include',  
-                headers: {
-                    'X-CSRFToken': csrftoken 
-                },
-                body: formData  
-            })
-            .then(response => response.json())
-            .then(data => console.log('Match added:', data))
-            .catch(error => console.error('Error:', error));
-            showModal(`${this.player3Name} Wins!`);
-        }
-        if (this.player4Score >= this.maxScore) {
-            this.gameOver = true;  
-            const formData = new FormData();
-            formData.append('player2', this.player2Name + '/' + this.player3Name + '/' + this.player4Name);
-            formData.append('player1_score', this.player1Score);
-            formData.append('player2_score', this.player2Score);
-            const csrftoken = getCookie('csrftoken');
-            fetch('https://localhost:8008/api/add_match/', {
-                method: 'POST',
-                credentials: 'include',  
-                headers: {
-                    'X-CSRFToken': csrftoken 
-                },
-                body: formData  
-            })
-            .then(response => response.json())
-            .then(data => console.log('Match added:', data))
-            .catch(error => console.error('Error:', error));
-            showModal(`${this.player4Name} Wins!`);
-        }
+        
     }
 
     draw() {
@@ -272,15 +240,14 @@ class PongGameFourPlayer {
         
         this.ctx.font = "30px Arial";
         this.ctx.fillStyle = "#FFF";
-        this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
-        this.ctx.fillText(this.player2Score, this.fieldWidth / 2, 60);
-        this.ctx.fillText(this.player3Score, this.fieldWidth * 3 / 4, 60);
-        this.ctx.fillText(this.player4Score, this.fieldWidth * 3 / 4 + 100, 60); 
+        this.ctx.fillText(this.player1Score, this.fieldWidth / 2 - 100, 45);
+        this.ctx.fillText(this.player2Score, this.fieldWidth / 2 + 100, 45);
 
-        this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
-        this.ctx.fillText(this.player2Name, this.fieldWidth / 2, 30);
-        this.ctx.fillText(this.player3Name, this.fieldWidth * 3 / 4, 30);
-        this.ctx.fillText(this.player4Name, this.fieldWidth * 3 / 4 + 100, 30); 
+        this.ctx.fillText(user.username, this.fieldWidth / 8 - 20, 30);
+        this.ctx.fillText("VS", this.fieldWidth / 2, 45);
+        this.ctx.fillText(this.player3Name, this.fieldWidth / 8 - 20, 60);
+        this.ctx.fillText(this.player2Name, this.fieldWidth * 3 / 4 - 20, 30);
+        this.ctx.fillText(this.player4Name, this.fieldWidth * 3 / 4 - 20, 60);
 
         if (this.gameOver) {
             this.ctx.font = "50px Arial";
