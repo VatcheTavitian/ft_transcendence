@@ -129,15 +129,6 @@ services:
     ports:
       - '9100:9100'
 
-# ---------------------- VOLUMES ---------------------- #
-
-  certs:
-    driver: local
-  esdata01:
-    driver: local
-  kibanadata:
-    driver: local
-
 # ---------------------- NETWORKS ---------------------- #
 
 networks:
