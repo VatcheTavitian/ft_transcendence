@@ -23,6 +23,8 @@ class PongGameTwoPlayer {
         this.animationFrameId = null;
         this.keys = { w: false, s: false, ArrowUp: false, ArrowDown: false };
         this.player2Name =  prompt("Enter Player 2's name:") || "Opponent";
+        while (this.player2Name.length > 20)
+            this.player2Name = prompt("Name too long, max 20 characters");
         this.setupGame();
         this.addEventListeners();
         this.start();
@@ -188,9 +190,20 @@ class PongGameTwoPlayer {
         this.ctx.fill();
 
         this.ctx.font = "30px Arial";
-        this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
+        if (user.username.length > 10) {
+            temp = user.username.substring(0, 10) + '.'
+            this.ctx.fillText(temp, this.fieldWidth / 4, 30);
+        }
+        else
+            this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
         this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
-        this.ctx.fillText(this.player2Name, this.fieldWidth * 3 / 4, 30);
+
+        if (this.player2Name.length > 10) {
+            let temp2 = this.player2Name.substring(0, 10) + '.'
+            this.ctx.fillText(temp2, this.fieldWidth * 3 / 4, 30);
+        }
+        else
+            this.ctx.fillText(this.player2Name, this.fieldWidth * 3 / 4, 30);
         this.ctx.fillText(this.player2Score, this.fieldWidth * 3 / 4, 60);
 
         if (this.gameOver) {

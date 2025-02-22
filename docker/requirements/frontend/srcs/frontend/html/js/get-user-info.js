@@ -45,6 +45,7 @@ function renderProfileButton() {
         event.preventDefault();
         history.pushState({ page: "profile" }, "Profile", "/profile");
         loadProfilePage();
+        
         })
     }
 }
@@ -70,6 +71,7 @@ function renderMainButton() {
         event.preventDefault();
         history.pushState({ page: "main" }, "Main", "/main");
         loadMainPage();
+     
         })
     }
 }
@@ -96,6 +98,7 @@ function renderLoginButton() {
         event.preventDefault();
         history.pushState({ page: "login" }, "Login", "/login");
         loadLoginPage()
+        
         })
     }
 }
@@ -121,6 +124,7 @@ function renderRegisterButton() {
         event.preventDefault();
         history.pushState({ page: "register" }, "Register", "/register");
         loadRegisterPage()
+      
         });
     }
 
@@ -147,6 +151,7 @@ function renderMatchHistoryButton() {
         event.preventDefault();
         history.pushState({ page: "matchhistory" }, "MatchHistory", "/matchhistory");
         loadTournamentsWonPage()
+     
         });
 }
 
@@ -179,6 +184,7 @@ function renderLogoutButton() {
             instructLogin()
         })
         .catch(error => console.error('Error:', error));
+        
     });
 }
 
@@ -202,6 +208,7 @@ function renderPlayGameButton() {
         event.preventDefault();
         history.pushState({ page: "playgame" }, "PlayGame", "/playgame");
         loadGamePage()
+     
     });
 }
 
@@ -224,5 +231,6 @@ function renderPlayTournamentButton() {
         event.preventDefault();
         history.pushState({ page: "playtournament" }, "PlayTournament", "/playtournament");
         loadTournamentPage()
+    
         });
 }

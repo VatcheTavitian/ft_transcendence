@@ -217,7 +217,12 @@ class PongGame {
 
       
         this.ctx.font = "30px Arial";
-        this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
+        if (user.username.length > 10) {
+            temp = user.username.substring(0, 10) + '.'
+            this.ctx.fillText(temp, this.fieldWidth / 4, 30);
+        }
+        else
+            this.ctx.fillText(user.username, this.fieldWidth / 4, 30);
         this.ctx.fillText(this.player1Score, this.fieldWidth / 4, 60);
         this.ctx.fillText("AI", this.fieldWidth * 3 / 4, 30);
         this.ctx.fillText(this.player2Score, this.fieldWidth * 3 / 4, 60);
