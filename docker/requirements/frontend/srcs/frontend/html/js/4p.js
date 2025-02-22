@@ -187,7 +187,8 @@ class PongGameFourPlayer {
             this.gameOver = true;
             showModal(`${user.username} & ${this.player3Name} Win!`);
             const formData = new FormData();
-            formData.append('player2', '& ' + this.player2Name + ' vs ' + this.player3Name + '&' + this.player4Name);
+            let against = this.player2Name + '&' + this.player4Name
+            formData.append('player2', against);
             formData.append('player1_score', this.player1Score);
             formData.append('player2_score', this.player2Score);
             const csrftoken = getCookie('csrftoken');
@@ -206,7 +207,8 @@ class PongGameFourPlayer {
         if (this.player2Score >= this.maxScore) {
             this.gameOver = true;
             const formData = new FormData();
-            formData.append('player2', '& ' + this.player2Name + ' vs ' + this.player3Name + '&' + this.player4Name);
+            let against = this.player2Name + '&' + this.player4Name
+            formData.append('player2', against);
             formData.append('player1_score', this.player1Score);
             formData.append('player2_score', this.player2Score);
             const csrftoken = getCookie('csrftoken');
