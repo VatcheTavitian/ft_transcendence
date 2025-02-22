@@ -150,7 +150,6 @@ class PongGameTwoPlayer {
             formData.append('player2', this.player2Name);
             formData.append('player1_score', this.player1Score);
             formData.append('player2_score', this.player2Score);
-            console.log('sending request')
             const csrftoken = getCookie('csrftoken');
             fetch('https://localhost:8008/api/add_match/', {
                 method: 'POST',

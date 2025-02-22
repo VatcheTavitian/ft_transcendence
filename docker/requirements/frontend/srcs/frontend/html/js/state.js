@@ -37,6 +37,7 @@ function loadFriendList() {
     .then(response => response.json())
     .then(data => {
         const friendsList = document.getElementById('friends');
+        friendsList.innerHTML = '';
         let friends = [];
 
         if (data.nonintrafriends) {
@@ -129,7 +130,6 @@ function loadAddFriend() {
 
     document.getElementById('addFriendForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
-        console.log('Adding friend...');
         
         fetch('https://localhost:8008/api/addfriend/', {
             method: 'POST',
@@ -212,8 +212,7 @@ function loadDeleteFriendList() {
 
     document.getElementById('deleteFriendForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
-        console.log('Deleting friend...');
-        
+                
         fetch('https://localhost:8008/api/deletefriend/', {
             method: 'POST',
             credentials: 'include', 
@@ -295,8 +294,7 @@ function changePasswordForm() {
         
         document.getElementById('updatePasswordForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            console.log('Changing password...');
-            
+                
             const newPassword = document.getElementById('new_password').value;
             const confirmPassword = document.getElementById('confirm_password').value;
             
@@ -317,7 +315,7 @@ function changePasswordForm() {
                 });
                 
                 const result = await response.json();
-                console.log('Password change response:', result);
+             
                 if (result.error)
                     alert('Error!' + result.error);
                 else
@@ -400,8 +398,7 @@ async function loadProfilePage() {
         
         document.getElementById('updateUserForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            console.log('Updating user info...');
-            
+                       
             const csrftoken = getCookie('csrftoken');
             const formData = new FormData(this);
             
@@ -414,7 +411,7 @@ async function loadProfilePage() {
                 });
                 
                 const result = await response.json();
-                console.log('Update response:', result);
+            
                 if (result.error)
                     alert("Error! " + result.error)
                 else
@@ -449,11 +446,12 @@ function loadMatchHistoryPage() {
         .then(response => response.json())
         .then(data => {
             const matchHistoryList = document.getElementById('matchHistoryList');
+            matchHistoryList.innerHTML = '';
             
             if (data.length > 0) {
                 data.forEach(match => {
                     const matchItem = document.createElement('li');
-                    matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
+                    matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Here are the integrated Bootstrap classes
                     
                     matchItem.innerHTML = `
                         <div class="d-flex justify-content-between mb-2">
@@ -503,6 +501,7 @@ function loadTournamentsWonPage() {
         .then(response => response.json())
         .then(data => {
             const tournamentsWonList = document.getElementById('tournamentsWonList');
+            tournamentsWonList.innerHTML = '';
             const tournamentItem = document.createElement('div')
             if (data.won > 0) {
                     tournamentItem.innerHTML = `
@@ -537,7 +536,7 @@ function loadTournamentsWonPage() {
             if (data.length > 0) {
                 data.forEach(match => {
                     const matchItem = document.createElement('li');
-                    matchItem.className = 'list-group-item border rounded mb-3 shadow-sm';  // Bootstrap classes
+                    matchItem.className = 'list-group-item border rounded mb-3 shadow-sm'; // Here are the integrated Bootstrap classes
                     
                     matchItem.innerHTML = `
                         <div class="d-flex justify-content-between mb-2">
@@ -597,10 +596,7 @@ function loadLoginPage() {
         event.preventDefault();  
     
         const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-    
-        console.log('Attempting to log in with:', { username, password });
-    
+        const password = document.getElementById('password').value;   
         const formData = new URLSearchParams();
         formData.append('username', username);
         formData.append('password', password);
@@ -617,7 +613,6 @@ function loadLoginPage() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Login response:', data);
             if (!data.error) {
                 history.pushState({ page: "main" }, "Main", "/main");
                 user = data;
@@ -663,7 +658,6 @@ function loadResetPassword() {
 
     document.getElementById('passwordResetForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
-        console.log('Resetting password...');
         
         const csrftoken = getCookie('csrftoken');
         fetch('https://localhost:8008/api/resetpassword/', {
@@ -740,7 +734,6 @@ function loadRegisterPage() {
 
     document.getElementById('createNewUser').addEventListener('submit', function(event) {
         event.preventDefault(); 
-        console.log('Creating new user...');
         const csrftoken = getCookie('csrftoken');
         fetch('https://localhost:8008/api/register/', {
             method: 'POST',
@@ -795,7 +788,6 @@ function loadGamePage() {
 
 
 window.onpopstate = function(event) {
-    console.log('activatee') 
     const page = event.state ? event.state.page : 'main';
     if (page === 'login') 
         loadLoginPage()
@@ -853,7 +845,6 @@ function loadTournamentPage() {
         const script = document.createElement('script');
         script.src = '../js/tournament.js';
         script.onload = function() {
-            console.log('tournament.js has been successfully loaded.');
             launchTournament();
         };
         document.body.appendChild(script);
