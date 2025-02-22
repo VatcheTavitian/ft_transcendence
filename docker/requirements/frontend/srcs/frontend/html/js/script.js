@@ -49,28 +49,28 @@ function load2PlayerPage() {
 
 
 
-function load3PlayerPage() {
-	const gameContainer = document.getElementById('contentdiv');
-	gameContainer.innerHTML = `
-	<style>body {background-color: black;}</style>
-	<canvas id="gameCanvas" width="800" height="600"></canvas>
-	<div id="modal">
-		<div id="modalContent">
-		<button id="modalButton">Reset</button>
-		<p id="modalMessage" style="font-weight: bold;"></p>
-		</div>
-	</div>`;
-	const script = document.createElement('script');
-	script.src = '../js/3p.js';
-	document.body.appendChild(script);
-	script.onload = function() {
-		if (typeof window.start3PlayerGame === "function") {
-			window.start3PlayerGame();
-		} else {
-			console.error("start3PlayerGame is not defined");
-		}
-	};
-}
+// function load3PlayerPage() {
+// 	const gameContainer = document.getElementById('contentdiv');
+// 	gameContainer.innerHTML = `
+// 	<style>body {background-color: black;}</style>
+// 	<canvas id="gameCanvas" width="800" height="600"></canvas>
+// 	<div id="modal">
+// 		<div id="modalContent">
+// 		<button id="modalButton">Reset</button>
+// 		<p id="modalMessage" style="font-weight: bold;"></p>
+// 		</div>
+// 	</div>`;
+// 	const script = document.createElement('script');
+// 	script.src = '../js/3p.js';
+// 	document.body.appendChild(script);
+// 	script.onload = function() {
+// 		if (typeof window.start3PlayerGame === "function") {
+// 			window.start3PlayerGame();
+// 		} else {
+// 			console.error("start3PlayerGame is not defined");
+// 		}
+// 	};
+// }
 
 
 

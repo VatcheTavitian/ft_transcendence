@@ -768,7 +768,6 @@ function loadGamePage() {
             <h1>PONG</h1>
             <button id="singleplayer-btn" class="menu-btn">Singleplayer</button>
             <button id="2player-btn" class="menu-btn">2 Player</button>
-            <button id="3player-btn" class="menu-btn">3 Player</button>
             <button id="4player-btn" class="menu-btn">4 Player</button>
         </div>
 
@@ -778,8 +777,6 @@ function loadGamePage() {
         spb.addEventListener('click', loadSinglePlayerPage);
         spb2 = document.getElementById('2player-btn');
         spb2.addEventListener('click', load2PlayerPage);
-        spb3 = document.getElementById('3player-btn');
-        spb3.addEventListener('click', load3PlayerPage);
         spb4 = document.getElementById('4player-btn');
         spb4.addEventListener('click', load4PlayerPage);
     }
