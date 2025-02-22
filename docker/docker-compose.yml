@@ -99,8 +99,8 @@ services:
       - "443:443"
     networks:
       - nwtranscendence
-    volumes:
-      - frontend-volume:/var/www/html
+    # volumes:
+    #   - frontend-volume:/var/www/html
     depends_on:
       - backend
       - backendmicro
@@ -139,12 +139,12 @@ services:
 
 # ---------------------- VOLUMES ---------------------- #
 
-volumes:
-  db-volume:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/vatche/Documents/dbforft
+# volumes:
+#   db-volume:
+#     driver_opts:
+#       o: bind
+#       type: none
+#       device: /home/vatche/Documents/dbforft
 
   # backend-volume:
   #   driver_opts:
@@ -159,11 +159,11 @@ volumes:
   #     type: none
   #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/backendmicro/srcs/backendmicro/backendmicro
 
-  frontend-volume:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
+  # frontend-volume:
+  #   driver_opts:
+  #     o: bind
+  #     type: none
+  #     device: /home/defaultuser/Documents/42Curcus/ft_transcendence/docker/requirements/frontend/srcs/frontend/html
 
   # certs:
   #   driver: local
