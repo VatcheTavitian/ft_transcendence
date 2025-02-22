@@ -307,16 +307,19 @@ function launchTournament() {
 
     
     function showFinalStandings() {
-        console.log(user.username + '11 won!!!')
+        console.log(user.username + ' won!!!')
         gameCanvas.style.display = "none"; 
-   
+        let winner = players[0];
+        console.log(winner.name)
         players.sort((a, b) => {
             if (b.wins === a.wins) {
                 return a.losses - b.losses; 
             }
             return b.wins - a.wins; 
         });
-        const winner = players[0];
+        
+        
+        
         if (winner.name == user.username) {
             fetch('https://localhost:8008/api/get_tournament_info/', {
                 method: 'POST',
@@ -327,8 +330,7 @@ function launchTournament() {
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
         }
-      
-
+   
        
         let standingsHTML = "<h3>Tournament Over!</h3>";
         standingsHTML += "<div><table style='width: 100%; border-collapse: collapse;'>";
