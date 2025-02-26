@@ -1,0 +1,59 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Menu Styles */
+.menu {
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu h1 {
+    font-size: 80px;
+    margin-bottom: 30px;
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 5px;
+    text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8);
+}
+
+.menu-btn {
+    font-size: 30px;
+    padding: 20px;
+    margin: 10px;
+    border: 2px solid white;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.menu-btn:hover {
+    background-color: white;
+    color: black;
+}
+
+/* Canvas Styles */
+.game-canvas {
+    display: none;  /* Initially hidden */
+    background-color: #222;
+    width: 100%;
+    height: 100%;
+}

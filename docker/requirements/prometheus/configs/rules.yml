@@ -1,0 +1,35 @@
+groups:
+  - name: infra_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: sum(rate(node_cpu_seconds_total{mode="idle"}[5m])) by (instance) > 0.9
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 90% for more than 15 seconds"
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is above 90% for more than 3 minutes."
+      - alert: LowDiskSpace
+        expr: (node_filesystem_free_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space"
+          description: "Less than 10% disk space remaining on root."
+      - alert: HighCPUTemperature
+        expr: node_hwmon_temp_celsius > 85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU temperature"
+          description: "CPU temperature is above 85°C."

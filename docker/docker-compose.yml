@@ -1,0 +1,139 @@
+# ---------------------- MAIN PART ---------------------- #
+services:
+  postgres:
+    container_name: postgres
+    build:
+      context: ./requirements/postgres/
+      dockerfile: Dockerfile
+      args:
+        DB_NAME: ${DB_NAME}
+        DB_NAME2: ${DB_NAME2}
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
+        DB_HOST: ${DB_HOST}
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      - nwtranscendence
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://localhost:12201" # UNCOMMENT THIS COMMAND  FOR RUNNING ON LINUX SYSTEMS
+        # gelf-address: "udp://host.docker.internal:12201" #UNCOMMENT THIS COMMAND WHEN RUNNING ON MACOS
+        tag: "postgres"
+    restart: always
+
+  backend:
+    container_name: backend
+    build:
+      context: ./requirements/backend/
+      dockerfile: Dockerfile
+      args:
+          API_CLIENT_ID: ${API_CLIENT_ID}
+          API_CLIENT_SECRET: ${API_CLIENT_SECRET}
+          API_REDIRECT_URI: ${API_REDIRECT_URI}
+          DB_HOST: postgres
+          CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+          VALUE: ${VALUE}
+          GUNICORN_WD_BACKEND: ${GUNICORN_WD_BACKEND}
+          PYTHONPATH: ${PYTHONPATHBACKEND}
+          EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+          EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - "8008:8008"
+    networks:
+      - nwtranscendence
+    depends_on:
+      - postgres
+    restart: always
+
+  backendmicro:
+    container_name: backendmicro
+    build:
+      context: ./requirements/backendmicro/
+      dockerfile: Dockerfile
+      args:
+        CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+        VALUE: ${VALUE}
+        GUNICORN_WD_BACKEND_MICRO: ${GUNICORN_WD_BACKEND_MICRO}
+        API_CLIENT_ID: ${API_CLIENT_ID}
+        API_CLIENT_SECRET: ${API_CLIENT_SECRET}
+        API_REDIRECT_URI: ${API_REDIRECT_URI}
+        DB_HOST: postgres
+     
+        GUNICORN_WD_BACKEND: ${GUNICORN_WD_BACKEND}
+        PYTHONPATH: ${PYTHONPATHBACKENDMICRO}
+        EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+        EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - "8009:8009"
+    networks:
+      - nwtranscendence
+    depends_on:
+      - postgres
+    restart: always
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./requirements/frontend/
+      dockerfile: Dockerfile
+      args:
+        CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+        VALUE: ${VALUE}
+    env_file:
+      - .env
+    ports:
+      - "443:443"
+    networks:
+      - nwtranscendence
+    depends_on:
+      - backend
+      - backendmicro
+    restart: always
+ 
+
+# ---------------------- MONITORING ---------------------- #
+
+  prometheus:
+    container_name: prom
+    build:
+      context: ./requirements/prometheus
+      dockerfile: Dockerfile
+    command:
+      - '--web.enable-lifecycle'
+      - '--storage.tsdb.retention.time=1h'
+    ports:
+      - '9090:9090'
+    
+  grafana:
+    container_name: grafana
+    build:
+      context: ./requirements/grafana
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GFADMINUSER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GFPASS}
+
+  node-exporter:
+    container_name: node-exporter
+    image: 'quay.io/prometheus/node-exporter:v1.8.2'
+    command:
+      - '--path.rootfs=/host'
+    ports:
+      - '9100:9100'
+
+# ---------------------- NETWORKS ---------------------- #
+
+networks:
+  nwtranscendence:
+    driver: bridge
+  elknet:
+    driver: bridge

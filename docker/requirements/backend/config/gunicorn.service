@@ -1,0 +1,13 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=yourusername
+Group=www-data
+WorkingDirectory=/app/srcs
+ExecStart=/usr/local/bin/gunicorn --workers 3 --bind unix:/app/srcs/backend/backend/backend.sock backend.backend.backend.wsgi:application
+Environment="PYTHONPATH=${PYTHONPATH}"
+
+[Install]
+WantedBy=multi-user.target
