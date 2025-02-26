@@ -41,8 +41,6 @@ from .helpers import (
     generate_random_filename,
 )
 
-
-# Make this an environment variable
 INTRA_AUTH_URL = (
     "https://api.intra.42.fr/oauth/authorize?client_id="
     + os.environ.get("API_CLIENT_ID")
@@ -51,22 +49,12 @@ INTRA_AUTH_URL = (
     + "&response_type=code"
 )
 
-
-class test(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return JsonResponse({"message": "success from django backend!})"})
-
-
 def intralogin(request):
     return redirect(INTRA_AUTH_URL)
 
-
-def intralogout(request):
-    logout(request)
-    return redirect("/index")
-
+class test(APIView):
+     def get(self, request):
+        return JsonResponse({"message": "success from django backend!})"})
 
 def update_last_active(request):
     if hasattr(request.user, "intra_id"):
@@ -158,7 +146,6 @@ class LoginUser(APIView):
             return JsonResponse({"error": "Internal Server Error"}, status=500)
 
 
-# In Javascript put in check for response if user tries to logout when not authenticated
 class LogoutUser(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -768,7 +755,7 @@ class TournamentsWonInfoAPICall(APIView):
     def post(self, request):
         try:
             player = sanitize_input(request.user.username)
-            payload = {"player": "vtavitia"}
+            payload = {"player": player}
             r = requests.post(
                 "https://backendmicro:8009/api/get_tournament_info/",
                 data=payload,

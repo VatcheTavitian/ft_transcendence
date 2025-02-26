@@ -140,7 +140,6 @@ function loadAddFriend() {
         .then(response => response.json())
         .then(data => {
            
-            console.log(data)
             if (data.success) {
                 const contentdiv = document.getElementById("contentdiv");
                 contentdiv.innerHTML = ''
@@ -221,7 +220,7 @@ function loadDeleteFriendList() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+        
             if (data.success) {
                 const contentdiv = document.getElementById("contentdiv");
                 contentdiv.innerHTML = ''
@@ -668,7 +667,7 @@ function loadResetPassword() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+          
             if (data.detail) {
                 alert('Password reset has been sent')
                 loadLoginPage()
@@ -743,7 +742,7 @@ function loadRegisterPage() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+      
             if (data.error)
                 alert('Error! ' + data.error)
             else if (data.success) {

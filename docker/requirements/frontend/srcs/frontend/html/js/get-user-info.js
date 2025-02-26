@@ -180,7 +180,6 @@ function renderLogoutButton() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             instructLogin()
         })
         .catch(error => console.error('Error:', error));

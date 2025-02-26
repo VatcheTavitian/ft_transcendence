@@ -20,8 +20,8 @@ services:
     logging:
       driver: "gelf"
       options:
-        gelf-address: "udp://localhost:12201"
-        # gelf-address: "udp://host.docker.internal:12201"
+        gelf-address: "udp://localhost:12201" # UNCOMMENT THIS COMMAND  FOR RUNNING ON LINUX SYSTEMS
+        # gelf-address: "udp://host.docker.internal:12201" #UNCOMMENT THIS COMMAND WHEN RUNNING ON MACOS
         tag: "postgres"
     restart: always
 

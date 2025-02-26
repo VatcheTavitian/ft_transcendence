@@ -1,14 +1,14 @@
 #!/bin/bash
-# change postgres to env variable
+
 check_db() {
- 	export PGPASSWORD="postgres"
-	until psql -h "postgres" -U "postgres" -c 'SELECT 1'; do
+ 	export PGPASSWORD=${DB_PASS}
+	until psql -h ${DB_HOST} -U ${DB_USER} -c 'SELECT 1'; do
         echo "Waiting for Postgres..."
         sleep 2
     done
 }
 
-# Run database connection check
+
 check_db
 
 echo "Running makemigrations..."

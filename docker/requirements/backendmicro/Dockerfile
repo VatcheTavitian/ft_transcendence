@@ -1,7 +1,4 @@
-
-
 FROM python:3.10-slim
-
 
 ARG API_CLIENT_ID
 ARG API_CLIENT_SECRET

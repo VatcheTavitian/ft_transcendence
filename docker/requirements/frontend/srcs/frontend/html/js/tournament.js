@@ -146,13 +146,12 @@ function launchTournament() {
          
             modalButton.removeEventListener("click", handleFinalResultsModalClick);
             modalButton.addEventListener("click", () => {
-                modal.style.display = "none"; // Close the modal
+                modal.style.display = "none"; 
                 resetGame();
                 //gameLoop();
             });
         } else {
             startTournamentBtn.style.display = "none";  
-            console.log("Tournament Over");
             showFinalStandings();
         }
     }
@@ -288,8 +287,6 @@ function launchTournament() {
                 resetGame();
                 startNextMatch();
             } else {
-              
-                console.log("Tournament Over");
                 showFinalStandings();
             }
         } else {
@@ -307,10 +304,8 @@ function launchTournament() {
 
     
     function showFinalStandings() {
-        console.log(user.username + ' won!!!')
         gameCanvas.style.display = "none"; 
         let winner = players[0];
-        console.log(winner.name)
         players.sort((a, b) => {
             if (b.wins === a.wins) {
                 return a.losses - b.losses; 
@@ -341,7 +336,7 @@ function launchTournament() {
             let rowStyle = "";
             if (index === 0) {
               
-                rowStyle = "background-color: #FFD700; font-weight: bold;";  // Gold background for winner
+                rowStyle = "background-color: #FFD700; font-weight: bold;"; 
             }
 
             standingsHTML += `<tr style="${rowStyle}">

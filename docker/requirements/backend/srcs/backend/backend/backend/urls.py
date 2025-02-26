@@ -18,19 +18,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from userapp.views import intralogin, intralogout, getUserInfo, test
+from userapp.views import  getUserInfo, test, intralogin
 from userapp import views
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    # path('index/', index, name='index'),
-    # path('intraloginsuccess/', intraLoginSuccess.as_view(), name='intraloginsuccess'),
-    # path('logout/', intralogout, name='logout'),
-    # path('intralogin/', loginNonIntra.as_view(), name='intralogin'),
+    path("admin/", admin.site.urls), 
     path("api/test/", test.as_view(), name="test"),
-    # path('api/auth/user/', get_authenticated_user, name='get_authenticated_user'),
     path("api/getuserinfo/", getUserInfo.as_view(), name="getuserinfo"),
     path("api/intralogin/", intralogin, name="intralogin"),
     path(
@@ -57,7 +52,7 @@ urlpatterns = [
     path(
         "api/getonlinestatus/", views.GetOnlineStatus.as_view(), name="getonlinestatus"
     ),
-    # Calls to gameapp
+    # Calls to gameapp API
     path(
         "api/get_all_scores/", views.GetAllScoresAPICall.as_view(), name="getallscores"
     ),
