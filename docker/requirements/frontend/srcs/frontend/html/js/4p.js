@@ -173,6 +173,26 @@ class PongGameFourPlayer {
             this.resetBall();
         }
     }
+
+    saveMatch() {
+        const formData = new FormData();
+        let against = `${this.player2Name} & ${this.player4Name}`;
+        formData.append('player2', against);
+        formData.append('player1_score', this.player1Score);
+        formData.append('player2_score', this.player2Score);
+        const csrftoken = getCookie('csrftoken');
+        fetch('https://localhost:8008/api/add_match/', {
+            method: 'POST',
+            credentials: 'include',  
+            headers: {
+                'X-CSRFToken': csrftoken 
+            },
+            body: formData  
+        })
+        .then(response => response.json())
+        .then(data => console.log('Match added:', data))
+        .catch(error => console.error('Error:', error));
+    }
     
     resetBall() {
         if (this.player1Score >= this.maxScore || this.player2Score >= this.maxScore || this.player3Score >= this.maxScore || this.player4Score >= this.maxScore) {
@@ -185,44 +205,13 @@ class PongGameFourPlayer {
 
         if (this.player1Score >= this.maxScore) {
             this.gameOver = true;
+            this.saveMatch()
             showModal(`${user.username} & ${this.player3Name} Win!`);
-            const formData = new FormData();
-            let against = this.player2Name + '&' + this.player4Name
-            formData.append('player2', against);
-            formData.append('player1_score', this.player1Score);
-            formData.append('player2_score', this.player2Score);
-            const csrftoken = getCookie('csrftoken');
-            fetch('https://localhost:8008/api/add_match/', {
-                method: 'POST',
-                credentials: 'include',  
-                headers: {
-                    'X-CSRFToken': csrftoken 
-                },
-                body: formData  
-            })
-            .then(response => response.json())
-            .then(data => console.log('Match added:', data))
-            .catch(error => console.error('Error:', error));
+            
         }
         if (this.player2Score >= this.maxScore) {
             this.gameOver = true;
-            const formData = new FormData();
-            let against = this.player2Name + '&' + this.player4Name
-            formData.append('player2', against);
-            formData.append('player1_score', this.player1Score);
-            formData.append('player2_score', this.player2Score);
-            const csrftoken = getCookie('csrftoken');
-            fetch('https://localhost:8008/api/add_match/', {
-                method: 'POST',
-                credentials: 'include',  
-                headers: {
-                    'X-CSRFToken': csrftoken 
-                },
-                body: formData  
-            })
-            .then(response => response.json())
-            .then(data => console.log('Match added:', data))
-            .catch(error => console.error('Error:', error));
+            this.saveMatch()
             showModal(`${this.player2Name} & ${this.player4Name} Win!`);
         }
         

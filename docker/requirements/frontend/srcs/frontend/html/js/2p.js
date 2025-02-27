@@ -135,6 +135,25 @@ class PongGameTwoPlayer {
         }
     }
 
+    saveMatch() {
+        let formData = new FormData();
+        formData.append('player2', this.player2Name);
+        formData.append('player1_score', this.player1Score);
+        formData.append('player2_score', this.player2Score);
+        const csrftoken = getCookie('csrftoken');
+        fetch('https://localhost:8008/api/add_match/', {
+            method: 'POST',
+            credentials: 'include',  
+            headers: {
+                'X-CSRFToken': csrftoken 
+            },
+            body: formData  
+        })
+        .then(response => response.json())
+        .then(data => console.log('Match added:', data))
+        .catch(error => console.error('Error:', error));
+    }
+
     resetBall() {
         this.gameOver = false;
         this.ballX = this.fieldWidth / 2;
@@ -146,26 +165,13 @@ class PongGameTwoPlayer {
         }
         if (this.player1Score >= this.maxScore) {
             this.gameOver = true;
+            this.saveMatch();
             this.showModal( user.username + " Wins!");
 
-            const formData = new FormData();
-            formData.append('player2', this.player2Name);
-            formData.append('player1_score', this.player1Score);
-            formData.append('player2_score', this.player2Score);
-            const csrftoken = getCookie('csrftoken');
-            fetch('https://localhost:8008/api/add_match/', {
-                method: 'POST',
-                credentials: 'include',  
-                headers: {
-                    'X-CSRFToken': csrftoken 
-                },
-                body: formData  
-            })
-            .then(response => response.json())
-            .then(data => console.log('Match added:', data))
-            .catch(error => console.error('Error:', error));
+            
         } else if (this.player2Score >= this.maxScore) {
             this.gameOver = true;
+            this.saveMatch();
             this.showModal(this.player2Name + " Wins!");
         }
     }
