@@ -305,8 +305,7 @@ function launchTournament() {
     
     function showFinalStandings() {
         gameCanvas.style.display = "none"; 
-        console.log(players[0])
-        console.log(players[1])
+      
         players.sort((a, b) => {
             if (b.wins === a.wins) {
                 return a.losses - b.losses; 
@@ -316,8 +315,6 @@ function launchTournament() {
         
         let winner = players[0];
         
-        console.log(players[0])
-        console.log(players[1])
         if (winner.name == user.username) {
             fetch('https://localhost:8008/api/get_tournament_info/', {
                 method: 'POST',
