@@ -815,7 +815,7 @@ function loadTournamentPage() {
         const newcontainer = document.createElement('div')
         newcontainer.innerHTML = `
         <head><link rel="stylesheet" href="../css/tournament.css"></head>
-        <style>body {background-color: grey;}</style>
+        <style>body {background-color: black;}</style>
         <div id="playerInputSection">
         <h2>Enter Tournament Details</h2>
         <label for="numPlayers">Number of Players: </label>
